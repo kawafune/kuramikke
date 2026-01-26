@@ -7,7 +7,7 @@ import { SearchPage } from './pages/SearchPage';
 
 const App = () => {
   // --- 状態管理 ---
-  const [currentPage, setCurrentPage] = useState('TOP');
+  const [currentPage, setCurrentPage] = useState('TOP'); 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingTarget, setPendingTarget] = useState(null);
@@ -60,8 +60,8 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] font-sans text-[#333] flex flex-col">
-      <Header
-        onNavigate={handleNavigation}
+      <Header 
+        onNavigate={handleNavigation} 
         isAuthenticated={isAuthenticated}
         onLogout={handleLogout}
       />
@@ -70,7 +70,7 @@ const App = () => {
         {currentPage === 'TOP' && (
           <TopPage onTryAccess={(target) => handleNavigation(target)} />
         )}
-
+        
         {(currentPage === 'SEARCH' || currentPage === 'COMMUNITY') && (
           <SearchPage />
         )}
@@ -78,8 +78,8 @@ const App = () => {
 
       <Footer />
 
-      <LoginModal
-        isOpen={showLoginModal}
+      <LoginModal 
+        isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)}
         onLoginSuccess={handleLoginSuccess}
       />
