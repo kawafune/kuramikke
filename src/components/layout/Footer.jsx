@@ -3,7 +3,6 @@ import { Facebook, Twitter, Instagram } from 'lucide-react';
 import logoImg from '../../assets/cralogo.svg';
 
 export const Footer = ({ onNavigate }) => {
-  // リンク集のデータ構造
   const footerLinks = {
     'サービスについて': [
       { label: 'トップページ', target: 'TOP' },
@@ -24,19 +23,19 @@ export const Footer = ({ onNavigate }) => {
   };
 
   return (
-    <footer className="bg-bg-light pt-12 pb-6 text-primary-light">
+    // ★修正: 背景色を #FFF9EE に変更
+    <footer className="bg-[#FFF9EE] pt-12 pb-6 text-primary-light">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-10">
           
           {/* 左側：ロゴとSNS */}
           <div className="md:col-span-4 flex flex-col items-start">
             <img src={logoImg} alt="クラミッケ" className="h-10 w-auto mb-6 filter grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all" />
-            <p className="text-sm mb-6 leading-relaxed">
+            <p className="text-sm mb-6 leading-relaxed font-bold">
               地域の病院・介護施設から、<br/>毎日の暮らしを彩るイベントまで。<br/>
               あなたの街の「安心」と「楽しみ」が見つかります。
             </p>
             <div className="flex gap-4">
-              {/* SNSアイコン（ダミー） */}
               <a href="#" className="p-2 bg-white rounded-full text-primary-light hover:text-accent-orange hover:shadow-sm transition-all"><Facebook size={20} /></a>
               <a href="#" className="p-2 bg-white rounded-full text-primary-light hover:text-accent-orange hover:shadow-sm transition-all"><Twitter size={20} /></a>
               <a href="#" className="p-2 bg-white rounded-full text-primary-light hover:text-accent-orange hover:shadow-sm transition-all"><Instagram size={20} /></a>
@@ -53,7 +52,7 @@ export const Footer = ({ onNavigate }) => {
                     <li key={index}>
                       <button 
                         onClick={() => link.target !== '#' && onNavigate(link.target)}
-                        className="hover:text-accent-green transition-colors text-left"
+                        className="hover:text-accent-green transition-colors text-left font-medium"
                       >
                         {link.label}
                       </button>
@@ -66,7 +65,7 @@ export const Footer = ({ onNavigate }) => {
         </div>
 
         {/* 下段：コピーライト */}
-        <div className="border-t border-gray-200 pt-6 text-center text-xs md:text-sm">
+        <div className="border-t border-[#E0D8C0] pt-6 text-center text-xs md:text-sm font-bold">
           <p>© {new Date().getFullYear()} Kuramikke. All rights reserved.</p>
         </div>
       </div>
