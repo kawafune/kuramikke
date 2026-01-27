@@ -1,40 +1,74 @@
 import React from 'react';
+import { Facebook, Twitter, Instagram } from 'lucide-react';
+import logoImg from '../../assets/cralogo.svg';
 
-export const Footer = () => {
+export const Footer = ({ onNavigate }) => {
+  // リンク集のデータ構造
+  const footerLinks = {
+    'サービスについて': [
+      { label: 'トップページ', target: 'TOP' },
+      { label: '病院・施設を探す', target: 'SEARCH' },
+      { label: 'コミュニティ', target: 'COMMUNITY' },
+      { label: 'お役立ちコラム', target: 'COLUMN' },
+    ],
+    'サポート': [
+      { label: 'お知らせ', target: '#' },
+      { label: 'ヘルプセンター', target: '#' },
+      { label: 'お問い合わせ', target: '#' },
+    ],
+    '運営情報': [
+      { label: '運営会社', target: '#' },
+      { label: '利用規約', target: '#' },
+      { label: 'プライバシーポリシー', target: '#' },
+    ],
+  };
+
   return (
-    <footer className="bg-gray-800 text-white py-12">
-      <div className="container mx-auto px-4 text-center md:text-left">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 border-b border-gray-700 pb-8">
-          <div className="md:col-span-2">
-            <h4 className="font-bold text-xl mb-4 text-green-400">
-              クラミッケ
-            </h4>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              豊かな暮らし情報ミッケ！
-              <br />
-              シニアライフをサポートする、地域密着型・総合情報メディア。
-              <br />
-              病院検索、介護施設検索、そして地域のコミュニティまで。
+    <footer className="bg-bg-light pt-12 pb-6 text-primary-light">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-10">
+          
+          {/* 左側：ロゴとSNS */}
+          <div className="md:col-span-4 flex flex-col items-start">
+            <img src={logoImg} alt="クラミッケ" className="h-10 w-auto mb-6 filter grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all" />
+            <p className="text-sm mb-6 leading-relaxed">
+              地域の病院・介護施設から、<br/>毎日の暮らしを彩るイベントまで。<br/>
+              あなたの街の「安心」と「楽しみ」が見つかります。
             </p>
+            <div className="flex gap-4">
+              {/* SNSアイコン（ダミー） */}
+              <a href="#" className="p-2 bg-white rounded-full text-primary-light hover:text-accent-orange hover:shadow-sm transition-all"><Facebook size={20} /></a>
+              <a href="#" className="p-2 bg-white rounded-full text-primary-light hover:text-accent-orange hover:shadow-sm transition-all"><Twitter size={20} /></a>
+              <a href="#" className="p-2 bg-white rounded-full text-primary-light hover:text-accent-orange hover:shadow-sm transition-all"><Instagram size={20} /></a>
+            </div>
           </div>
-          <div>
-            <h4 className="font-bold mb-4">メニュー</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li>病院を探す</li>
-              <li>介護施設を探す</li>
-              <li>コラムを読む</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-4">お問い合わせ</h4>
-            <button className="bg-white/10 hover:bg-white/20 text-white text-sm py-2 px-6 rounded-lg transition-colors w-full md:w-auto">
-              掲載依頼はこちら
-            </button>
+
+          {/* 右側：サイトマップリンク集 */}
+          <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+            {Object.entries(footerLinks).map(([category, links]) => (
+              <div key={category}>
+                <h4 className="font-bold text-primary mb-4">{category}</h4>
+                <ul className="space-y-3 text-sm">
+                  {links.map((link, index) => (
+                    <li key={index}>
+                      <button 
+                        onClick={() => link.target !== '#' && onNavigate(link.target)}
+                        className="hover:text-accent-green transition-colors text-left"
+                      >
+                        {link.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
-        <p className="text-xs text-gray-500 text-center">
-          &copy; Happiino LLC. All Rights Reserved.
-        </p>
+
+        {/* 下段：コピーライト */}
+        <div className="border-t border-gray-200 pt-6 text-center text-xs md:text-sm">
+          <p>© {new Date().getFullYear()} Kuramikke. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   );

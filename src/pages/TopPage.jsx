@@ -1,138 +1,123 @@
 import React from 'react';
-import { Heart, Home, ArrowRight } from 'lucide-react';
-import mikeChan from '../assets/mike.svg'; // ★クラミケちゃんをインポート
+import { Heart, Home, ArrowRight, MapPin, Search } from 'lucide-react';
 
 export const TopPage = ({ onTryAccess }) => {
   return (
-    <div className="animate-fade-in">
-      {/* ヒーローエリア */}
-      <section className="bg-gradient-to-b from-green-50 to-white py-12 md:py-20 relative overflow-hidden">
-        <div className="container mx-auto px-4 text-center relative z-10">
-          {/* ★ここにクラミケちゃんを配置！ */}
-          <div className="mb-6 flex justify-center">
-            <img
-              src={mikeChan}
-              alt="クラミケちゃん"
-              className="h-32 md:h-40 w-auto drop-shadow-xl animate-bounce-slow"
-            />
+    <div className="animate-fade-in bg-bg-warm min-h-[calc(100vh-80px)]">
+      
+      {/* ★メインエリア：検索への入り口を最優先配置 */}
+      <section className="pt-8 pb-12 md:pt-16 md:pb-12 px-4">
+        <div className="container mx-auto max-w-5xl">
+          
+          {/* キャッチコピー（控えめに配置） */}
+          <div className="text-center mb-8 md:mb-12">
+            <span className="inline-block bg-white/80 text-accent-green px-4 py-1 rounded-full text-xs md:text-sm font-bold shadow-sm mb-3 border border-green-100">
+              暮らしのお役立ち情報WEBマガジン
+            </span>
+            <h2 className="text-2xl md:text-4xl font-bold text-primary mb-2 leading-tight">
+              豊かな暮らし情報ミッケ！
+            </h2>
+            <p className="text-primary-light text-sm md:text-base">
+              地域の「安心」と「楽しみ」がここにある。
+            </p>
           </div>
 
-          <span className="inline-block bg-white text-green-600 px-4 py-1 rounded-full text-sm font-bold shadow-sm mb-4 border border-green-100">
-            暮らしのお役立ち情報WEBマガジン
-          </span>
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
-            豊かな暮らし情報
-            <br className="md:hidden" />
-            ミッケ！
-          </h2>
-          <p className="text-gray-500 mb-10 max-w-lg mx-auto">
-            地域の病院・介護施設から、毎日の暮らしを彩るイベントまで。
-            <br />
-            あなたの街の「安心」と「楽しみ」が見つかります。
-          </p>
-        </div>
-
-        {/* 背景装飾（オプション） */}
-        <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-30">
-          <div className="absolute top-10 left-10 w-20 h-20 bg-orange-200 rounded-full blur-2xl"></div>
-          <div className="absolute bottom-10 right-10 w-32 h-32 bg-green-200 rounded-full blur-3xl"></div>
-        </div>
-      </section>
-
-      {/* ... (以下、検索ボタンやコラム部分は変更なし) ... */}
-      <section className="bg-white pb-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto -mt-8 relative z-10">
-            <button
+          {/* ★ここが主役：2大検索ボタン */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+            {/* 病院を探す */}
+            <button 
               onClick={() => onTryAccess('SEARCH')}
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-b-4 border-green-500 group text-left transform hover:-translate-y-1"
+              className="bg-white p-6 md:p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all border-b-8 border-accent-green group text-left relative overflow-hidden"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div className="p-4 bg-green-100 text-green-600 rounded-2xl">
-                  <Heart size={32} />
-                </div>
-                <ArrowRight className="text-gray-300 group-hover:text-green-500 transition-colors" />
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Heart size={120} className="text-accent-green" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                病院を探す
-              </h3>
-              <p className="text-gray-500 text-sm mb-4">
-                診療科目、休日診療、夜間救急など。
-                <br />
-                現在地からのマップ検索も可能です。
-              </p>
-              <div className="flex gap-2 flex-wrap">
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                  内科
-                </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                  整形外科
-                </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                  眼科
-                </span>
-              </div>
-            </button>
-
-            <button
-              onClick={() => onTryAccess('SEARCH')}
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-b-4 border-orange-500 group text-left transform hover:-translate-y-1"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div className="p-4 bg-orange-100 text-orange-600 rounded-2xl">
-                  <Home size={32} />
-                </div>
-                <ArrowRight className="text-gray-300 group-hover:text-orange-500 transition-colors" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                介護施設を探す
-              </h3>
-              <p className="text-gray-500 text-sm mb-4">
-                特別養護老人ホーム、グループホームなど。
-                <br />
-                入居条件や特徴から探せます。
-              </p>
-              <div className="flex gap-2 flex-wrap">
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                  入居可
-                </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                  認知症対応
-                </span>
-              </div>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4">
-          <h3 className="text-xl font-bold text-gray-800 mb-8 text-center">
-            新着コラム
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => onTryAccess('COLUMN')}
-              >
-                <div className="aspect-video bg-gray-200 relative">
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-bold">
-                    Image
+              <div className="relative z-10">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="p-4 bg-green-50 text-accent-green rounded-2xl">
+                    <Heart size={40} strokeWidth={2.5} />
+                  </div>
+                  <div className="bg-accent-green text-white w-10 h-10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <ArrowRight size={20} />
                   </div>
                 </div>
-                <div className="p-4">
-                  <span className="text-xs text-orange-500 font-bold">
-                    暮らし
-                  </span>
-                  <h4 className="font-bold text-gray-800 mt-2 mb-2">
-                    春の訪れを感じる、シニアのための散歩コース {i}
-                  </h4>
-                  <p className="text-xs text-gray-400">2026.01.27</p>
+                <h3 className="text-2xl md:text-3xl font-bold text-primary mb-3">病院を探す</h3>
+                <p className="text-primary-light mb-6 font-medium">
+                  診療科目や現在地から、<br/>信頼できる病院をすぐに検索。
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-200">内科</span>
+                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-200">小児科</span>
+                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-200">夜間救急</span>
+                </div>
+              </div>
+            </button>
+
+            {/* 介護施設を探す */}
+            <button 
+              onClick={() => onTryAccess('SEARCH')}
+              className="bg-white p-6 md:p-10 rounded-3xl shadow-lg hover:shadow-2xl transition-all border-b-8 border-accent-orange group text-left relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Home size={120} className="text-accent-orange" />
+              </div>
+              <div className="relative z-10">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="p-4 bg-orange-50 text-accent-orange rounded-2xl">
+                    <Home size={40} strokeWidth={2.5} />
+                  </div>
+                  <div className="bg-accent-orange text-white w-10 h-10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <ArrowRight size={20} />
+                  </div>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-primary mb-3">介護施設を探す</h3>
+                <p className="text-primary-light mb-6 font-medium">
+                  条件や空き状況から、<br/>大切な家族のための施設を探す。
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-200">老人ホーム</span>
+                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-200">グループホーム</span>
+                  <span className="text-xs font-bold bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg border border-gray-200">入居可</span>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* お知らせ・コラムエリア（背景を白にして区切り） */}
+      <section className="bg-white py-16 rounded-t-[40px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h3 className="text-xl font-bold text-primary mb-2">新着コラム & お知らせ</h3>
+            <p className="text-sm text-primary-light">シニアライフを豊かにする情報をお届けします</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="group bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" onClick={() => onTryAccess('COLUMN')}>
+                <div className="aspect-video bg-gray-200 relative overflow-hidden">
+                    {/* ダミー画像代わりのグラデーション */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${i === 1 ? 'from-green-100 to-green-50' : i === 2 ? 'from-orange-100 to-orange-50' : 'from-blue-100 to-blue-50'}`}></div>
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 font-bold opacity-30">Image {i}</div>
+                </div>
+                <div className="p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs bg-bg-warm text-accent-orange font-bold px-2 py-1 rounded">暮らし</span>
+                      <span className="text-xs text-gray-400">2026.01.27</span>
+                    </div>
+                    <h4 className="font-bold text-primary group-hover:text-accent-green transition-colors line-clamp-2">
+                      春の訪れを感じる、シニアのための散歩コース特集 {i}
+                    </h4>
                 </div>
               </div>
             ))}
+          </div>
+          
+          <div className="text-center mt-10">
+            <button className="border-2 border-primary-light text-primary font-bold py-3 px-10 rounded-full hover:bg-primary hover:text-white transition-colors">
+              コラム一覧を見る
+            </button>
           </div>
         </div>
       </section>
