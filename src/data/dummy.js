@@ -16,7 +16,7 @@ const TAG_SETS = [
 
 // 写真は public/images/events/event-NN.webp。写真が無いものは art（仮イラスト）を表示する
 const EVENT_ART = ['seminar', 'sakura', 'dining', 'camera', 'pottery', 'cooking', 'boat', 'beer'];
-const EVENT_IMAGES = [1, 2, 3, 4, 5]; // 届いた写真の番号（これ以降はイラスト）
+const EVENT_IMAGES = [1, 2, 3, 4, 5, 6, 7, 8]; // 届いた写真の番号（ここに無い番号はイラスト）
 
 export const EVENTS = Array.from({ length: 8 }, (_, i) => ({
   id: i + 1,
