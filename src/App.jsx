@@ -3,6 +3,7 @@ import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { LoginModal } from './components/ui/LoginModal';
 import { TopPage } from './pages/TopPage';
+import { SearchPage } from './pages/SearchPage';
 import { ComingSoonPage } from './pages/ComingSoonPage';
 import { NAV_ITEMS } from './data/nav';
 
@@ -70,9 +71,11 @@ const App = () => {
       />
 
       <main className="flex-grow">
-        {currentPage === 'TOP'
-          ? <TopPage onTryAccess={handleNavigation} />
-          : <ComingSoonPage title={pageTitle} onBack={() => handleNavigation('TOP')} />}
+        {currentPage === 'TOP' && <TopPage onTryAccess={handleNavigation} />}
+        {currentPage === 'SEARCH' && <SearchPage />}
+        {!['TOP', 'SEARCH'].includes(currentPage) && (
+          <ComingSoonPage title={pageTitle} onBack={() => handleNavigation('TOP')} />
+        )}
       </main>
 
       <Footer onNavigate={handleNavigation} />
