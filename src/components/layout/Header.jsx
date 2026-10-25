@@ -1,123 +1,116 @@
 import React, { useState } from 'react';
-import { Menu, X, User, LogIn, Search } from 'lucide-react';
-import logoImg from '../../assets/cralogo.svg';
-import mikeImg from '../../assets/mike.svg';
+import { Menu, X, Search, Share2 } from 'lucide-react';
+import { Logo } from '../ui/Logo';
+import { SnsIcons } from '../ui/SnsIcons';
+import { NAV_ITEMS, NavIcon } from '../../data/nav';
 
-export const Header = ({ onNavigate, isAuthenticated, onLogout }) => {
+const SearchForm = ({ id, onSubmit }) => (
+  <form role="search" onSubmit={onSubmit} className="flex items-stretch gap-2 w-full">
+    <label htmlFor={id} className="sr-only">サイト内検索</label>
+    <input
+      id={id}
+      type="search"
+      placeholder="キーワードで検索できます"
+      className="flex-1 min-w-0 h-10 px-3 border border-[#B5B5B5] rounded text-[0.85rem] placeholder:text-ink-sub focus:outline-none focus:border-gold-deep"
+    />
+    <button type="submit" className="shrink-0 h-10 px-3 bg-cream-200 text-gold-deep font-round font-bold text-[0.8rem] rounded shadow-[0_2px_0_theme(colors.gold.line)] hover:brightness-95">
+      サイト内検索
+    </button>
+  </form>
+);
+
+export const Header = ({ currentPage, onNavigate, isAuthenticated, onLogout, onLogin }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // PC用ナビリンク
-  const NavLink = ({ target, children }) => (
-    <button
-      onClick={() => onNavigate(target)}
-      className="font-bold text-primary-light hover:text-[#4F8E5D] transition-colors text-sm whitespace-nowrap"
-    >
-      {children}
-    </button>
-  );
+  const go = (target) => {
+    onNavigate(target);
+    setIsMenuOpen(false);
+  };
+  const handleSearch = (e) => {
+    e.preventDefault(); // 【未実装】検索処理
+  };
 
-  // スマホ用ナビリンク
-  const MobileNavLink = ({ target, children }) => (
-    <button
-      onClick={() => {
-        onNavigate(target);
-        setIsMenuOpen(false);
-      }}
-      className="block w-full text-left py-3 px-4 hover:bg-[#f9ecd3] text-primary font-bold border-b border-gray-100"
-    >
-      {children}
-    </button>
-  );
+  const authButton = isAuthenticated
+    ? <button onClick={onLogout} className="shrink-0 whitespace-nowrap h-10 px-6 bg-white border border-gold-deep text-gold-deep font-round font-bold text-[0.85rem] rounded">ログアウト</button>
+    : <button onClick={onLogin} className="shrink-0 whitespace-nowrap h-10 px-6 bg-gold-deep text-white font-round font-bold text-[0.85rem] tracking-[0.15em] rounded shadow-[0_3px_0_theme(colors.gold.shadow)]">ログイン</button>;
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between gap-4">
-        
-        {/* 左：ロゴエリア */}
-        <div 
-          className="flex items-center gap-2 cursor-pointer shrink-0" 
-          onClick={() => onNavigate('TOP')}
-        >
-          {/* ★修正: hiddenクラスを削除し、サイズを調整して常時表示 */}
-          <img src={mikeImg} alt="クラミケちゃん" className="h-8 md:h-10 w-auto -mb-1" />
-          <img src={logoImg} alt="クラミッケ" className="h-10 md:h-12 w-auto hover:opacity-80 transition-opacity" />
-        </div>
+    <header className="bg-white sticky top-0 z-50 border-b-[3px] border-gold-line">
+      {/* 上段 */}
+      <div className="max-w-[1200px] mx-auto px-4 lg:px-10 h-16 lg:h-[100px] flex items-center justify-between gap-6">
+        <button onClick={() => go('TOP')} className="shrink-0" aria-label="クラミッケ トップページへ">
+          <Logo />
+        </button>
 
-        {/* 中央：検索窓（PCのみ） */}
-        <div className="hidden md:flex flex-1 max-w-md mx-4 relative">
-          <input 
-            type="text" 
-            placeholder="キーワードで検索（例：内科、リハビリ）" 
-            className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4F8E5D] text-sm"
-          />
-          <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-        </div>
-
-        {/* 右：メニュー & ボタン */}
-        <div className="hidden lg:flex items-center gap-6">
-          <nav className="flex items-center gap-6">
-            <NavLink target="SEARCH">病院を探す</NavLink>
-            <NavLink target="SEARCH">施設を探す</NavLink>
-            <NavLink target="COMMUNITY">コミュニティ</NavLink>
-          </nav>
-
-          <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-            {isAuthenticated ? (
-               <button onClick={onLogout} className="flex items-center gap-1 text-primary-light hover:text-[#F4A460] font-bold text-sm">
-                 <LogIn size={18} /> ログアウト
-               </button>
-            ) : (
-              <>
-                <button className="flex items-center gap-1 text-primary hover:text-[#4F8E5D] font-bold text-sm">
-                  <User size={18} /> ログイン
-                </button>
-                {/* ★修正: 色を直接指定して確実に表示させる */}
-                <button className="bg-[#F4A460] text-white px-5 py-2 rounded-full font-bold text-sm hover:opacity-90 shadow-md whitespace-nowrap transition-opacity">
-                  新規会員登録
-                </button>
-              </>
-            )}
+        {/* PC：説明・SNS・検索・ログイン */}
+        <div className="hidden lg:flex flex-col items-end gap-2 flex-1 max-w-[620px]">
+          <div className="flex items-center gap-4">
+            <p className="text-[0.75rem] text-ink">【病院・介護施設検索】暮らしのお役立ち情報WEBマガジン</p>
+            <button className="flex flex-col items-center text-ink-sub text-[0.55rem] leading-none" aria-label="このページをシェア">
+              <Share2 size={18} />シェア
+            </button>
+            <SnsIcons />
+          </div>
+          <div className="flex items-center gap-3 w-full">
+            <SearchForm id="search-pc" onSubmit={handleSearch} />
+            {authButton}
           </div>
         </div>
 
-        {/* スマホメニューボタン */}
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-primary-light">
-          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        {/* スマホ：メニューボタン（シニア向けに文字ラベル付き） */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="lg:hidden flex flex-col items-center justify-center w-12 h-12 text-gold-deep"
+          aria-expanded={isMenuOpen}
+          aria-controls="sp-menu"
+        >
+          {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          <span className="text-[0.6rem] font-bold leading-none mt-0.5">{isMenuOpen ? '閉じる' : 'メニュー'}</span>
         </button>
       </div>
 
-      {/* スマホ用メニュー展開部 */}
-      {isMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 top-20 max-h-[90vh] overflow-y-auto">
-           {/* スマホ用検索窓 */}
-           <div className="p-4 bg-gray-50 border-b border-gray-100">
-             <div className="relative">
-               <input 
-                 type="text" 
-                 placeholder="キーワード検索" 
-                 className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4F8E5D]"
-               />
-               <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-             </div>
-           </div>
+      {/* 下段：5メニュー（TOPは大きなタイルナビがあるので出さない＝原案どおり） */}
+      {currentPage !== 'TOP' && (
+        <nav className="hidden lg:block" aria-label="メインメニュー">
+          <ul className="max-w-[1000px] mx-auto flex items-center justify-center pb-2">
+            {NAV_ITEMS.map((item, i) => (
+              <li key={item.target} className={`flex ${i > 0 ? 'border-l border-gold-line' : ''}`}>
+                <button
+                  onClick={() => go(item.target)}
+                  aria-current={currentPage === item.target ? 'page' : undefined}
+                  className="flex items-center gap-2 px-5 py-1 font-round font-bold text-[0.85rem] text-gold-deep hover:opacity-70 aria-[current=page]:underline underline-offset-4"
+                >
+                  <NavIcon item={item} className="h-6" />
+                  {item.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
 
-           <nav className="flex flex-col">
-             <MobileNavLink target="TOP">トップページ</MobileNavLink>
-             <MobileNavLink target="SEARCH">病院を探す</MobileNavLink>
-             <MobileNavLink target="SEARCH">施設を探す</MobileNavLink>
-             <MobileNavLink target="COMMUNITY">コミュニティ</MobileNavLink>
-             <MobileNavLink target="COLUMN">お役立ちコラム</MobileNavLink>
-             
-             <div className="p-4 flex flex-col gap-3 bg-[#f9ecd3]/30 mt-2">
-                <button className="w-full bg-white border border-[#F4A460] text-[#F4A460] font-bold py-3 rounded-lg hover:bg-orange-50">
-                  ログイン
-                </button>
-                {/* ★修正: こちらも色を直接指定 */}
-                <button className="w-full bg-[#F4A460] text-white font-bold py-3 rounded-lg hover:opacity-90 shadow-sm transition-opacity">
-                  新規会員登録
-                </button>
-             </div>
-           </nav>
+      {/* スマホ：開閉メニュー */}
+      {isMenuOpen && (
+        <div id="sp-menu" className="lg:hidden absolute inset-x-0 top-full bg-white border-t border-gold-line shadow-lg max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="p-4 bg-cream-50">
+            <SearchForm id="search-sp" onSubmit={handleSearch} />
+          </div>
+          <nav aria-label="メインメニュー">
+            <ul>
+              {NAV_ITEMS.map((item) => (
+                <li key={item.target} className="border-b border-cream-200">
+                  <button onClick={() => go(item.target)} className="w-full flex items-center gap-4 px-5 min-h-[60px] text-left font-round font-bold text-gold-deep">
+                    <span className="w-12 flex justify-center"><NavIcon item={item} className="h-7" /></span>
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div className="p-5 flex flex-col items-center gap-5">
+            <div className="w-full [&>button]:w-full">{authButton}</div>
+            <SnsIcons />
+          </div>
         </div>
       )}
     </header>

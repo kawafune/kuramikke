@@ -3,11 +3,12 @@ import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { LoginModal } from './components/ui/LoginModal';
 import { TopPage } from './pages/TopPage';
-import { SearchPage } from './pages/SearchPage';
+import { ComingSoonPage } from './pages/ComingSoonPage';
+import { NAV_ITEMS } from './data/nav';
 
 const App = () => {
   // --- 状態管理 ---
-  const [currentPage, setCurrentPage] = useState('TOP'); 
+  const [currentPage, setCurrentPage] = useState('TOP');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingTarget, setPendingTarget] = useState(null);
@@ -45,10 +46,8 @@ const App = () => {
     if (pendingTarget) {
       setCurrentPage(pendingTarget);
       setPendingTarget(null);
-    } else {
-      setCurrentPage('SEARCH');
+      window.scrollTo(0, 0);
     }
-    window.scrollTo(0, 0);
   };
 
   const handleLogout = () => {
@@ -58,28 +57,28 @@ const App = () => {
     window.location.reload(); // 状態リセットのためリロード推奨
   };
 
+  const pageTitle = NAV_ITEMS.find((n) => n.target === currentPage)?.label;
+
   return (
-    <div className="min-h-screen bg-[#FAF9F6] font-sans text-[#333] flex flex-col">
-      <Header 
-        onNavigate={handleNavigation} 
+    <div className="min-h-screen flex flex-col">
+      <Header
+        currentPage={currentPage}
+        onNavigate={handleNavigation}
         isAuthenticated={isAuthenticated}
         onLogout={handleLogout}
+        onLogin={() => setShowLoginModal(true)}
       />
 
       <main className="flex-grow">
-        {currentPage === 'TOP' && (
-          <TopPage onTryAccess={(target) => handleNavigation(target)} />
-        )}
-        
-        {(currentPage === 'SEARCH' || currentPage === 'COMMUNITY') && (
-          <SearchPage />
-        )}
+        {currentPage === 'TOP'
+          ? <TopPage onTryAccess={handleNavigation} />
+          : <ComingSoonPage title={pageTitle} onBack={() => handleNavigation('TOP')} />}
       </main>
 
-      <Footer />
+      <Footer onNavigate={handleNavigation} />
 
-      <LoginModal 
-        isOpen={showLoginModal} 
+      <LoginModal
+        isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
         onLoginSuccess={handleLoginSuccess}
       />

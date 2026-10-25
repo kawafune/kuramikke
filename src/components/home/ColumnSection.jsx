@@ -1,186 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useRef } from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { SectionTitle } from '../ui/SectionTitle';
+import { Button } from '../ui/Button';
+import { CategoryTag } from '../ui/Tags';
+import { PhotoPlaceholder } from '../ui/PhotoPlaceholder';
+import { COLUMNS } from '../../data/dummy';
 
-export const ColumnSection = () => {
-  // ダミーデータ
-  const columns = [
-    {
-      id: 1,
-      category: '終活',
-      date: '2026.04.01',
-      title: 'エンディングノートをつけてやり残さないという選択。',
-      imageColor: 'from-orange-100 to-orange-50',
-    },
-    {
-      id: 2,
-      category: 'Life',
-      date: '2026.04.05',
-      title: '1輪刺しで魅せる「花のある生活」。空間に彩を。',
-      imageColor: 'from-green-100 to-green-50',
-    },
-    {
-      id: 3,
-      category: '食',
-      date: '2026.04.10',
-      title: 'お弁当を持ってピクニック。春の陽気を感じて。',
-      imageColor: 'from-yellow-100 to-yellow-50',
-    },
-    {
-      id: 4,
-      category: '健康',
-      date: '2026.04.15',
-      title: '毎朝5分のストレッチで変わる、シニアの体調管理。',
-      imageColor: 'from-blue-100 to-blue-50',
-    },
-    {
-      id: 5,
-      category: '趣味',
-      date: '2026.04.20',
-      title: '初心者から始める「大人の塗り絵」が脳トレに人気。',
-      imageColor: 'from-purple-100 to-purple-50',
-    },
-  ];
+// 送り矢印（原案の金色の丸ボタン）
+const Arrow = ({ dir, onClick }) => (
+  <button
+    onClick={onClick}
+    aria-label={dir === 'prev' ? '前のコラム' : '次のコラム'}
+    className="hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gold-deep text-white items-center justify-center hover:brightness-110"
+    style={{ [dir === 'prev' ? 'left' : 'right']: 0 }}
+  >
+    {dir === 'prev' ? <ArrowLeft size={24} strokeWidth={2.5} /> : <ArrowRight size={24} strokeWidth={2.5} />}
+  </button>
+);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(1);
+const ColumnCard = ({ col }) => (
+  <article className="bg-white p-[10px] h-full flex flex-col">
+    <PhotoPlaceholder className="aspect-square" />
+    <div className="mt-2"><CategoryTag>{col.category}</CategoryTag></div>
+    <h3 className="font-sans font-normal text-[0.9rem] leading-relaxed mt-2 mb-3 line-clamp-2">
+      <a href="#" className="hover:text-gold-deep">{col.title}</a>
+    </h3>
+    <p className="mt-auto bg-cream-300 text-[0.75rem] px-2 py-1">公開日時：{col.date}</p>
+  </article>
+);
 
-  // 画面幅に応じて表示枚数を変更
-  useEffect(() => {
-    const handleResize = () => {
-      setItemsPerPage(window.innerWidth >= 768 ? 3 : 1);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const maxIndex = Math.max(0, columns.length - itemsPerPage);
-
-  // ★追加: スマホかどうかを判定
-  const isMobile = itemsPerPage === 1;
-
-  // ★追加: スライド幅とオフセットの計算
-  // スマホなら幅80%、PCならきっちり割る
-  const slideWidthPercent = isMobile ? 80 : 100 / itemsPerPage;
-  // スマホなら中央寄せのために左右に10%のオフセットを設ける、PCなら0
-  const offsetPercent = isMobile ? (100 - slideWidthPercent) / 2 : 0;
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+export const ColumnSection = ({ onNavigate }) => {
+  const trackRef = useRef(null);
+  const scroll = (dir) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.querySelector('li');
+    el.scrollBy({ left: (card?.offsetWidth ?? 300) * (dir === 'next' ? 1 : -1), behavior: 'smooth' });
   };
 
   return (
-    <section className="bg-[#fcfcfc] py-16 overflow-hidden">
-      <div className="container mx-auto px-4 max-w-6xl relative">
-        
-        <div className="text-center mb-10">
-          <h3 className="text-xl md:text-2xl font-bold text-[#C8A040] mb-2 inline-block">
-            お役立ちコラム
-          </h3>
-          <div className="h-1 w-20 bg-[#C8A040] mx-auto rounded-full opacity-50"></div>
-        </div>
-
-        {/* カルーセルエリア */}
-        <div className="relative group md:px-12">
-          
-          {/* 矢印ボタン（スマホでは邪魔になるのでPCのみ表示） */}
-          <button 
-            onClick={prevSlide}
-            className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-[#C8A040] text-[#C8A040] p-2 rounded-full shadow-md hover:bg-[#C8A040] hover:text-white transition-colors"
-            aria-label="前へ"
-          >
-            <ChevronLeft size={24} />
-          </button>
-
-          {/* スライド本体 */}
-          {/* スマホの時は親のパディングを無視して画面端まで広げる */}
-          <div className={`overflow-hidden py-8 ${isMobile ? '-mx-4' : 'px-4'}`}>
-            <div 
-              className="flex transition-transform duration-500 ease-out"
-              // ★修正: 計算したオフセットと幅を使って移動距離を決定
-              style={{ 
-                transform: `translateX(calc(${offsetPercent}% - ${currentIndex * slideWidthPercent}%))` 
-              }}
-            >
-              {columns.map((col, index) => (
-                <div 
-                  key={col.id} 
-                  // ★修正: スマホの時はカード間の隙間を少し狭くする
-                  className={`flex-shrink-0 transition-all duration-300 ${isMobile ? 'px-2' : 'px-3'} ${
-                    // アクティブじゃないスライドを少し小さく・薄くする演出（スマホのみ）
-                    isMobile && index !== currentIndex ? 'scale-90 opacity-70' : 'scale-100 opacity-100'
-                  }`}
-                  // ★修正: 計算した幅を適用
-                  style={{ width: `${slideWidthPercent}%` }}
-                >
-                  <div className="bg-white rounded-[32px] shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer group/card flex flex-col h-full border border-gray-100 overflow-hidden h-[320px]">
-                    {/* 画像エリア */}
-                    <div className={`h-40 w-full bg-gradient-to-br ${col.imageColor} relative flex-shrink-0`}>
-                      <div className="absolute inset-0 flex items-center justify-center text-white/60 font-bold">
-                        No Image
-                      </div>
-                      <span className="absolute top-4 left-4 bg-white/90 backdrop-blur text-[#C8A040] text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                        {col.category}
-                      </span>
-                    </div>
-                    
-                    {/* テキストエリア */}
-                    <div className="p-6 flex-1 flex flex-col">
-                      <div className="mb-2 text-right">
-                         <span className="text-[#999] text-xs font-bold tracking-widest">{col.date}</span>
-                      </div>
-
-                      <h4 className="text-[#333] font-bold text-sm leading-relaxed mb-2 group-hover/card:text-[#C8A040] transition-colors line-clamp-2">
-                        {col.title}
-                      </h4>
-                      
-                      <div className="mt-auto flex justify-end">
-                         <div className="w-8 h-8 rounded-full bg-[#f9ecd3] flex items-center justify-center text-[#C8A040] group-hover/card:bg-[#C8A040] group-hover/card:text-white transition-colors">
-                           <ArrowRight size={16} />
-                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 右矢印ボタン（PCのみ） */}
-          <button 
-            onClick={nextSlide}
-            className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-[#C8A040] text-[#C8A040] p-2 rounded-full shadow-md hover:bg-[#C8A040] hover:text-white transition-colors"
-            aria-label="次へ"
-          >
-            <ChevronRight size={24} />
-          </button>
-        </div>
-
-        {/* インジケーター */}
-        <div className="flex justify-center gap-2 mt-4 md:mt-8">
-          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`transition-all duration-300 rounded-full ${
-                currentIndex === index 
-                  ? 'w-4 h-4 bg-[#C8A040]'
-                  : 'w-3 h-3 bg-[#E0D8C0] hover:bg-[#C8A040]/70'
-              }`}
-              aria-label={`スライド ${index + 1} へ移動`}
-            />
+    <section className="bg-cream-50 py-12 md:py-16">
+      <SectionTitle>コラム</SectionTitle>
+      <div className="relative max-w-content mx-auto md:px-16">
+        <Arrow dir="prev" onClick={() => scroll('prev')} />
+        {/* スマホは指で横に送る。PCは3枚表示＋矢印 */}
+        <ul
+          ref={trackRef}
+          className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-4 md:gap-12 px-[12%] md:px-0 scroll-px-[12%] md:scroll-px-0"
+        >
+          {COLUMNS.map((col) => (
+            <li key={col.id} className="snap-start shrink-0 basis-[76%] sm:basis-[45%] md:basis-[calc((100%-6rem)/3)]">
+              <ColumnCard col={col} />
+            </li>
           ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <button className="bg-[#C8A040] text-white font-bold py-3 px-12 rounded-full hover:opacity-90 transition-opacity shadow-md flex items-center gap-2 mx-auto">
-            コラム一覧を見る <ArrowRight size={18} />
-          </button>
-        </div>
+        </ul>
+        <Arrow dir="next" onClick={() => scroll('next')} />
+      </div>
+      <div className="text-center mt-10">
+        <Button onClick={() => onNavigate('COLUMN')}>もっと読む</Button>
       </div>
     </section>
   );

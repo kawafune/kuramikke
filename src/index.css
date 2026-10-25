@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    /* シニア向けに本文を17pxに（spec 4章） */
+    font-size: 17px;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-ink tracking-soft leading-[1.9];
+  }
+  h1, h2, h3, h4 {
+    @apply font-round font-bold;
+  }
+  :focus-visible {
+    @apply outline outline-[3px] outline-offset-2 outline-gold-deep;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}

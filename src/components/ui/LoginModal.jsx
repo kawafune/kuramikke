@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Lock } from 'lucide-react';
 
-export const LoginModal = ({ isOpen, onClose, onLogin }) => {
+export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
 
@@ -10,31 +10,30 @@ export const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === '0710') {
-      onLogin();
-      onClose();
+      onLoginSuccess();
     } else {
       setError(true);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] px-4 animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm relative transform transition-all scale-100">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] px-4" role="dialog" aria-modal="true" aria-labelledby="login-title" onClick={onClose}>
+      <div className="bg-white border-t-4 border-gold p-8 w-full max-w-sm relative" onClick={(e) => e.stopPropagation()}>
         
         {/* アイコン */}
         <div className="flex justify-center mb-6">
-          <div className="p-4 bg-orange-50 rounded-full">
-            <Lock className="text-[#F4A460]" size={32} />
+          <div className="p-4 bg-cream-50 rounded-full">
+            <Lock className="text-gold-deep" size={32} />
           </div>
         </div>
 
         {/* ★変更: タイトル */}
-        <h2 className="text-xl font-bold text-center text-[#333] mb-2">
+        <h2 id="login-title" className="text-xl text-center text-gold-deep mb-2">
           入館許可
         </h2>
         
         {/* ★変更: 説明文 */}
-        <p className="text-sm text-[#666] text-center mb-6 leading-relaxed">
+        <p className="text-sm text-center mb-6 leading-relaxed">
           この先のページを閲覧するために<br/>パスワードを入力してください。
         </p>
 
@@ -49,11 +48,12 @@ export const LoginModal = ({ isOpen, onClose, onLogin }) => {
               }}
               // ★変更: プレースホルダー
               placeholder="Pass: 0123" 
-              className="w-full text-center text-lg py-3 border-2 border-[#F4A460] rounded-lg focus:outline-none focus:ring-4 focus:ring-orange-100 text-[#333] placeholder-gray-300"
+              aria-label="パスワード"
+              className="w-full text-center text-lg py-3 border-2 border-gold rounded focus:outline-none focus:border-gold-deep placeholder:text-ink-sub"
               autoFocus
             />
             {error && (
-              <p className="text-red-500 text-xs text-center mt-2 font-bold">
+              <p className="text-accent-red-text text-sm text-center mt-2 font-bold" role="alert">
                 パスワードが違います
               </p>
             )}
@@ -61,7 +61,7 @@ export const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
           <button
             type="submit"
-            className="w-full bg-[#4F8E5D] hover:bg-[#3d7a4b] text-white font-bold py-3 rounded-lg transition-all transform active:scale-95 shadow-lg"
+            className="w-full min-h-[48px] bg-gold-deep text-white font-round font-bold tracking-[0.1em] rounded shadow-[0_3px_0_theme(colors.gold.shadow)] hover:brightness-110 active:translate-y-[2px] active:shadow-none"
           >
             認証して進む
           </button>
