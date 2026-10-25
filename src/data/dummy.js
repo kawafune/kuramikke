@@ -14,12 +14,14 @@ const TAG_SETS = [
   ['おすすめ', 'セミナー', '参加無料', '人気企画'],
 ];
 
-// 写真が決まったら art の代わりに image: '/images/xxx.webp' を指定する
+// 写真は public/images/events/event-NN.webp。写真が無いものは art（仮イラスト）を表示する
 const EVENT_ART = ['seminar', 'sakura', 'dining', 'camera', 'pottery', 'cooking', 'boat', 'beer'];
+const EVENT_IMAGES = [1, 2, 3, 4, 5]; // 届いた写真の番号（これ以降はイラスト）
 
 export const EVENTS = Array.from({ length: 8 }, (_, i) => ({
   id: i + 1,
   art: EVENT_ART[i],
+  image: EVENT_IMAGES.includes(i + 1) ? `/images/events/event-${String(i + 1).padStart(2, '0')}.webp` : undefined,
   title: 'コミュニティイベント名が入ります。',
   date: '04/01',
   place: '東京都渋谷区道玄坂',
