@@ -6,7 +6,7 @@ import { PhotoPlaceholder } from './PhotoPlaceholder';
 // 出逢いのイベントカード（TOP・出逢いTOP・一覧で共通）
 export const EventCard = ({ event, bordered = false }) => (
   <article className={`h-full bg-white p-3 md:p-[10px] flex flex-col ${bordered ? 'border border-gold' : ''}`}>
-    <PhotoPlaceholder className="aspect-[4/3]" />
+    <PhotoPlaceholder image={event.image} art={event.art} alt={event.title} className="aspect-[4/3]" />
     <h3 className="font-sans font-normal text-[0.9rem] leading-relaxed mt-3 mb-2 line-clamp-2">
       <a href="#" className="hover:text-gold-deep">{event.title}</a>
     </h3>

@@ -20,7 +20,7 @@ const Arrow = ({ dir, onClick }) => (
 
 const ColumnCard = ({ col }) => (
   <article className="bg-white p-[10px] h-full flex flex-col">
-    <PhotoPlaceholder className="aspect-square" />
+    <PhotoPlaceholder image={col.image} art={col.art} alt={col.title} className="aspect-square" />
     <div className="mt-2"><CategoryTag>{col.category}</CategoryTag></div>
     <h3 className="font-sans font-normal text-[0.9rem] leading-relaxed mt-2 mb-3 line-clamp-2">
       <a href="#" className="hover:text-gold-deep">{col.title}</a>
