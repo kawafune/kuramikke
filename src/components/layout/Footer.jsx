@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CircleArrowRight, ChevronUp } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { SnsIcons } from '../ui/SnsIcons';
 import { NAV_ITEMS, PREFECTURES } from '../../data/nav';
 import { useSite } from '../../context/siteContext';
 
-const SUB_LINKS = ['ホーム', '掲載のお申込み', 'ご利用規約', 'プライバシーポリシー', 'サイトマップ', '運営会社', 'お問い合わせ'];
+// to があるものはサイト内のページ。ほかは、ページができるまで仮のリンク
+const SUB_LINKS = [
+  { label: 'ホーム', to: '/' },
+  { label: '掲載のお申込み', to: '/business' },
+  { label: 'ご利用規約' },
+  { label: 'プライバシーポリシー' },
+  { label: 'サイトマップ' },
+  { label: '運営会社' },
+  { label: 'お問い合わせ' },
+];
 
 const PageTopButton = () => {
   const [visible, setVisible] = useState(false);
@@ -71,10 +81,11 @@ export const Footer = () => {
       </div>
 
       <ul className="flex flex-wrap justify-center gap-y-2 text-[0.8rem] pb-6">
-        {SUB_LINKS.map((label, i) => (
+        {SUB_LINKS.map(({ label, to }, i) => (
           <li key={label} className={`px-3 leading-none ${i > 0 ? 'border-l border-ink' : ''}`}>
-            {/* 【未実装】各ページ */}
-            <a href="#" className="hover:text-gold-deep">{label}</a>
+            {to
+              ? <Link to={to} className="hover:text-gold-deep">{label}</Link>
+              : <a href="#" className="hover:text-gold-deep">{label}</a> /* 【未実装】ページができるまでの仮リンク */}
           </li>
         ))}
       </ul>

@@ -11,6 +11,8 @@ import { ShukatsuTopPage } from './pages/ShukatsuTopPage';
 import { GuideArticlePage } from './pages/GuideArticlePage';
 import { ComingSoonPage } from './pages/ComingSoonPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { InfoPage } from './pages/InfoPage';
+import { BUSINESS_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
 
 // ページを移動したら、先頭にスクロールする
@@ -57,6 +59,7 @@ const Shell = () => {
           <Route path="/search" element={<DevOnly title="病院・介護施設を探す"><SearchPage /></DevOnly>} />
           <Route path="/column" element={<DevOnly title="コラムを読む"><ComingSoonPage title="コラムを読む" /></DevOnly>} />
           <Route path="/community" element={<DevOnly title="出逢いを探す"><ComingSoonPage title="出逢いを探す" /></DevOnly>} />
+          {BUSINESS_PAGES.map((p) => <Route key={p.path} path={p.path} element={<InfoPage page={p} />} />)}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

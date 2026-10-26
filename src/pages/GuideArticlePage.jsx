@@ -57,7 +57,7 @@ export const GuideArticlePage = () => {
             </section>
           ))}
 
-          {page.listings && <ListingSection groups={page.listings} adNote={page.adNote} />}
+          {page.listings && <ListingSection groups={page.listings} adNote={page.adNote} quiet={Boolean(page.urgent)} />}
 
           {/* 原案の二重枠 */}
           <div className="mt-12 border border-gold p-1">
