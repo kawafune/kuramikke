@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Download } from 'lucide-react';
+import { Download, Mail } from 'lucide-react';
 import { RichText } from '../ui/RichText';
 import { Button } from '../ui/Button';
 import { useSite } from '../../context/siteContext';
+import { CONTACT_EMAIL } from '../../config/site';
 
 // 終活ガイドの本文の部品（data/shukatsuGuide.js の blocks を描画する）
 const Block = ({ block }) => {
@@ -75,6 +76,35 @@ const Block = ({ block }) => {
           <span className="text-[0.85rem]">{block.note}</span>
         </div>
       );
+
+    case 'pricing':
+      return (
+        <ul className="mb-6 grid gap-4 md:grid-cols-2">
+          {block.plans.map((pl) => (
+            <li key={pl.name} className={`relative border-2 p-5 bg-white ${pl.badge ? 'border-accent-red-text' : 'border-gold'}`}>
+              {pl.badge && <span className="absolute -top-3 left-4 bg-accent-red-text text-white text-[0.75rem] font-bold px-3 py-0.5">{pl.badge}</span>}
+              <strong className="block font-round text-gold-deep mb-1">{pl.name}</strong>
+              <p className="mb-3"><span className="text-[1.8rem] font-round font-bold">{pl.price}</span><span className="text-[0.85rem] ml-1">{pl.unit}</span></p>
+              <ul className="space-y-1 text-[0.85rem]">
+                {pl.lines.map((l) => <li key={l}>・<RichText text={l} /></li>)}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      );
+
+    case 'mailto': {
+      // お問い合わせ先のメールアドレス（config/site.js）が決まるまでは「準備中」
+      if (!CONTACT_EMAIL) {
+        return <p className="mb-6 bg-cream-50 p-4 text-[0.9rem]"><RichText text="お申込みの窓口は、ただいま準備中です。【要人間確認：config/site.js の CONTACT_EMAIL にメールアドレスを入れる】" /></p>;
+      }
+      const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(block.subject)}&body=${encodeURIComponent(block.body)}`;
+      return (
+        <p className="mb-6">
+          <Button href={href} icon={null}><Mail size={18} aria-hidden="true" />{block.label}</Button>
+        </p>
+      );
+    }
 
     default:
       return null;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Users, User } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
@@ -10,11 +10,17 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useSite } from '../context/siteContext';
 import { GUIDE_BY_SLUG, ENTRANCES, PROMISES, isReadable } from '../data/shukatsuGuide';
 
+// 入口の色分け：ご家族のために＝赤 / ご自身のために＝青緑（白い文字で、読みやすさの基準 4.5:1 を満たす色）
+const TONE = {
+  family: { Icon: Users, bg: 'bg-accent-red-text', text: 'text-accent-red-text', border: 'border-accent-red-text', soft: 'bg-[#FFF1EE]' },
+  self: { Icon: User, bg: 'bg-[#2A7A73]', text: 'text-[#2A7A73]', border: 'border-[#2A7A73]', soft: 'bg-[#EAF5F3]' },
+};
+
 const StatusChip = ({ children, tone = 'soon' }) => (
   <span className={`absolute top-0 right-0 text-[0.7rem] leading-none px-2 py-1.5 ${tone === 'draft' ? 'bg-accent-red-text text-white' : 'bg-cream-200 text-ink'}`}>{children}</span>
 );
 
-const GuideCard = ({ page }) => {
+const GuideCard = ({ page, tone }) => {
   const { devMode } = useSite();
   const readable = isReadable(page, devMode);
   const body = (
@@ -27,20 +33,76 @@ const GuideCard = ({ page }) => {
     const draft = !page.published || page.expertReview === 'required';
     return (
       <li className="relative">
-        <Link to={`/shukatsu/${page.slug}`} className="block h-full border border-gold bg-white p-5 pt-7 hover:bg-cream-50">{body}</Link>
+        <Link to={`/shukatsu/${page.slug}`} className={`block h-full border border-gold-line border-l-[6px] ${tone.border} bg-white p-5 pt-7 hover:bg-cream-50`}>{body}</Link>
         {draft && <StatusChip tone="draft">{page.expertReview === 'required' ? '専門家の確認待ち' : '下書き'}</StatusChip>}
       </li>
     );
   }
   return (
     <li className="relative">
-      <div aria-disabled="true" className="h-full border border-line bg-white/70 p-5 pt-7 opacity-70">{body}</div>
+      <div aria-disabled="true" className="h-full border border-line border-l-[6px] bg-white/70 p-5 pt-7 opacity-70">{body}</div>
       <StatusChip>準備中</StatusChip>
     </li>
   );
 };
 
-const ENTRANCE_ICON = { family: Users, self: User };
+// 2つの入口。PCは2列で、どちらも開いた状態。スマホはタブで切り替える（初めは「ご家族のために」を開く）
+const EntrancePicker = () => {
+  const [active, setActive] = useState('family');
+  return (
+    <div className="max-w-content mx-auto">
+      <div role="tablist" aria-label="入口を選ぶ" className="grid grid-cols-2 gap-2 mb-4 lg:hidden">
+        {ENTRANCES.map((e) => {
+          const t = TONE[e.id];
+          const on = active === e.id;
+          return (
+            <button
+              key={e.id}
+              role="tab"
+              id={`tab-${e.id}`}
+              aria-selected={on}
+              aria-controls={`panel-${e.id}`}
+              onClick={() => setActive(e.id)}
+              className={`min-h-[76px] px-2 py-3 flex flex-col items-center justify-center gap-1 border-2 ${t.border} font-round font-bold ${on ? `${t.bg} text-white` : `bg-white ${t.text}`}`}
+            >
+              <t.Icon size={22} aria-hidden="true" />
+              <span className="text-[0.95rem] leading-tight">{e.title}</span>
+              <span className={`text-[0.7rem] leading-tight ${on ? 'text-white' : 'text-ink'}`}>{e.sub}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-2">
+        {ENTRANCES.map((e) => {
+          const t = TONE[e.id];
+          return (
+            <div
+              key={e.id}
+              role="tabpanel"
+              id={`panel-${e.id}`}
+              aria-labelledby={`tab-${e.id}`}
+              className={`${active === e.id ? 'block' : 'hidden'} lg:block`}
+            >
+              {/* PC：見出しの札 */}
+              <div className={`hidden lg:block border-t-8 ${t.border} ${t.soft} p-5 mb-4 text-center`}>
+                <t.Icon className={`mx-auto mb-1 ${t.text}`} size={32} aria-hidden="true" />
+                <h2 className={`text-[1.3rem] ${t.text}`}>{e.title}</h2>
+                <p className={`font-round font-bold text-[0.9rem] mb-2 ${t.text}`}>{e.sub}</p>
+                <p className="text-[0.85rem]">{e.text}</p>
+              </div>
+              {/* スマホ：タブの下の説明 */}
+              <p className={`lg:hidden text-[0.9rem] mb-4 p-4 ${t.soft}`}>{e.text}</p>
+              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                {e.slugs.map((slug) => <GuideCard key={slug} page={GUIDE_BY_SLUG[slug]} tone={t} />)}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 // 終活サポートの入口（ハブ）。設定（config/site.js）の HOME が 'shukatsu' のあいだは、サイトのTOPにもなる。
 // 入口は2つ：「ご家族のために（いま必要になった）」「ご自身のために（これから備えたい）」。
@@ -61,24 +123,7 @@ export const ShukatsuTopPage = () => {
 
       {/* 2つの入口 */}
       <section className="bg-cream-50 py-12 md:py-16 px-4" aria-label="入口を選ぶ">
-        <div className="max-w-content mx-auto grid gap-10 lg:grid-cols-2 lg:gap-8">
-          {ENTRANCES.map((e) => {
-            const Icon = ENTRANCE_ICON[e.id];
-            return (
-              <div key={e.id}>
-                <div className="bg-white border-2 border-gold p-5 mb-4 text-center">
-                  <Icon className="mx-auto text-gold-deep mb-1" size={30} aria-hidden="true" />
-                  <h2 className="text-[1.25rem] text-gold-deep">{e.title}</h2>
-                  <p className="font-round font-bold text-[0.85rem] text-accent-red-text mb-2">{e.sub}</p>
-                  <p className="text-[0.85rem]">{e.text}</p>
-                </div>
-                <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                  {e.slugs.map((slug) => <GuideCard key={slug} page={GUIDE_BY_SLUG[slug]} />)}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
+        <EntrancePicker />
         {devMode && (
           <p className="max-w-content mx-auto mt-6 text-[0.8rem] bg-white border border-dashed border-accent-red-text p-3">
             <RichText text="【要確認】開発モードの表示です。「下書き」のページは、代表が確認して公開を決めるまで、一般の訪問者には「準備中」と表示されます。" />

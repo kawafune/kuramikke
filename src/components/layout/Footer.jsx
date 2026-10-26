@@ -67,7 +67,7 @@ export const Footer = () => {
       <ul className="flex flex-wrap text-[0.8rem] leading-loose">
         {PREFECTURES.map((pref) => (
           <li key={pref} className="border-l border-ink px-2.5 md:px-3 my-0.5 leading-none">
-            <button onClick={() => go('SEARCH')} className="py-2 md:py-1 hover:text-gold-deep">{pref}</button>
+            <Link to={`/search/results?pref=${encodeURIComponent(pref)}`} className="inline-block py-2 md:py-1 hover:text-gold-deep">{pref}</Link>
           </li>
         ))}
       </ul>

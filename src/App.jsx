@@ -6,7 +6,9 @@ import { LoginModal } from './components/ui/LoginModal';
 import { SiteProvider } from './context/SiteProvider';
 import { useSite } from './context/siteContext';
 import { TopPage } from './pages/TopPage';
-import { SearchPage } from './pages/SearchPage';
+import { SearchTopPage } from './pages/SearchTopPage';
+import { SearchResultsPage } from './pages/SearchResultsPage';
+import { HospitalDetailPage } from './pages/HospitalDetailPage';
 import { ShukatsuTopPage } from './pages/ShukatsuTopPage';
 import { GuideArticlePage } from './pages/GuideArticlePage';
 import { ComingSoonPage } from './pages/ComingSoonPage';
@@ -56,7 +58,9 @@ const Shell = () => {
           <Route path="/shukatsu" element={<ShukatsuTopPage />} />
           <Route path="/shukatsu/:slug" element={<GuideArticlePage />} />
           <Route path="/portal" element={<DevOnly title="ポータル型のTOP"><TopPage onTryAccess={go} /></DevOnly>} />
-          <Route path="/search" element={<DevOnly title="病院・介護施設を探す"><SearchPage /></DevOnly>} />
+          <Route path="/search" element={<DevOnly title="病院・介護施設を探す"><SearchTopPage /></DevOnly>} />
+          <Route path="/search/results" element={<DevOnly title="病院・介護施設を探す"><SearchResultsPage /></DevOnly>} />
+          <Route path="/hospitals/:id" element={<DevOnly title="病院・介護施設を探す"><HospitalDetailPage /></DevOnly>} />
           <Route path="/column" element={<DevOnly title="コラムを読む"><ComingSoonPage title="コラムを読む" /></DevOnly>} />
           <Route path="/community" element={<DevOnly title="出逢いを探す"><ComingSoonPage title="出逢いを探す" /></DevOnly>} />
           {BUSINESS_PAGES.map((p) => <Route key={p.path} path={p.path} element={<InfoPage page={p} />} />)}

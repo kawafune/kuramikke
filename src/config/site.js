@@ -22,4 +22,8 @@ export const TARGET_PATH = {
   SHUKATSU: '/shukatsu',
 };
 
+// 事業者からのお問い合わせ・お申込みを受けるメールアドレス。空のあいだは、ページに「準備中」と表示される。
+// いずれは、お問い合わせフォーム → AI＋人間での対応に移す。
+export const CONTACT_EMAIL = '';
+
 export const AUTH_KEY = 'kuramikke_auth'; // 開発モードの保存キー（従来のログインと同じ）
