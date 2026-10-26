@@ -8,7 +8,7 @@ import { RichText } from '../components/ui/RichText';
 import { AdBanner } from '../components/ui/AdBanner';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useSite } from '../context/siteContext';
-import { GUIDE_PAGES, PROMISES } from '../data/shukatsuGuide';
+import { GUIDE_PAGES, PROMISES, isReadable } from '../data/shukatsuGuide';
 
 const StatusChip = ({ children, tone = 'soon' }) => (
   <span className={`absolute top-0 right-0 text-[0.7rem] leading-none px-2 py-1.5 ${tone === 'draft' ? 'bg-accent-red-text text-white' : 'bg-cream-200 text-ink'}`}>{children}</span>
@@ -16,7 +16,7 @@ const StatusChip = ({ children, tone = 'soon' }) => (
 
 const GuideCard = ({ page }) => {
   const { devMode } = useSite();
-  const readable = page.status === 'ready' && (page.published || devMode);
+  const readable = isReadable(page, devMode);
   const body = (
     <>
       <span className="font-round text-gold-deep text-[0.8rem]">{String(page.no).padStart(2, '0')}</span>
@@ -28,7 +28,7 @@ const GuideCard = ({ page }) => {
     return (
       <li className="relative">
         <Link to={`/shukatsu/${page.slug}`} className="block h-full border border-gold bg-white p-5 pt-6 hover:bg-cream-50">{body}</Link>
-        {!page.published && <StatusChip tone="draft">下書き</StatusChip>}
+        {!page.published || page.expertReview === 'required' ? <StatusChip tone="draft">{page.expertReview === 'required' ? '専門家の確認待ち' : '下書き'}</StatusChip> : null}
       </li>
     );
   }
@@ -51,9 +51,9 @@ export const ShukatsuTopPage = () => {
 
       <section className="max-w-[820px] mx-auto px-4 py-12 md:py-16 text-center">
         <SectionTitle>はじめてでも、迷わないために</SectionTitle>
-        <p className="mb-4">終活は、これからを自分らしく過ごすための準備です。</p>
-        <p className="mb-4">クラミッケは、見送りそのものを行うのではなく、迷っているときに最初に読む「やさしい入口」として、<br className="hidden md:block" />信頼できる専門家や事業者を、やさしい言葉でご紹介します。</p>
-        <p className="text-[0.85rem] text-ink-sub">どのページから読んでも大丈夫です。</p>
+        <p className="mb-4">終活は、これからを自分らしく過ごすための準備です。むずかしく考えなくて大丈夫。</p>
+        <p className="mb-4">クラミッケは、お見送りそのものを行うのではなく、迷ったときに、最初に読んでいただく「やさしい入口」でありたいと考えています。<br className="hidden md:block" />信頼できる専門家や事業者の方を、やさしい言葉でご紹介します。</p>
+        <p className="text-[0.85rem] text-ink-sub">どのページから読んでも大丈夫ですよ。</p>
       </section>
 
       <section className="bg-cream-50 py-12 md:py-16 px-4">
@@ -89,7 +89,7 @@ export const ShukatsuTopPage = () => {
 
       <section className="bg-cream-50 py-12 px-4 text-center">
         <SectionTitle>終活セミナー・イベント</SectionTitle>
-        <p className="mb-6">同じ気持ちの人と話せる、セミナーやイベントをご紹介します。</p>
+        <p className="mb-6">同じ気持ちの方とお話しできる、セミナーやイベントをご紹介します。</p>
         {isAvailable('COMMUNITY')
           ? <Link to="/community" className="inline-block bg-gold-deep text-white font-round font-bold px-8 py-3 shadow-[0_3px_0_theme(colors.gold.shadow)]">イベントを探す</Link>
           : <p className="inline-block bg-cream-200 text-[0.85rem] px-4 py-2">準備中です</p>}

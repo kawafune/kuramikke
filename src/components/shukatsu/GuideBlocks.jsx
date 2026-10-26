@@ -62,7 +62,7 @@ const Block = ({ block }) => {
       );
 
     case 'link':
-      return isAvailable(block.needs)
+      return (!block.needs || isAvailable(block.needs))
         ? <p className="mb-6"><Button to={block.to}>{block.label}</Button></p>
         : <p className="mb-6 text-[0.9rem] bg-cream-50 p-3">{block.label}（準備中）</p>;
 

@@ -9,7 +9,7 @@ import { ListingSection } from '../components/shukatsu/ListingSection';
 import { NotFoundPage } from './NotFoundPage';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useSite } from '../context/siteContext';
-import { GUIDE_BY_SLUG, GUIDE_PAGES } from '../data/shukatsuGuide';
+import { GUIDE_BY_SLUG, GUIDE_PAGES, isReadable } from '../data/shukatsuGuide';
 
 const Notice = ({ title }) => (
   <div className="max-w-content mx-auto px-4 py-16 md:py-24 text-center">
@@ -27,11 +27,10 @@ export const GuideArticlePage = () => {
   usePageTitle(page?.title);
 
   if (!page) return <NotFoundPage />;
-  const visible = page.status === 'ready' && (page.published || devMode);
-  if (!visible) return <Notice title={page.title} />;
+  if (!isReadable(page, devMode)) return <Notice title={page.title} />;
 
   const ordered = [...GUIDE_PAGES].sort((a, b) => a.no - b.no);
-  const readable = ordered.filter((p) => p.status === 'ready' && (p.published || devMode));
+  const readable = ordered.filter((p) => isReadable(p, devMode));
   const idx = readable.findIndex((p) => p.slug === page.slug);
   const prev = readable[idx - 1];
   const next = readable[idx + 1];
@@ -43,9 +42,10 @@ export const GuideArticlePage = () => {
 
       <div className="max-w-content mx-auto px-4 py-10 md:py-14 lg:grid lg:grid-cols-[1fr_260px] lg:gap-12">
         <article className="min-w-0 max-w-[760px]">
-          {!page.published && (
+          {(!page.published || page.expertReview === 'required') && (
             <p className="mb-6 text-[0.85rem] bg-[#FFE3DD] text-accent-red-text font-bold p-3">
-              下書きです。公開前に、内容の確認と【要確認】の解消が必要です。（開発モードでのみ表示されています）
+              下書きです。公開前に、内容の確認と、【要確認】の解消が必要です。（開発モードでだけ表示されています）
+              {page.expertReview === 'required' && <><br />専門家の確認が済むまでは、公開の設定をしても、一般の訪問者には表示されません。</>}
             </p>
           )}
           <p className="mb-10 text-[1.05rem]"><RichText text={page.lead} /></p>
@@ -57,14 +57,14 @@ export const GuideArticlePage = () => {
             </section>
           ))}
 
-          {page.listings && <ListingSection groups={page.listings} />}
+          {page.listings && <ListingSection groups={page.listings} adNote={page.adNote} />}
 
           {/* 原案の二重枠 */}
           <div className="mt-12 border border-gold p-1">
             <div className="border border-gold p-5 text-[0.85rem]">
               <p className="font-round font-bold mb-1">ご注意</p>
               <p><RichText text={page.note} /></p>
-              <p className="mt-2 text-ink-sub"><RichText text={page.sources} /></p>
+              {devMode && <p className="mt-2 text-ink-sub"><RichText text={page.sources} /></p>}
             </div>
           </div>
 
@@ -79,7 +79,7 @@ export const GuideArticlePage = () => {
             <p className="font-round font-bold text-gold-deep mb-3 border-b border-dotted border-gold pb-2">終活ガイドの目次</p>
             <ol className="space-y-1.5 text-[0.85rem]">
               {ordered.map((p) => {
-                const ok = p.status === 'ready' && (p.published || devMode);
+                const ok = isReadable(p, devMode);
                 return (
                   <li key={p.slug}>
                     {ok
