@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { CircleArrowRight, ExternalLink } from 'lucide-react';
 
 // 原案のボタン：ゴールドの面＋下の影線＋⊕→（spec 6章）。色は案A（濃ゴールド×白文字）
@@ -10,7 +11,8 @@ const variants = {
 
 export const Button = ({ variant = 'primary', icon = 'arrow', className = '', children, ...props }) => {
   const Icon = icon === 'external' ? ExternalLink : icon === 'arrow' ? CircleArrowRight : null;
-  const Tag = props.href ? 'a' : 'button';
+  // to＝サイト内のページ移動 / href＝外部リンク / どちらも無ければボタン
+  const Tag = props.to ? Link : props.href ? 'a' : 'button';
   return (
     <Tag
       className={`inline-flex items-center justify-center gap-2 min-h-[44px] px-8 py-2 rounded font-round font-bold text-[0.9rem] tracking-[0.1em] transition active:translate-y-[2px] active:shadow-none ${variants[variant]} ${className}`}

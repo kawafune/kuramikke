@@ -1,6 +1,7 @@
 import React from 'react';
 import { CircleArrowRight } from 'lucide-react';
-import { NAV_ITEMS, NavIcon } from '../../data/nav';
+import { NAV_ITEMS } from '../../data/nav';
+import { NavIcon } from '../ui/NavIcon';
 
 // TOP冒頭のタイル型ナビ。左に大きく「病院・介護施設」、右に2×2（原案どおりの市松配色）
 const TILE_BG = {

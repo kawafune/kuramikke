@@ -3,6 +3,7 @@ import { CircleArrowRight, ChevronUp } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { SnsIcons } from '../ui/SnsIcons';
 import { NAV_ITEMS, PREFECTURES } from '../../data/nav';
+import { useSite } from '../../context/siteContext';
 
 const SUB_LINKS = ['ホーム', '掲載のお申込み', 'ご利用規約', 'プライバシーポリシー', 'サイトマップ', '運営会社', 'お問い合わせ'];
 
@@ -25,30 +26,43 @@ const PageTopButton = () => {
   );
 };
 
-export const Footer = ({ onNavigate }) => (
+export const Footer = () => {
+  const { devMode, isAvailable, go } = useSite();
+  return (
   <footer className="border-t border-gold-line mt-auto">
     <div className="max-w-content mx-auto px-4 lg:px-8 pt-10 md:pt-12">
       {/* 4導線 */}
       <ul className="flex flex-wrap gap-x-6 gap-y-3">
         {NAV_ITEMS.filter((n) => n.target !== 'TOP').map((item) => (
           <li key={item.target}>
-            <button onClick={() => onNavigate(item.target)} className="flex items-center gap-1.5 font-round font-bold text-[0.85rem] text-gold-deep hover:opacity-70">
-              <CircleArrowRight size={18} aria-hidden="true" />
-              {item.label}
-            </button>
+            {isAvailable(item.target) ? (
+              <button onClick={() => go(item.target)} className="flex items-center gap-1.5 font-round font-bold text-[0.85rem] text-gold-deep hover:opacity-70">
+                <CircleArrowRight size={18} aria-hidden="true" />
+                {item.label}
+              </button>
+            ) : (
+              <span aria-disabled="true" className="flex items-center gap-1.5 font-round font-bold text-[0.85rem] text-gold-deep opacity-45">
+                <CircleArrowRight size={18} aria-hidden="true" />
+                {item.label}（準備中）
+              </span>
+            )}
           </li>
         ))}
       </ul>
 
-      {/* エリアから探す */}
+      {/* エリアから探す（検索が公開されるまでは開発モードだけ） */}
+      {devMode && (
+        <>
       <h2 className="mt-8 mb-3 text-[0.85rem] text-gold-deep">エリアから病院・介護施設を探す</h2>
       <ul className="flex flex-wrap text-[0.8rem] leading-loose">
         {PREFECTURES.map((pref) => (
           <li key={pref} className="border-l border-ink px-2.5 md:px-3 my-0.5 leading-none">
-            <button onClick={() => onNavigate('SEARCH')} className="py-2 md:py-1 hover:text-gold-deep">{pref}</button>
+            <button onClick={() => go('SEARCH')} className="py-2 md:py-1 hover:text-gold-deep">{pref}</button>
           </li>
         ))}
       </ul>
+        </>
+      )}
 
       {/* ロゴ・SNS */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-24 my-10">
@@ -70,4 +84,5 @@ export const Footer = ({ onNavigate }) => (
     </p>
     <PageTopButton />
   </footer>
-);
+  );
+};

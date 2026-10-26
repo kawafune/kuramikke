@@ -1,4 +1,3 @@
-import React from 'react';
 import topIco from '../assets/nav_top.svg';
 import columnIco from '../assets/nav_column.svg';
 import shukatsuIco from '../assets/nav_shukatsu.svg';
@@ -13,10 +12,6 @@ export const NAV_ITEMS = [
   { target: 'COMMUNITY', label: '出逢いを探す', desc: 'イベント情報やコミュニティのご紹介', icon: meetIco },
   { target: 'SHUKATSU', label: '終活サポート', desc: 'エンディングノートを書きませんか？', icon: shukatsuIco },
 ];
-
-export const NavIcon = ({ item, className = 'h-6' }) => (
-  <img src={item.icon} alt="" aria-hidden="true" className={`${className} w-auto`} />
-);
 
 export const PREFECTURES = [
   '北海道', '青森', '岩手', '宮城', '秋田', '山形', '福島', '栃木', '群馬', '茨城', '埼玉', '千葉', '東京', '神奈川', '新潟', '富山',

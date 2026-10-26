@@ -29,12 +29,12 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
         {/* ★変更: タイトル */}
         <h2 id="login-title" className="text-xl text-center text-gold-deep mb-2">
-          入館許可
+          開発中の画面を見る
         </h2>
         
         {/* ★変更: 説明文 */}
         <p className="text-sm text-center mb-6 leading-relaxed">
-          この先のページを閲覧するために<br/>パスワードを入力してください。
+          公開前のページを見るための<br/>パスワードを入力してください。
         </p>
 
         <form onSubmit={handleSubmit}>
@@ -47,7 +47,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 setError(false);
               }}
               // ★変更: プレースホルダー
-              placeholder="Pass: 0123" 
+              placeholder="パスワード" 
               aria-label="パスワード"
               className="w-full text-center text-lg py-3 border-2 border-gold rounded focus:outline-none focus:border-gold-deep placeholder:text-ink-sub"
               autoFocus
@@ -63,7 +63,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             type="submit"
             className="w-full min-h-[48px] bg-gold-deep text-white font-round font-bold tracking-[0.1em] rounded shadow-[0_3px_0_theme(colors.gold.shadow)] hover:brightness-110 active:translate-y-[2px] active:shadow-none"
           >
-            認証して進む
+            見る
           </button>
         </form>
       </div>

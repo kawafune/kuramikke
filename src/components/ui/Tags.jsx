@@ -1,7 +1,7 @@
 import React from 'react';
 
 // 出逢いの特徴タグ（spec 3-2）。淡い色は原案の面＋濃い文字、濃い色は少し深めて白文字
-export const FEATURE_TAGS = {
+const FEATURE_TAGS = {
   'おすすめ': 'bg-gold-deep text-white',
   '人気企画': 'bg-[#FF9286] text-[#333]',
   '参加無料': 'bg-accent-red-text text-white',

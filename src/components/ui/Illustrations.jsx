@@ -11,7 +11,7 @@ const C = {
 const Sky = ({ fill }) => <rect width="400" height="300" fill={fill} />;
 const Table = ({ y = 220, fill = C.brown }) => <rect x="0" y={y} width="400" height={300 - y} fill={fill} />;
 
-export const ART = {
+const ART = {
   // --- コラム ---
   note: (
     <>
@@ -165,7 +165,7 @@ export const ART = {
       <path d="M150 120 Q145 175 165 215 L235 215 Q255 175 250 120Z" fill="#9AA3AB" />
       <rect x="135" y="112" width="130" height="16" rx="8" fill="#6B747C" />
       <rect x="255" y="118" width="70" height="10" rx="5" fill={C.brownDark} />
-      {[175, 200, 225].map((x, i) => <path key={x} d={`M${x} 95 Q${x - 14} 70 ${x} 50 Q${x + 14} 30 ${x} 12`} fill="none" stroke={C.white} strokeWidth="6" strokeLinecap="round" opacity=".9" />)}
+      {[175, 200, 225].map((x) => <path key={x} d={`M${x} 95 Q${x - 14} 70 ${x} 50 Q${x + 14} 30 ${x} 12`} fill="none" stroke={C.white} strokeWidth="6" strokeLinecap="round" opacity=".9" />)}
       <rect x="150" y="215" width="100" height="12" rx="6" fill={C.red} />
       <g><ellipse cx="80" cy="190" rx="38" ry="32" fill={C.white} /><circle cx="55" cy="170" r="22" fill={C.white} /><circle cx="105" cy="168" r="22" fill={C.white} /><circle cx="80" cy="160" r="26" fill={C.white} /><rect x="48" y="200" width="64" height="28" fill={C.white} /></g>
     </>
