@@ -115,6 +115,7 @@ export const SearchResultsPage = () => {
                 いま受付中
                 <span className="text-[0.65rem] bg-cream-200 text-ink px-1.5 py-0.5">開発中</span>
               </label>
+              {params.now && <p className="text-[0.75rem] text-ink-sub ml-7">※ 目安です。臨時の休診などは反映できないため、お出かけ前にお電話でご確認ください。</p>}
             </li>
             {FEATURE_LIST.map(({ key, label }) => (
               <li key={key}>

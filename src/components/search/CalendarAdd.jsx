@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { CalendarPlus, Download, ExternalLink } from 'lucide-react';
 import { useNow } from '../../hooks/useNow';
-import { jstDateString, dayIndexOfDateString, rangesOfDay, toMinutes, WEEKDAY_LABEL } from '../../lib/today';
+import { jstDateString, dayIndexOfDateString, rangesOfDay, scheduleColumn, toMinutes, WEEKDAY_LABEL } from '../../lib/today';
+import { holidayName, isNewYearBreak } from '../../lib/holidays';
 import { ALARM_OPTIONS, buildEvent, buildIcs, googleCalendarUrl } from '../../lib/calendar';
 
 const field = 'w-full h-11 px-3 border border-gold rounded bg-white text-[0.9rem] focus:outline-none focus:border-gold-deep';
@@ -19,17 +20,19 @@ export const CalendarAdd = ({ hospital }) => {
     ? buildEvent({ name: hospital.name, address: hospital.address, tel: hospital.tel, url: `${window.location.origin}/hospitals/${hospital.id}`, date, time })
     : null;
 
-  // 入力の確認（曜日と、受付時間）。祝日は判断できない
+  // 入力の確認（曜日・祝日と、受付時間）
   let warning = '';
   if (ready) {
     const dayIdx = dayIndexOfDateString(date);
-    const ranges = rangesOfDay(hospital.schedule, dayIdx);
+    const holiday = holidayName(date);
+    const ranges = rangesOfDay(hospital.schedule, scheduleColumn(dayIdx, holiday));
+    const dayLabel = holiday ? `祝日（${holiday}）` : `${WEEKDAY_LABEL[dayIdx]}曜日`;
     if (ranges.length === 0) {
-      warning = `${WEEKDAY_LABEL[dayIdx]}曜日は、休診の予定です。日にちを、もう一度ご確認ください。`;
+      warning = `${dayLabel}は、休診の予定です。日にちを、もう一度ご確認ください。`;
     } else {
       const m = toMinutes(time);
       if (!ranges.some((r) => r.start <= m && m < r.end)) {
-        warning = `${WEEKDAY_LABEL[dayIdx]}曜日の受付時間（${ranges.map((r) => r.label).join(' / ')}）の外です。時刻を、ご確認ください。`;
+        warning = `${dayLabel}の受付時間（${ranges.map((r) => r.label).join(' / ')}）の外です。時刻を、ご確認ください。`;
       }
     }
   }
@@ -72,7 +75,7 @@ export const CalendarAdd = ({ hospital }) => {
       </div>
 
       {warning && <p role="alert" className="mt-3 bg-[#FFF1EE] border border-accent-red-text p-3 text-[0.85rem] text-accent-red-text font-bold">{warning}</p>}
-      {ready && <p className="mt-2 text-[0.75rem] text-ink-sub">※ 祝日は、お電話でご確認ください。</p>}
+      {ready && <p className="mt-2 text-[0.75rem] text-ink-sub">※ 祝日は自動で判定しています。臨時の休診がある場合もあるため、予約の日時は、お電話でご確認ください。{isNewYearBreak(date) && ' 年末年始は、お休みの病院が多くなります。'}</p>}
 
       <div className="mt-5 flex flex-col sm:flex-row gap-3">
         {ready ? (
