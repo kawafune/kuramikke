@@ -10,8 +10,8 @@ import { useSite } from '../../context/siteContext';
 const SUB_LINKS = [
   { label: 'ホーム', to: '/' },
   { label: '掲載のお申込み', to: '/business' },
-  { label: 'ご利用規約' },
-  { label: 'プライバシーポリシー' },
+  { label: 'ご利用規約', to: '/terms' },
+  { label: 'プライバシーポリシー', to: '/privacy' },
   { label: 'サイトマップ' },
   { label: '運営会社' },
   { label: 'お問い合わせ' },
