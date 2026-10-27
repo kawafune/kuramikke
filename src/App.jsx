@@ -9,6 +9,8 @@ import { TopPage } from './pages/TopPage';
 import { SearchTopPage } from './pages/SearchTopPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 import { HospitalDetailPage } from './pages/HospitalDetailPage';
+import { NursingSearchPage } from './pages/NursingSearchPage';
+import { NursingDetailPage } from './pages/NursingDetailPage';
 import { FavoritesPage } from './pages/FavoritesPage';
 import { ShukatsuTopPage } from './pages/ShukatsuTopPage';
 import { GuideArticlePage } from './pages/GuideArticlePage';
@@ -62,6 +64,8 @@ const Shell = () => {
           <Route path="/search" element={<DevOnly title="病院・介護施設を探す"><SearchTopPage /></DevOnly>} />
           <Route path="/search/results" element={<DevOnly title="病院・介護施設を探す"><SearchResultsPage /></DevOnly>} />
           <Route path="/search/favorites" element={<DevOnly title="お気に入りの病院"><FavoritesPage /></DevOnly>} />
+          <Route path="/search/nursing" element={<DevOnly title="老人ホームを探す"><NursingSearchPage /></DevOnly>} />
+          <Route path="/nursing-homes/:id" element={<DevOnly title="老人ホームを探す"><NursingDetailPage /></DevOnly>} />
           <Route path="/hospitals/:id" element={<DevOnly title="病院・介護施設を探す"><HospitalDetailPage /></DevOnly>} />
           <Route path="/column" element={<DevOnly title="コラムを読む"><ComingSoonPage title="コラムを読む" /></DevOnly>} />
           <Route path="/community" element={<DevOnly title="出逢いを探す"><ComingSoonPage title="出逢いを探す" /></DevOnly>} />

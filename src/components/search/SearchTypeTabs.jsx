@@ -1,9 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import hospitalIco from '../../assets/search_ico.svg';
 
 // 「病院を探す／老人ホームを探す」の大きな切替（原案07）。選択中はゴールドの面＋下向きの三角
-const Tab = ({ on, label, disabled }) => (
-      <div
+const Tab = ({ on, label, disabled, to }) => {
+  const Tag = to && !disabled ? Link : 'div';
+  return (
+      <Tag
+        {...(Tag === Link ? { to } : {})}
         role="tab"
         aria-selected={on}
         aria-disabled={disabled || undefined}
@@ -13,12 +17,13 @@ const Tab = ({ on, label, disabled }) => (
         <span className="whitespace-nowrap">{label}</span>
         {disabled && <span className="text-[0.65rem] bg-cream-200 text-ink px-1.5 py-0.5 tracking-normal">準備中</span>}
         {on && <span className="absolute left-1/2 -bottom-[14px] -translate-x-1/2 w-0 h-0 border-x-[16px] border-x-transparent border-t-[14px] border-t-gold-deep" aria-hidden="true" />}
-      </div>
-);
+      </Tag>
+  );
+};
 
 export const SearchTypeTabs = ({ active = 'hospital' }) => (
   <div role="tablist" aria-label="探す対象" className="grid grid-cols-2 gap-2 md:gap-3 mb-8">
-    <Tab on={active === 'hospital'} label="病院を探す" />
-    <Tab on={active === 'nursing'} label="老人ホームを探す" disabled />
+    <Tab on={active === 'hospital'} label="病院を探す" to="/search" />
+    <Tab on={active === 'nursing'} label="老人ホームを探す" to="/search/nursing" />
   </div>
 );
