@@ -7,10 +7,10 @@ const Tab = ({ on, label, disabled }) => (
         role="tab"
         aria-selected={on}
         aria-disabled={disabled || undefined}
-        className={`relative flex items-center justify-center gap-3 min-h-[64px] md:min-h-[76px] px-3 border border-gold font-round font-bold text-[1.05rem] md:text-[1.35rem] tracking-[0.15em] ${on ? 'bg-gold-deep text-white' : 'bg-cream-50 text-gold-deep opacity-80'}`}
+        className={`relative flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 min-h-[84px] md:min-h-[76px] px-2 md:px-3 py-2 border border-gold font-round font-bold text-[0.95rem] md:text-[1.35rem] tracking-[0.05em] md:tracking-[0.15em] text-center leading-tight ${on ? 'bg-gold-deep text-white' : 'bg-cream-50 text-gold-deep opacity-80'}`}
       >
         <img src={hospitalIco} alt="" aria-hidden="true" className="h-7 md:h-9 w-auto" />
-        {label}
+        <span className="whitespace-nowrap">{label}</span>
         {disabled && <span className="text-[0.65rem] bg-cream-200 text-ink px-1.5 py-0.5 tracking-normal">準備中</span>}
         {on && <span className="absolute left-1/2 -bottom-[14px] -translate-x-1/2 w-0 h-0 border-x-[16px] border-x-transparent border-t-[14px] border-t-gold-deep" aria-hidden="true" />}
       </div>

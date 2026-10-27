@@ -9,6 +9,8 @@ import { FeatureIcons } from '../components/search/FeatureIcons';
 import { FacilityMap } from '../components/search/FacilityMap';
 import { EmergencyNotice } from '../components/search/EmergencyNotice';
 import { FavoriteButton } from '../components/search/FavoriteButton';
+import { TodayStatus } from '../components/search/TodayStatus';
+import { CalendarAdd } from '../components/search/CalendarAdd';
 import { NotFoundPage } from './NotFoundPage';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { HOSPITAL_BY_ID, DATA_SOURCE } from '../data/hospitals';
@@ -48,6 +50,7 @@ export const HospitalDetailPage = () => {
             <Button href={`tel:${h.tel.replace(/-/g, '')}`} variant="cta" icon={null} className="sm:min-w-[14rem]"><Phone size={18} aria-hidden="true" />お電話する</Button>
             <FavoriteButton id={h.id} name={h.name} />
           </div>
+          <TodayStatus schedule={h.schedule} className="mt-5" />
           <FeatureIcons features={h.features} className="mt-5" />
 
           <dl className="mt-8 border-t border-line">
@@ -75,6 +78,8 @@ export const HospitalDetailPage = () => {
 
           <p className="mt-6 text-[0.75rem] text-ink-sub">出典：{DATA_SOURCE.label}。情報更新日：{h.updated}</p>
         </article>
+
+        <CalendarAdd hospital={h} />
 
         <aside className="mt-8 border border-dashed border-gold p-5 bg-cream-50 text-[0.9rem]">
           <p className="font-round font-bold mb-1">この医療機関の方へ</p>

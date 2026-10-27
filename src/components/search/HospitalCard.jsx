@@ -5,6 +5,7 @@ import { ScheduleTable } from './ScheduleTable';
 import { FeatureIcons } from './FeatureIcons';
 import { Button } from '../ui/Button';
 import { FavoriteButton } from './FavoriteButton';
+import { TodayStatus } from './TodayStatus';
 
 const Label = ({ children }) => (
   <span className="inline-block bg-gold-deep text-white font-round font-bold text-[0.75rem] px-3 py-1 mr-3 shrink-0 min-w-[5.5rem] text-center">{children}</span>
@@ -18,16 +19,16 @@ export const HospitalCard = ({ h, selected = false, onSelect }) => (
       onClick={() => onSelect?.(h.id)}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <h3 className="text-[1.15rem] md:text-[1.3rem] border-l-[6px] border-gold pl-3">
             <Link to={`/hospitals/${h.id}`} className="hover:text-gold-deep">{h.name}</Link>
           </h3>
           <p className="mt-2 flex items-center gap-2 text-[0.85rem]"><CirclePlus size={16} className="text-accent-red shrink-0" aria-hidden="true" />{h.departments.join(' / ')}</p>
           <p className="flex items-center gap-2 text-[0.85rem]"><MapPin size={16} className="text-accent-red shrink-0" aria-hidden="true" />{h.address}</p>
         </div>
-        <div className="flex flex-wrap gap-2 shrink-0">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <FavoriteButton id={h.id} name={h.name} />
-          <Button to={`/hospitals/${h.id}`}>詳しくはこちら</Button>
+          <Button to={`/hospitals/${h.id}`} className="!px-5 sm:!px-8">詳しくはこちら</Button>
         </div>
       </div>
 
@@ -42,6 +43,7 @@ export const HospitalCard = ({ h, selected = false, onSelect }) => (
         <div className="overflow-x-auto"><ScheduleTable schedule={h.schedule} /></div>
         <FeatureIcons features={h.features} />
       </div>
+      <TodayStatus schedule={h.schedule} compact className="mt-4" />
       <p className="mt-3 text-[0.8rem]">休診日：{h.holiday}</p>
       <p className="mt-1 text-[0.75rem] text-ink-sub">情報更新日：{h.updated}</p>
     </article>
