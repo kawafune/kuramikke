@@ -50,8 +50,8 @@ export const CalendarAdd = ({ hospital }) => {
   const btn = 'inline-flex items-center justify-center gap-2 min-h-[44px] px-5 rounded font-round font-bold text-[0.85rem]';
 
   return (
-    <section aria-labelledby="calendar-title" className="mt-8 border border-gold bg-cream-50 p-5 md:p-8">
-      <h2 id="calendar-title" className="flex items-center gap-2 text-[1.1rem] text-gold-deep mb-2"><CalendarPlus size={22} aria-hidden="true" />予約の日時を、カレンダーに入れる</h2>
+    <section aria-labelledby="calendar-title" className="scroll-mt-24 mt-8 border border-gold bg-cream-50 p-5 md:p-8">
+      <h2 id="calendar-title" className="scroll-mt-24 flex items-center gap-2 text-[1.1rem] text-gold-deep mb-2"><CalendarPlus size={22} aria-hidden="true" />予約の日時を、カレンダーに入れる</h2>
       <p className="text-[0.85rem] leading-relaxed mb-5">
         病院に予約をしたあと、その日時を、お使いのカレンダーに入れておけます。入力した内容は、この端末の中だけで使い、クラミッケには送りません。
         クラミッケでは、診療の予約は受け付けていません。予約は、お電話か、病院の予約ページでお願いします。

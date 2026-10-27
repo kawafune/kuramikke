@@ -11,6 +11,7 @@ import { SearchTypeTabs } from '../components/search/SearchTypeTabs';
 import { EmergencyNotice } from '../components/search/EmergencyNotice';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { PREFECTURES } from '../data/nav';
+import { todayStatus } from '../lib/today';
 import { DEPARTMENTS, FEATURE_LIST, WEEKDAYS, DATA_SOURCE, searchHospitals } from '../data/hospitals';
 
 const PAGE_SIZE = 10;
@@ -23,6 +24,7 @@ const readParams = (sp) => ({
   dept: sp.get('dept') ?? '',
   day: sp.get('day') ?? '',
   slot: sp.get('slot') ?? '',
+  now: sp.get('now') === '1',
   features: (sp.get('f') ?? '').split(',').filter(Boolean),
   page: Math.max(1, Number(sp.get('page')) || 1),
 });
@@ -34,6 +36,7 @@ const toQuery = (p) => {
   if (p.dept) sp.set('dept', p.dept);
   if (p.day !== '') sp.set('day', p.day);
   if (p.slot !== '') sp.set('slot', p.slot);
+  if (p.now) sp.set('now', '1');
   if (p.features.length) sp.set('f', p.features.join(','));
   if (p.page > 1) sp.set('page', String(p.page));
   return sp;
@@ -50,7 +53,7 @@ export const SearchResultsPage = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [draft, setDraft] = useState(params);
 
-  const results = searchHospitals(params); // 件数が少ないので、毎回計算してよい（取り込み後に多くなったら、サーバー側の検索にする）
+  const results = searchHospitals(params).filter((h) => !params.now || todayStatus(h.schedule).kind === 'open'); // 件数が少ないので、毎回計算してよい（取り込み後に多くなったら、サーバー側の検索にする）
   const total = results.length;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const page = Math.min(params.page, pages);
@@ -67,6 +70,7 @@ export const SearchResultsPage = () => {
     params.dept && { key: 'dept', label: params.dept, clear: { dept: '' } },
     params.day !== '' && { key: 'day', label: `${WEEKDAYS[Number(params.day)]}曜日`, clear: { day: '', slot: '' } },
     params.slot !== '' && { key: 'slot', label: SLOTS[Number(params.slot)], clear: { slot: '' } },
+    params.now && { key: 'now', label: 'いま受付中', clear: { now: false } },
     ...params.features.map((f) => ({ key: f, label: FEATURE_LIST.find((x) => x.key === f)?.label ?? f, clear: { features: params.features.filter((x) => x !== f) } })),
   ].filter(Boolean);
 
@@ -105,6 +109,13 @@ export const SearchResultsPage = () => {
         <div className="flex flex-col sm:flex-row border border-[#2A7A73] mb-8">
           <p className="bg-[#2A7A73] text-white font-round font-bold px-5 py-3 sm:w-[11rem] shrink-0 text-center">条件を追加する</p>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
+            <li>
+              <label className="inline-flex items-center gap-2 min-h-[36px] cursor-pointer text-[0.9rem]">
+                <input type="checkbox" checked={params.now} onChange={() => update({ now: !params.now })} className="w-5 h-5 accent-[#2A7A73]" />
+                いま受付中
+                <span className="text-[0.65rem] bg-cream-200 text-ink px-1.5 py-0.5">開発中</span>
+              </label>
+            </li>
             {FEATURE_LIST.map(({ key, label }) => (
               <li key={key}>
                 <label className="inline-flex items-center gap-2 min-h-[36px] cursor-pointer text-[0.9rem]">

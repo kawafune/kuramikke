@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ExternalLink, Phone } from 'lucide-react';
+import { ExternalLink, Phone, CalendarPlus } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { AdBanner } from '../components/ui/AdBanner';
 import { Button } from '../components/ui/Button';
@@ -51,6 +51,9 @@ export const HospitalDetailPage = () => {
             <FavoriteButton id={h.id} name={h.name} />
           </div>
           <TodayStatus schedule={h.schedule} className="mt-5" />
+          <a href="#calendar-title" className="mt-3 inline-flex items-center gap-2 min-h-[44px] text-[0.9rem] font-bold text-gold-deep underline underline-offset-4">
+            <CalendarPlus size={18} aria-hidden="true" />予約した日時を、カレンダーに入れる
+          </a>
           <FeatureIcons features={h.features} className="mt-5" />
 
           <dl className="mt-8 border-t border-line">
