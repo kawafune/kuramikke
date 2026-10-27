@@ -10,10 +10,11 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useSite } from '../context/siteContext';
 import { GUIDE_BY_SLUG, ENTRANCES, PROMISES, isReadable } from '../data/shukatsuGuide';
 
-// 入口の色分け：ご家族のために＝赤 / ご自身のために＝青緑（白い文字で、読みやすさの基準 4.5:1 を満たす色）
+// 入口の色分け：ご家族のために＝紺寄りの青 / ご自身のために＝青緑（白い文字で、読みやすさの基準 4.5:1 を満たす色）。
+// 入口の見出し・カードの小タイトル・左の帯は、同じ系統の色にそろえる
 const TONE = {
-  family: { Icon: Users, bg: 'bg-accent-red-text', text: 'text-accent-red-text', border: 'border-accent-red-text', soft: 'bg-[#FFF1EE]' },
-  self: { Icon: User, bg: 'bg-[#2A7A73]', text: 'text-[#2A7A73]', border: 'border-[#2A7A73]', soft: 'bg-[#EAF5F3]' },
+  family: { Icon: Users, bg: 'bg-[#2B4C8C]', text: 'text-[#2B4C8C]', border: 'border-[#2B4C8C]', bar: 'border-l-[#2B4C8C]', soft: 'bg-[#EEF2FA]' },
+  self: { Icon: User, bg: 'bg-[#2A7A73]', text: 'text-[#2A7A73]', border: 'border-[#2A7A73]', bar: 'border-l-[#2A7A73]', soft: 'bg-[#EAF5F3]' },
 };
 
 const StatusChip = ({ children, tone = 'soon' }) => (
@@ -25,7 +26,7 @@ const GuideCard = ({ page, tone }) => {
   const readable = isReadable(page, devMode);
   const body = (
     <>
-      <strong className="block font-round text-[1.05rem] mb-1">{page.title}</strong>
+      <strong className={`block font-round text-[1.05rem] mb-1 ${tone.text}`}>{page.title}</strong>
       <span className="block text-[0.85rem] leading-relaxed">{page.short}</span>
     </>
   );
@@ -33,14 +34,14 @@ const GuideCard = ({ page, tone }) => {
     const draft = !page.published || page.expertReview === 'required';
     return (
       <li className="relative">
-        <Link to={`/shukatsu/${page.slug}`} className={`block h-full border border-gold-line border-l-[6px] ${tone.border} bg-white p-5 pt-7 hover:bg-cream-50`}>{body}</Link>
+        <Link to={`/shukatsu/${page.slug}`} className={`block h-full border border-gold-line border-l-[6px] ${tone.bar} bg-white p-5 pt-7 hover:bg-cream-50`}>{body}</Link>
         {draft && <StatusChip tone="draft">{page.expertReview === 'required' ? '専門家の確認待ち' : '下書き'}</StatusChip>}
       </li>
     );
   }
   return (
     <li className="relative">
-      <div aria-disabled="true" className="h-full border border-line border-l-[6px] bg-white/70 p-5 pt-7 opacity-70">{body}</div>
+      <div aria-disabled="true" className={`h-full border border-line border-l-[6px] ${tone.bar} bg-white/70 p-5 pt-7 opacity-70`}>{body}</div>
       <StatusChip>準備中</StatusChip>
     </li>
   );

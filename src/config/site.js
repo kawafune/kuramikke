@@ -24,6 +24,9 @@ export const TARGET_PATH = {
 
 // 事業者からのお問い合わせ・お申込みを受けるメールアドレス。空のあいだは、ページに「準備中」と表示される。
 // いずれは、お問い合わせフォーム → AI＋人間での対応に移す。
-export const CONTACT_EMAIL = '';
+// 営業メールを避けるため、公開のリポジトリにはアドレスを書かず、環境変数 VITE_CONTACT_EMAIL から読む。
+//   本番：Vercel の Settings → Environment Variables に VITE_CONTACT_EMAIL を登録する
+//   手元：.env.local に書く（.gitignore で除外済み）。書き方は .env.example
+export const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL ?? '';
 
 export const AUTH_KEY = 'kuramikke_auth'; // 開発モードの保存キー（従来のログインと同じ）
