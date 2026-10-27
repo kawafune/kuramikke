@@ -4,6 +4,7 @@ import { CirclePlus, MapPin, Phone, TrainFront } from 'lucide-react';
 import { ScheduleTable } from './ScheduleTable';
 import { FeatureIcons } from './FeatureIcons';
 import { Button } from '../ui/Button';
+import { FavoriteButton } from './FavoriteButton';
 
 const Label = ({ children }) => (
   <span className="inline-block bg-gold-deep text-white font-round font-bold text-[0.75rem] px-3 py-1 mr-3 shrink-0 min-w-[5.5rem] text-center">{children}</span>
@@ -24,7 +25,10 @@ export const HospitalCard = ({ h, selected = false, onSelect }) => (
           <p className="mt-2 flex items-center gap-2 text-[0.85rem]"><CirclePlus size={16} className="text-accent-red shrink-0" aria-hidden="true" />{h.departments.join(' / ')}</p>
           <p className="flex items-center gap-2 text-[0.85rem]"><MapPin size={16} className="text-accent-red shrink-0" aria-hidden="true" />{h.address}</p>
         </div>
-        <Button to={`/hospitals/${h.id}`} className="shrink-0">詳しくはこちら</Button>
+        <div className="flex flex-wrap gap-2 shrink-0">
+          <FavoriteButton id={h.id} name={h.name} />
+          <Button to={`/hospitals/${h.id}`}>詳しくはこちら</Button>
+        </div>
       </div>
 
       <p className="mt-4 flex items-center"><Label><Phone size={13} className="inline mr-1 -mt-0.5" aria-hidden="true" />電話番号</Label>

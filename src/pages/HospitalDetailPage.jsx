@@ -7,6 +7,8 @@ import { Button } from '../components/ui/Button';
 import { ScheduleTable } from '../components/search/ScheduleTable';
 import { FeatureIcons } from '../components/search/FeatureIcons';
 import { FacilityMap } from '../components/search/FacilityMap';
+import { EmergencyNotice } from '../components/search/EmergencyNotice';
+import { FavoriteButton } from '../components/search/FavoriteButton';
 import { NotFoundPage } from './NotFoundPage';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { HOSPITAL_BY_ID, DATA_SOURCE } from '../data/hospitals';
@@ -32,7 +34,8 @@ export const HospitalDetailPage = () => {
     <>
       <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '検索結果', to: '/search/results' }, { label: h.name }]} />
       <div className="max-w-[900px] mx-auto px-4 py-10 md:py-14">
-        <article className="relative border border-gold bg-white p-5 md:p-10">
+        <EmergencyNotice compact />
+        <article className="relative border border-gold bg-white p-5 md:p-10 mt-6">
           <span className="absolute -top-px -left-px bg-gold-deep text-white text-[0.75rem] font-bold px-4 py-1">公的データをもとに掲載</span>
 
           <h1 className="mt-6 text-[1.4rem] md:text-[1.7rem] border-l-[6px] border-gold pl-3">{h.name}</h1>
@@ -41,7 +44,11 @@ export const HospitalDetailPage = () => {
             <Phone size={22} className="text-gold-deep" aria-hidden="true" />
             <a href={`tel:${h.tel.replace(/-/g, '')}`} className="text-[1.6rem] font-bold tracking-wider">{h.tel}</a>
           </p>
-          <FeatureIcons features={h.features} className="mt-4" />
+          <div className="mt-4 flex flex-col sm:flex-row gap-3">
+            <Button href={`tel:${h.tel.replace(/-/g, '')}`} variant="cta" icon={null} className="sm:min-w-[14rem]"><Phone size={18} aria-hidden="true" />お電話する</Button>
+            <FavoriteButton id={h.id} name={h.name} />
+          </div>
+          <FeatureIcons features={h.features} className="mt-5" />
 
           <dl className="mt-8 border-t border-line">
             <Row label="診療科目">

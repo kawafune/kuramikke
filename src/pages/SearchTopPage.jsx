@@ -6,6 +6,8 @@ import { SectionTitle } from '../components/ui/SectionTitle';
 import { Button } from '../components/ui/Button';
 import { AdBanner } from '../components/ui/AdBanner';
 import { SearchTypeTabs } from '../components/search/SearchTypeTabs';
+import { EmergencyNotice } from '../components/search/EmergencyNotice';
+import { useFavorites } from '../hooks/useFavorites';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { REGIONS } from '../data/regions';
 import { DEPARTMENTS, HOSPITALS } from '../data/hospitals';
@@ -21,6 +23,7 @@ export const SearchTopPage = () => {
   const [pref, setPref] = useState('');
   const [dept, setDept] = useState('');
   const [tab, setTab] = useState('area'); // area＝エリアから / route＝路線から（準備中）
+  const { ids } = useFavorites();
 
   const go = (params) => {
     const sp = new URLSearchParams();
@@ -33,7 +36,10 @@ export const SearchTopPage = () => {
       <Breadcrumb items={[{ label: '病院・介護施設を探す' }]} />
       <div className="max-w-content mx-auto px-4 py-10 md:py-14">
         <SectionTitle as="h1">病院・介護施設を探す</SectionTitle>
+        <EmergencyNotice />
+        <div className="h-8" />
         <SearchTypeTabs active="hospital" />
+        <p className="text-right -mt-4 mb-4 text-[0.85rem]"><Link to="/search/favorites" className="text-accent-red-text underline underline-offset-4">お気に入りの病院（{ids.length}件）</Link></p>
 
         <p className="text-center my-10 md:my-14 font-round font-bold text-[1.05rem] md:text-[1.25rem] tracking-[0.1em]">
           掲載数

@@ -8,6 +8,7 @@ import { AdBanner } from '../components/ui/AdBanner';
 import { HospitalCard } from '../components/search/HospitalCard';
 import { FacilityMap } from '../components/search/FacilityMap';
 import { SearchTypeTabs } from '../components/search/SearchTypeTabs';
+import { EmergencyNotice } from '../components/search/EmergencyNotice';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { PREFECTURES } from '../data/nav';
 import { DEPARTMENTS, FEATURE_LIST, WEEKDAYS, DATA_SOURCE, searchHospitals } from '../data/hospitals';
@@ -77,6 +78,8 @@ export const SearchResultsPage = () => {
       <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '検索結果' }]} />
       <div className="max-w-content mx-auto px-4 py-10 md:py-14">
         <SectionTitle as="h1">病院・介護施設を探す</SectionTitle>
+        <EmergencyNotice compact />
+        <div className="h-6" />
         <SearchTypeTabs active="hospital" />
 
         <p className="text-center font-round font-bold text-[1.05rem] md:text-[1.2rem] mb-8" aria-live="polite">
