@@ -9,7 +9,7 @@ export const NAV_ITEMS = [
   { target: 'TOP', label: 'TOPページ', desc: 'トップページに戻る', icon: topIco },
   { target: 'SEARCH', label: '病院・介護施設を探す', desc: '病院・介護施設探しをお手伝いします。', icon: hospitalIco },
   { target: 'COLUMN', label: 'コラムを読む', desc: '暮らしを豊かにしてくれるコラムのご紹介', icon: columnIco },
-  { target: 'COMMUNITY', label: '絆を見つける', desc: '同じ思いの仲間と出会える、イベントやコミュニティ', icon: meetIco },
+  { target: 'COMMUNITY', label: '絆を見つける', desc: '同じ趣味や思いの仲間と、気軽につながる', icon: meetIco },
   { target: 'SHUKATSU', label: '終活サポート', desc: 'エンディングノートを書きませんか？', icon: shukatsuIco },
 ];
 
