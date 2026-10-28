@@ -46,7 +46,7 @@ export const SiteProvider = ({ children }) => {
     pathname,
     currentTarget: pathToTarget(pathname),
     // 大きなタイル型ナビを持つのはポータル型のTOPだけ（そのときヘッダー下段のメニューは出さない）
-    showTileNav: (pathname === '/' && HOME === 'portal') || pathname === '/portal',
+    showTileNav: (pathname === '/' && (HOME === 'portal' || devMode)) || pathname === '/portal',
     isAvailable,
     go,
     openLogin: () => setLoginOpen(true),

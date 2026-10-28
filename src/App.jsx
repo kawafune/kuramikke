@@ -34,8 +34,8 @@ const DevBanner = () => {
   return (
     <div className="bg-ink text-white text-[0.75rem] px-4 py-1.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
       <span className="font-bold">開発モード：公開前の画面も表示しています</span>
-      <Link to="/portal" className="underline underline-offset-2">ポータル型のTOP</Link>
-      <Link to="/shukatsu" className="underline underline-offset-2">終活ガイドのTOP</Link>
+      <Link to="/" className="underline underline-offset-2">TOP（開発用：ポータル型）</Link>
+      <Link to="/shukatsu" className="underline underline-offset-2">公開中のTOP（終活ガイド）</Link>
       <button onClick={logout} className="underline underline-offset-2">公開表示に戻す</button>
     </div>
   );
@@ -48,7 +48,7 @@ const DevOnly = ({ title, children }) => {
 };
 
 const Shell = () => {
-  const { go, loginOpen, closeLogin, login } = useSite();
+  const { devMode, go, loginOpen, closeLogin, login } = useSite();
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
@@ -57,7 +57,7 @@ const Shell = () => {
 
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={HOME === 'shukatsu' ? <ShukatsuTopPage /> : <TopPage onTryAccess={go} />} />
+          <Route path="/" element={HOME === 'shukatsu' && !devMode ? <ShukatsuTopPage /> : <TopPage onTryAccess={go} />} />
           <Route path="/shukatsu" element={<ShukatsuTopPage />} />
           <Route path="/shukatsu/:slug" element={<GuideArticlePage />} />
           <Route path="/portal" element={<DevOnly title="ポータル型のTOP"><TopPage onTryAccess={go} /></DevOnly>} />
@@ -68,7 +68,7 @@ const Shell = () => {
           <Route path="/nursing-homes/:id" element={<DevOnly title="老人ホームを探す"><NursingDetailPage /></DevOnly>} />
           <Route path="/hospitals/:id" element={<DevOnly title="病院・介護施設を探す"><HospitalDetailPage /></DevOnly>} />
           <Route path="/column" element={<DevOnly title="コラムを読む"><ComingSoonPage title="コラムを読む" /></DevOnly>} />
-          <Route path="/community" element={<DevOnly title="出逢いを探す"><ComingSoonPage title="出逢いを探す" /></DevOnly>} />
+          <Route path="/community" element={<DevOnly title="絆を見つける"><ComingSoonPage title="絆を見つける" /></DevOnly>} />
           {[...BUSINESS_PAGES, ...LEGAL_PAGES].map((p) => <Route key={p.path} path={p.path} element={<InfoPage page={p} />} />)}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
