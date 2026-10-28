@@ -6,13 +6,16 @@ import { Button } from '../components/ui/Button';
 import { HospitalCard } from '../components/search/HospitalCard';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useFavorites } from '../hooks/useFavorites';
-import { HOSPITAL_BY_ID } from '../data/hospitals';
+import { usePrefsData } from '../hooks/useMedical';
+import { prefCodeOfId } from '../data/medical';
 
 // お気に入りの病院（この端末に保存したもの）
 export const FavoritesPage = () => {
   usePageTitle('お気に入りの病院');
   const { ids } = useFavorites();
-  const list = ids.map((id) => HOSPITAL_BY_ID[id]).filter(Boolean);
+  const codes = [...new Set(ids.map(prefCodeOfId))].sort().join(',');
+  const { items, loading, error } = usePrefsData(codes);
+  const list = ids.map((id) => items?.find((x) => x.id === id)).filter(Boolean);
 
   return (
     <>
@@ -23,7 +26,11 @@ export const FavoritesPage = () => {
           お気に入りは、いまお使いの<strong>この端末の中にだけ</strong>保存されます。クラミッケのサーバーには送りません。
           端末を変えたり、ブラウザの履歴を消したりすると、消えることがあります。
         </p>
-        {list.length === 0 ? (
+        {loading ? (
+          <p className="text-center py-10" role="status">読み込んでいます…</p>
+        ) : error ? (
+          <p className="text-center py-10">データを読み込めませんでした。通信を確認して、もう一度お試しください。</p>
+        ) : list.length === 0 ? (
           <div className="bg-white border border-gold p-8 text-center">
             <Heart className="mx-auto mb-2 text-accent-red-text" aria-hidden="true" />
             <p className="mb-5">まだ、お気に入りの病院はありません。<br />病院の「お気に入りに追加」を押すと、ここに並びます。</p>

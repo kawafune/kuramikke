@@ -1,8 +1,10 @@
 import React from 'react';
-import { WEEKDAYS } from '../../data/hospitals';
+import { WEEKDAYS } from '../../data/medical';
 
 // 診療時間の表（原案：受付時間 × 月〜祝、診療あり＝◯、なし＝−）
-export const ScheduleTable = ({ schedule, className = '' }) => (
+export const ScheduleTable = ({ schedule, className = '' }) => (schedule.length === 0 ? (
+  <p className="text-[0.85rem] text-ink-sub">診療時間は、公的データに登録がありません。公式サイトなどでご確認ください。</p>
+) : (
   <table className={`border-collapse text-center text-[0.8rem] ${className}`}>
     <caption className="sr-only">診療時間（◯は診療あり、−は休診）</caption>
     <thead>
@@ -24,4 +26,4 @@ export const ScheduleTable = ({ schedule, className = '' }) => (
       ))}
     </tbody>
   </table>
-);
+));

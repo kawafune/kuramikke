@@ -16,11 +16,11 @@ export const buildEvent = ({ name, address, tel, url, date, time, durationMin = 
     location: `${name}（${address}）`,
     description: [
       `病院：${name}`,
-      `電話：${tel}`,
+      tel ? `電話：${tel}` : '',
       '※ 予約の内容は、病院にご確認ください。',
       '※ クラミッケでは、診療の予約は受け付けていません。',
       url,
-    ].join('\n'),
+    ].filter(Boolean).join('\n'),
     start,
     end,
   };

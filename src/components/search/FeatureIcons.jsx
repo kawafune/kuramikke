@@ -1,7 +1,7 @@
 import React from 'react';
-import { FEATURE_LIST } from '../../data/hospitals';
+import { FEATURE_LIST } from '../../data/medical';
 
-// 特徴アイコン（夜間診療可・休日診療可・女医・駐車場・カード可）。持っているものだけ出す
+// 特徴アイコン（夜間も受付・日曜祝日も受付）。持っているものだけ出す
 export const FeatureIcons = ({ features, className = '' }) => (
   <ul className={`flex flex-wrap gap-x-4 gap-y-2 ${className}`}>
     {FEATURE_LIST.filter((f) => features.includes(f.key)).map(({ key, label, Icon }) => (

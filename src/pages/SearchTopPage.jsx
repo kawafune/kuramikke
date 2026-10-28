@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
@@ -10,7 +10,7 @@ import { EmergencyNotice } from '../components/search/EmergencyNotice';
 import { useFavorites } from '../hooks/useFavorites';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { REGIONS } from '../data/regions';
-import { DEPARTMENTS, HOSPITALS } from '../data/hospitals';
+import { DEPARTMENTS, DATA_SOURCE_NAME, asOfLabel, loadIndex } from '../data/medical';
 import { PREFECTURES } from '../data/nav';
 
 const field = 'w-full h-11 px-3 border border-gold rounded bg-white text-[0.9rem] focus:outline-none focus:border-gold-deep';
@@ -24,6 +24,13 @@ export const SearchTopPage = () => {
   const [dept, setDept] = useState('');
   const [tab, setTab] = useState('area'); // area＝エリアから / route＝路線から（準備中）
   const { ids } = useFavorites();
+  const [index, setIndex] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    loadIndex().then((v) => { if (alive) setIndex(v); }).catch(() => {});
+    return () => { alive = false; };
+  }, []);
+  const total = index ? Object.values(index.prefs).reduce((sum, p) => sum + p.count, 0) : null;
 
   const go = (params) => {
     const sp = new URLSearchParams();
@@ -39,11 +46,11 @@ export const SearchTopPage = () => {
         <EmergencyNotice />
         <div className="h-8" />
         <SearchTypeTabs active="hospital" />
-        <p className="text-right -mt-4 mb-4 text-[0.85rem]"><Link to="/search/favorites" className="text-accent-red-text underline underline-offset-4">お気に入りの病院（{ids.length}件）</Link></p>
+        <p className="text-right -mt-4 mb-4 text-[0.85rem]"><Link to="/search/favorites" className="text-accent-red-text underline underline-offset-4">お気に入り（{ids.length}件）</Link></p>
 
         <p className="text-center my-10 md:my-14 font-round font-bold text-[1.05rem] md:text-[1.25rem] tracking-[0.1em]">
-          掲載数
-          <span className="mx-3 text-[2.2rem] md:text-[2.8rem] text-accent-red-text border-b-4 border-cream-300 px-2">{HOSPITALS.length.toLocaleString()}件</span>
+          病院・診療所の掲載数
+          <span className="mx-3 text-[2.2rem] md:text-[2.8rem] text-accent-red-text border-b-4 border-cream-300 px-2">{total === null ? '…' : `${total.toLocaleString()}件`}</span>
           から検索する
         </p>
 
@@ -51,7 +58,7 @@ export const SearchTopPage = () => {
           <label className="relative block">
             <span className="sr-only">キーワードで探す</span>
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-sub" aria-hidden="true" />
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="診療科目・院名・地名などを入力してください" className={`${field} pl-10`} />
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="診療科目・名前・地名などを入力（例：渋谷　内科）" className={`${field} pl-10`} />
           </label>
           <Button type="submit" icon={null} className="mt-5">この条件で検索する</Button>
         </form>
@@ -104,7 +111,7 @@ export const SearchTopPage = () => {
           <AdBanner className="h-[80px]" />
           <AdBanner className="h-[80px] hidden sm:flex" />
         </div>
-        <p className="mt-6 text-[0.8rem] text-ink-sub">※ いまは仮のデータです。公的データを取り込んだあと、実際の病院が表示されます。</p>
+        <p className="mt-6 text-[0.8rem] text-ink-sub">出典：{DATA_SOURCE_NAME}（{index ? asOfLabel(index.asOf) : '…'}時点）。報告された内容がそのまま載っており、古い情報や誤りを含む場合があります。受診の前に、必ず各医療機関へご確認ください。</p>
       </div>
     </>
   );

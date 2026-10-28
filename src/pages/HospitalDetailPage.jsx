@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ExternalLink, Phone, CalendarPlus } from 'lucide-react';
+import { ExternalLink, CalendarPlus } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { AdBanner } from '../components/ui/AdBanner';
 import { Button } from '../components/ui/Button';
@@ -13,7 +13,9 @@ import { TodayStatus } from '../components/search/TodayStatus';
 import { CalendarAdd } from '../components/search/CalendarAdd';
 import { NotFoundPage } from './NotFoundPage';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { HOSPITAL_BY_ID, DATA_SOURCE } from '../data/hospitals';
+import { usePrefData } from '../hooks/useMedical';
+import { prefCodeOfId, KIND_LABEL, DATA_SOURCE_NAME, asOfLabel } from '../data/medical';
+import { mapsUrl } from '../lib/maps';
 
 const Row = ({ label, children }) => (
   <div className="flex flex-col sm:flex-row gap-1 sm:gap-8 py-4 border-b border-line last:border-b-0">
@@ -26,11 +28,12 @@ const Row = ({ label, children }) => (
 // 写真・お知らせ・医師紹介・求人などは、施設からの掲載申込みで追加する部分（いまは出さない）。
 export const HospitalDetailPage = () => {
   const { id } = useParams();
-  const h = HOSPITAL_BY_ID[id];
+  const { items, loading, error } = usePrefData(prefCodeOfId(id));
+  const h = items?.find((x) => x.id === id);
   usePageTitle(h?.name);
+  if (loading) return <p className="max-w-content mx-auto px-4 py-20 text-center" role="status">読み込んでいます…</p>;
+  if (error) return <p className="max-w-content mx-auto px-4 py-20 text-center">データを読み込めませんでした。通信を確認して、もう一度お試しください。</p>;
   if (!h) return <NotFoundPage />;
-
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.address)}`;
 
   return (
     <>
@@ -41,15 +44,13 @@ export const HospitalDetailPage = () => {
           <span className="absolute -top-px -left-px bg-gold-deep text-white text-[0.75rem] font-bold px-4 py-1">公的データをもとに掲載</span>
 
           <h1 className="mt-6 text-[1.4rem] md:text-[1.7rem] border-l-[6px] border-gold pl-3">{h.name}</h1>
-          <p className="mt-3 text-[0.9rem]">{h.address}</p>
-          <p className="mt-3 flex items-center gap-2">
-            <Phone size={22} className="text-gold-deep" aria-hidden="true" />
-            <a href={`tel:${h.tel.replace(/-/g, '')}`} className="text-[1.6rem] font-bold tracking-wider">{h.tel}</a>
-          </p>
+          <p className="mt-3 text-[0.9rem]">{KIND_LABEL[h.kind]}／{h.address}</p>
           <div className="mt-4 flex flex-col sm:flex-row gap-3">
-            <Button href={`tel:${h.tel.replace(/-/g, '')}`} variant="cta" icon={null} className="sm:min-w-[14rem]"><Phone size={18} aria-hidden="true" />お電話する</Button>
+            {h.url && <Button href={h.url} target="_blank" rel="noopener noreferrer" variant="cta" icon="external" className="sm:min-w-[14rem]">公式サイトを見る</Button>}
+            <Button href={mapsUrl(h)} target="_blank" rel="noopener noreferrer" variant="external" icon="external">Googleマップで見る</Button>
             <FavoriteButton id={h.id} name={h.name} />
           </div>
+          <p className="mt-2 text-[0.8rem] text-ink-sub">電話番号は、公式サイトか、Googleマップのページでご確認ください。</p>
           <TodayStatus schedule={h.schedule} className="mt-5" />
           <a href="#calendar-title" className="mt-3 inline-flex items-center gap-2 min-h-[44px] text-[0.9rem] font-bold text-gold-deep underline underline-offset-4">
             <CalendarPlus size={18} aria-hidden="true" />予約した日時を、カレンダーに入れる
@@ -60,26 +61,30 @@ export const HospitalDetailPage = () => {
             <Row label="診療科目">
               <ul className="flex flex-wrap gap-x-4 gap-y-1">
                 {h.departments.map((d) => (
-                  <li key={d}><Link to={`/search/results?dept=${encodeURIComponent(d)}`} className="text-gold-deep underline underline-offset-4">{d}</Link></li>
+                  <li key={d}><Link to={`/search/results?pref=${encodeURIComponent(h.pref)}&dept=${encodeURIComponent(d)}`} className="text-gold-deep underline underline-offset-4">{d}</Link></li>
                 ))}
               </ul>
             </Row>
-            <Row label="最寄り駅"><ul>{h.stations.map((s) => <li key={s}>・{s}</li>)}</ul></Row>
             <Row label="診療時間">
               <div className="overflow-x-auto"><ScheduleTable schedule={h.schedule} /></div>
               <p className="mt-3 bg-cream-50 p-3 text-[0.85rem]"><strong className="text-accent-red-text">休診日について</strong><br />{h.holiday}</p>
-              <p className="mt-2 text-[0.75rem] text-ink-sub">診療時間は変わることがあります。受診の前に、医療機関へお電話でご確認ください。</p>
+              <p className="mt-2 text-[0.75rem] text-ink-sub">診療時間は変わることがあります。受診の前に、医療機関へご確認ください。</p>
             </Row>
+            {h.kind === 'hospital' && h.beds ? <Row label="病床数">{h.beds}床</Row> : null}
             <Row label="所在地">
               {h.address}<br />
-              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-1 text-gold-deep underline underline-offset-4">Googleマップで見る<ExternalLink size={14} aria-hidden="true" /></a>
+              <a href={mapsUrl(h)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-1 text-gold-deep underline underline-offset-4">Googleマップで見る<ExternalLink size={14} aria-hidden="true" /></a>
             </Row>
           </dl>
 
-          <h2 className="mt-10 mb-3 text-[1.1rem] bg-gold-deep text-white px-4 py-2">地図</h2>
-          <FacilityMap items={[h]} selectedId={h.id} className="h-[280px] md:h-[340px]" />
+          {h.lat !== null && (
+            <>
+              <h2 className="mt-10 mb-3 text-[1.1rem] bg-gold-deep text-white px-4 py-2">地図</h2>
+              <FacilityMap items={[h]} selectedId={h.id} className="h-[280px] md:h-[340px]" />
+            </>
+          )}
 
-          <p className="mt-6 text-[0.75rem] text-ink-sub">出典：{DATA_SOURCE.label}。情報更新日：{h.updated}</p>
+          <p className="mt-6 text-[0.75rem] text-ink-sub">出典：{DATA_SOURCE_NAME}（{asOfLabel(h.updated)}時点）。情報は変わることがあります。受診の前に、医療機関へご確認ください。</p>
         </article>
 
         <CalendarAdd hospital={h} />

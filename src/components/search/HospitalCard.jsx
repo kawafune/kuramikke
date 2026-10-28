@@ -1,17 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CirclePlus, MapPin, Phone, TrainFront } from 'lucide-react';
+import { CirclePlus, ExternalLink, MapPin } from 'lucide-react';
 import { ScheduleTable } from './ScheduleTable';
 import { FeatureIcons } from './FeatureIcons';
 import { Button } from '../ui/Button';
 import { FavoriteButton } from './FavoriteButton';
 import { TodayStatus } from './TodayStatus';
+import { KIND_LABEL } from '../../data/medical';
+import { mapsUrl } from '../../lib/maps';
 
-const Label = ({ children }) => (
-  <span className="inline-block bg-gold-deep text-white font-round font-bold text-[0.75rem] px-3 py-1 mr-3 shrink-0 min-w-[5.5rem] text-center">{children}</span>
-);
+const MAX_DEPARTMENTS = 6;
 
-// 検索結果の病院カード（原案08）
+// 検索結果の医療機関カード（原案08）。公的データには電話番号が無いため、公式サイトとGoogleマップへの導線を出す
 export const HospitalCard = ({ h, selected = false, onSelect }) => (
   <li>
     <article
@@ -20,11 +20,14 @@ export const HospitalCard = ({ h, selected = false, onSelect }) => (
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
+          <p className="mb-1"><span className="inline-block bg-cream-200 text-[0.7rem] px-2 py-0.5">{KIND_LABEL[h.kind]}</span></p>
           <h3 className="text-[1.15rem] md:text-[1.3rem] border-l-[6px] border-gold pl-3">
             <Link to={`/hospitals/${h.id}`} className="hover:text-gold-deep">{h.name}</Link>
           </h3>
-          <p className="mt-2 flex items-center gap-2 text-[0.85rem]"><CirclePlus size={16} className="text-accent-red shrink-0" aria-hidden="true" />{h.departments.join(' / ')}</p>
-          <p className="flex items-center gap-2 text-[0.85rem]"><MapPin size={16} className="text-accent-red shrink-0" aria-hidden="true" />{h.address}</p>
+          <p className="mt-2 flex items-start gap-2 text-[0.85rem]"><CirclePlus size={16} className="text-accent-red shrink-0 mt-0.5" aria-hidden="true" />
+            <span>{h.departments.slice(0, MAX_DEPARTMENTS).join(' / ')}{h.departments.length > MAX_DEPARTMENTS && ` ほか${h.departments.length - MAX_DEPARTMENTS}科`}</span>
+          </p>
+          <p className="flex items-start gap-2 text-[0.85rem]"><MapPin size={16} className="text-accent-red shrink-0 mt-0.5" aria-hidden="true" />{h.address}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <FavoriteButton id={h.id} name={h.name} />
@@ -32,20 +35,17 @@ export const HospitalCard = ({ h, selected = false, onSelect }) => (
         </div>
       </div>
 
-      <p className="mt-4 flex items-center"><Label><Phone size={13} className="inline mr-1 -mt-0.5" aria-hidden="true" />電話番号</Label>
-        <a href={`tel:${h.tel.replace(/-/g, '')}`} className="text-[1.3rem] font-bold tracking-wider">{h.tel}</a>
-      </p>
-      <p className="mt-2 flex items-start"><Label><TrainFront size={13} className="inline mr-1 -mt-0.5" aria-hidden="true" />最寄駅</Label>
-        <span className="text-[0.85rem]">{h.stations.join('　')}</span>
-      </p>
-
       <div className="mt-4 flex flex-col lg:flex-row gap-4 lg:gap-8 lg:items-start">
         <div className="overflow-x-auto"><ScheduleTable schedule={h.schedule} /></div>
         <FeatureIcons features={h.features} />
       </div>
       <TodayStatus schedule={h.schedule} compact className="mt-4" />
       <p className="mt-3 text-[0.8rem]">休診日：{h.holiday}</p>
-      <p className="mt-1 text-[0.75rem] text-ink-sub">情報更新日：{h.updated}</p>
+
+      <p className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[0.85rem]">
+        {h.url && <a href={h.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-gold-deep underline underline-offset-4 min-h-[36px]">公式サイト<ExternalLink size={14} aria-hidden="true" /></a>}
+        <a href={mapsUrl(h)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-gold-deep underline underline-offset-4 min-h-[36px]">Googleマップ（電話番号も見られます）<ExternalLink size={14} aria-hidden="true" /></a>
+      </p>
     </article>
   </li>
 );

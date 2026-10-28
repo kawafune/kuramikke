@@ -12,16 +12,18 @@ import { EmergencyNotice } from '../components/search/EmergencyNotice';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { PREFECTURES } from '../data/nav';
 import { todayStatus } from '../lib/today';
-import { DEPARTMENTS, FEATURE_LIST, WEEKDAYS, DATA_SOURCE, searchHospitals } from '../data/hospitals';
+import { usePrefData } from '../hooks/useMedical';
+import { DEPARTMENTS, FEATURE_LIST, KINDS, PREF_CODES, WEEKDAYS, DATA_SOURCE_NAME, asOfLabel, DATA_ASOF, searchFacilities } from '../data/medical';
 
 const PAGE_SIZE = 10;
 const field = 'w-full h-11 px-3 border border-gold rounded bg-white text-[0.9rem] focus:outline-none focus:border-gold-deep';
 
-// 検索の条件は、URLの ?q=…&pref=…&dept=…&day=…&slot=…&f=night,parking&page=2 に持つ（共有・戻るボタンが使える）
+// 検索の条件は、URLの ?pref=東京&q=…&dept=…&kind=clinic&day=…&slot=…&f=night,holiday&page=2 に持つ（共有・戻るボタンが使える）
 const readParams = (sp) => ({
   q: sp.get('q') ?? '',
   pref: sp.get('pref') ?? '',
   dept: sp.get('dept') ?? '',
+  kind: sp.get('kind') ?? '',
   day: sp.get('day') ?? '',
   slot: sp.get('slot') ?? '',
   now: sp.get('now') === '1',
@@ -34,6 +36,7 @@ const toQuery = (p) => {
   if (p.q) sp.set('q', p.q);
   if (p.pref) sp.set('pref', p.pref);
   if (p.dept) sp.set('dept', p.dept);
+  if (p.kind) sp.set('kind', p.kind);
   if (p.day !== '') sp.set('day', p.day);
   if (p.slot !== '') sp.set('slot', p.slot);
   if (p.now) sp.set('now', '1');
@@ -53,7 +56,13 @@ export const SearchResultsPage = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [draft, setDraft] = useState(params);
 
-  const results = searchHospitals(params).filter((h) => !params.now || todayStatus(h.schedule).kind === 'open'); // 件数が少ないので、毎回計算してよい（取り込み後に多くなったら、サーバー側の検索にする）
+  const code = PREF_CODES[params.pref] ?? '';
+  const { items, loading, error } = usePrefData(code);
+  // 1県は数万件になることがあるが、条件で絞るだけなので、毎回計算してよい
+  const nowDate = new Date();
+  const results = items
+    ? searchFacilities(items, params).filter((h) => !params.now || todayStatus(h.schedule, nowDate).kind === 'open')
+    : [];
   const total = results.length;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const page = Math.min(params.page, pages);
@@ -67,6 +76,7 @@ export const SearchResultsPage = () => {
   const chips = [
     params.q && { key: 'q', label: `「${params.q}」`, clear: { q: '' } },
     params.pref && { key: 'pref', label: params.pref, clear: { pref: '' } },
+    params.kind && { key: 'kind', label: KINDS.find((k) => k.key === params.kind)?.label ?? params.kind, clear: { kind: '' } },
     params.dept && { key: 'dept', label: params.dept, clear: { dept: '' } },
     params.day !== '' && { key: 'day', label: `${WEEKDAYS[Number(params.day)]}曜日`, clear: { day: '', slot: '' } },
     params.slot !== '' && { key: 'slot', label: SLOTS[Number(params.slot)], clear: { slot: '' } },
@@ -87,14 +97,15 @@ export const SearchResultsPage = () => {
         <SearchTypeTabs active="hospital" />
 
         <p className="text-center font-round font-bold text-[1.05rem] md:text-[1.2rem] mb-8" aria-live="polite">
-          <span className="mr-3">検索結果一覧</span>全<span className="text-accent-red-text text-[1.6rem] md:text-[1.9rem] mx-0.5">{total}</span>件／{from}〜{to}件を表示中
+          <span className="mr-3">検索結果一覧</span>
+          {loading ? '読み込んでいます…' : <>全<span className="text-accent-red-text text-[1.6rem] md:text-[1.9rem] mx-0.5">{total}</span>件／{from}〜{to}件を表示中</>}
         </p>
 
         {/* 選択中の条件 */}
         <div className="flex flex-col sm:flex-row border border-accent-red-text mb-3">
           <p className="bg-accent-red-text text-white font-round font-bold px-5 py-3 sm:w-[11rem] shrink-0 text-center">選択中の条件</p>
           <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-            {chips.length === 0 && <li className="text-[0.85rem] text-ink-sub">条件は、選ばれていません（すべての病院）</li>}
+            {chips.length === 0 && <li className="text-[0.85rem] text-ink-sub">条件は、選ばれていません</li>}
             {chips.map((c) => (
               <li key={c.key}>
                 <button onClick={() => update(c.clear)} className="inline-flex items-center gap-1.5 bg-cream-100 border border-gold px-3 py-1 text-[0.85rem]" aria-label={`${c.label}の条件を外す`}>
@@ -130,16 +141,22 @@ export const SearchResultsPage = () => {
 
         {/* 再検索 */}
         <form
-          onSubmit={(e) => { e.preventDefault(); update({ q: draft.q, pref: draft.pref, dept: draft.dept, day: draft.day, slot: draft.slot }); }}
-          className="bg-cream-50 p-4 md:p-6 mb-6 grid gap-3 md:grid-cols-2 lg:grid-cols-5"
+          onSubmit={(e) => { e.preventDefault(); update({ q: draft.q, pref: draft.pref, kind: draft.kind, dept: draft.dept, day: draft.day, slot: draft.slot }); }}
+          className="bg-cream-50 p-4 md:p-6 mb-6 grid gap-3 md:grid-cols-2 lg:grid-cols-6"
         >
-          <label className="md:col-span-2 lg:col-span-2 text-[0.8rem]">キーワード（院名・地名・駅名）
-            <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="エリアを絞り込む" className={`${field} mt-1`} />
+          <label className="md:col-span-2 lg:col-span-2 text-[0.8rem]">キーワード（名前・地名・診療科）
+            <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="例：渋谷　内科" className={`${field} mt-1`} />
           </label>
           <label className="text-[0.8rem]">エリア
             <select value={draft.pref} onChange={(e) => setDraft({ ...draft, pref: e.target.value })} className={`${field} mt-1`}>
-              <option value="">すべて</option>
+              <option value="">選んでください</option>
               {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </label>
+          <label className="text-[0.8rem]">種類
+            <select value={draft.kind} onChange={(e) => setDraft({ ...draft, kind: e.target.value })} className={`${field} mt-1`}>
+              <option value="">病院・診療所</option>
+              {KINDS.map((k) => <option key={k.key} value={k.key}>{k.label}</option>)}
             </select>
           </label>
           <label className="text-[0.8rem]">診療科目
@@ -162,7 +179,7 @@ export const SearchResultsPage = () => {
               </select>
             </label>
           </div>
-          <div className="md:col-span-2 lg:col-span-5 text-center"><Button type="submit" icon={null}>この条件で再検索する</Button></div>
+          <div className="md:col-span-2 lg:col-span-6 text-center"><Button type="submit" icon={null}>この条件で再検索する</Button></div>
         </form>
 
         <div className="mb-6 text-center">
@@ -171,16 +188,29 @@ export const SearchResultsPage = () => {
           </button>
         </div>
         {showMap && (
-          <FacilityMap items={shown} selectedId={selectedId} onSelect={setSelectedId} className="h-[300px] md:h-[380px] mb-8" />
+          <FacilityMap items={shown.filter((h) => h.lat !== null)} selectedId={selectedId} onSelect={setSelectedId} className="h-[300px] md:h-[380px] mb-8" />
         )}
 
         <AdBanner className="h-[60px] md:h-[75px] mb-8" />
 
-        {total === 0 ? (
+        {!params.pref ? (
+          <div className="bg-white border border-gold p-6 md:p-8">
+            <p className="mb-4 text-center font-round font-bold">まず、エリア（都道府県）を選んでください</p>
+            <ul className="flex flex-wrap justify-center gap-2">
+              {PREFECTURES.map((p) => (
+                <li key={p}><button onClick={() => update({ pref: p })} className="min-h-[44px] px-4 bg-cream-100 hover:bg-cream-200 border border-gold text-[0.9rem]">{p}</button></li>
+              ))}
+            </ul>
+          </div>
+        ) : loading ? (
+          <p className="text-center py-10" role="status">データを読み込んでいます…（初回は少し時間がかかります）</p>
+        ) : error ? (
+          <p className="text-center py-10">データを読み込めませんでした。通信を確認して、もう一度お試しください。</p>
+        ) : total === 0 ? (
           <div className="bg-white border border-gold p-8 text-center">
-            <p className="mb-2">条件に合う病院が、見つかりませんでした。</p>
-            <p className="text-[0.85rem] mb-5">条件を減らして、もう一度お試しください。（いまの仮データは、東京・大阪・福岡・愛知・北海道のみです）</p>
-            <Button to="/search/results" icon={null}>条件をすべて外す</Button>
+            <p className="mb-2">条件に合う病院・診療所が、見つかりませんでした。</p>
+            <p className="text-[0.85rem] mb-5">条件を減らして、もう一度お試しください。</p>
+            <Button to={`/search/results?pref=${encodeURIComponent(params.pref)}`} icon={null}>条件をすべて外す</Button>
           </div>
         ) : (
           <ul className="grid gap-5">
@@ -199,7 +229,7 @@ export const SearchResultsPage = () => {
           </nav>
         )}
 
-        <p className="mt-8 text-[0.75rem] text-ink-sub">出典：{DATA_SOURCE.label}（{DATA_SOURCE.fetchedAt} 時点）。受診の前に、必ず各医療機関へご確認ください。</p>
+        <p className="mt-8 text-[0.75rem] text-ink-sub">出典：{DATA_SOURCE_NAME}（{asOfLabel(DATA_ASOF)}時点）。報告された内容がそのまま載っており、古い情報や誤りを含む場合があります。受診の前に、必ず各医療機関へご確認ください。</p>
       </div>
     </>
   );
