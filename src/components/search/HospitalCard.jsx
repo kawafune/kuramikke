@@ -8,11 +8,12 @@ import { FavoriteButton } from './FavoriteButton';
 import { TodayStatus } from './TodayStatus';
 import { KIND_LABEL } from '../../data/medical';
 import { mapsUrl } from '../../lib/maps';
+import { formatKm } from '../../lib/distance';
 
 const MAX_DEPARTMENTS = 6;
 
 // 検索結果の医療機関カード（原案08）。公的データには電話番号が無いため、公式サイトとGoogleマップへの導線を出す
-export const HospitalCard = ({ h, selected = false, onSelect }) => (
+export const HospitalCard = ({ h, selected = false, onSelect, distanceKm }) => (
   <li>
     <article
       className={`bg-white border p-5 md:p-6 ${selected ? 'border-accent-red-text border-2' : 'border-gold'}`}
@@ -20,7 +21,10 @@ export const HospitalCard = ({ h, selected = false, onSelect }) => (
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="mb-1"><span className="inline-block bg-cream-200 text-[0.7rem] px-2 py-0.5">{KIND_LABEL[h.kind]}</span></p>
+          <p className="mb-1 flex flex-wrap items-center gap-2">
+            <span className="inline-block bg-cream-200 text-[0.7rem] px-2 py-0.5">{KIND_LABEL[h.kind]}</span>
+            {distanceKm !== undefined && <span className="inline-block bg-[#2A7A73] text-white text-[0.75rem] font-bold px-2 py-0.5">現在地から{formatKm(distanceKm)}</span>}
+          </p>
           <h3 className="text-[1.15rem] md:text-[1.3rem] border-l-[6px] border-gold pl-3">
             <Link to={`/hospitals/${h.id}`} className="hover:text-gold-deep">{h.name}</Link>
           </h3>

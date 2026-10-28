@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, X, Map as MapIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Map as MapIcon, LocateFixed } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { SectionTitle } from '../components/ui/SectionTitle';
 import { Button } from '../components/ui/Button';
@@ -12,6 +12,7 @@ import { EmergencyNotice } from '../components/search/EmergencyNotice';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { PREFECTURES } from '../data/nav';
 import { todayStatus } from '../lib/today';
+import { distanceKm } from '../lib/distance';
 import { usePrefData } from '../hooks/useMedical';
 import { DEPARTMENTS, FEATURE_LIST, KINDS, PREF_CODES, WEEKDAYS, DATA_SOURCE_NAME, asOfLabel, DATA_ASOF, searchFacilities } from '../data/medical';
 
@@ -24,6 +25,7 @@ const readParams = (sp) => ({
   pref: sp.get('pref') ?? '',
   dept: sp.get('dept') ?? '',
   kind: sp.get('kind') ?? '',
+  sort: sp.get('sort') ?? '',
   day: sp.get('day') ?? '',
   slot: sp.get('slot') ?? '',
   now: sp.get('now') === '1',
@@ -37,6 +39,7 @@ const toQuery = (p) => {
   if (p.pref) sp.set('pref', p.pref);
   if (p.dept) sp.set('dept', p.dept);
   if (p.kind) sp.set('kind', p.kind);
+  if (p.sort) sp.set('sort', p.sort);
   if (p.day !== '') sp.set('day', p.day);
   if (p.slot !== '') sp.set('slot', p.slot);
   if (p.now) sp.set('now', '1');
@@ -55,6 +58,8 @@ export const SearchResultsPage = () => {
   const [showMap, setShowMap] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [draft, setDraft] = useState(params);
+  const [loc, setLoc] = useState(null); // 現在地。この端末の中だけで使う（URLにも、サーバーにも出さない）
+  const [geo, setGeo] = useState('idle'); // idle / loading / denied / error
 
   const code = PREF_CODES[params.pref] ?? '';
   const { items, loading, error } = usePrefData(code);
@@ -63,6 +68,13 @@ export const SearchResultsPage = () => {
   const results = items
     ? searchFacilities(items, params).filter((h) => !params.now || todayStatus(h.schedule, nowDate).kind === 'open')
     : [];
+  // 近い順：現在地がわかっているときだけ。座標が無い施設は、最後に並べる
+  const near = params.sort === 'near' && loc !== null;
+  const distances = new Map();
+  if (near) {
+    results.forEach((h) => { if (h.lat !== null) distances.set(h.id, distanceKm(loc, h)); });
+    results.sort((a, b) => (distances.get(a.id) ?? Infinity) - (distances.get(b.id) ?? Infinity));
+  }
   const total = results.length;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const page = Math.min(params.page, pages);
@@ -84,6 +96,15 @@ export const SearchResultsPage = () => {
     ...params.features.map((f) => ({ key: f, label: FEATURE_LIST.find((x) => x.key === f)?.label ?? f, clear: { features: params.features.filter((x) => x !== f) } })),
   ].filter(Boolean);
 
+  const askLocation = () => {
+    if (!navigator.geolocation) { setGeo('error'); return; }
+    setGeo('loading');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { setLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setGeo('idle'); update({ sort: 'near' }); },
+      (err) => setGeo(err.code === 1 ? 'denied' : 'error'),
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 },
+    );
+  };
   const toggleFeature = (key) => update({ features: params.features.includes(key) ? params.features.filter((x) => x !== key) : [...params.features, key] });
   const pageLink = (n) => `?${toQuery({ ...params, page: n }).toString()}`;
 
@@ -182,6 +203,20 @@ export const SearchResultsPage = () => {
           <div className="md:col-span-2 lg:col-span-6 text-center"><Button type="submit" icon={null}>この条件で再検索する</Button></div>
         </form>
 
+        <div className="mb-4 text-center">
+          {near ? (
+            <button onClick={() => update({ sort: '' })} className="inline-flex items-center gap-2 min-h-[44px] px-5 bg-[#2A7A73] text-white font-round font-bold">
+              <LocateFixed size={18} aria-hidden="true" />近い順に並べています（もとに戻す）
+            </button>
+          ) : (
+            <button onClick={askLocation} disabled={geo === 'loading'} className="inline-flex items-center gap-2 min-h-[44px] px-5 border border-[#2A7A73] text-[#2A7A73] font-round font-bold">
+              <LocateFixed size={18} aria-hidden="true" />{geo === 'loading' ? '現在地を調べています…' : '現在地から近い順に並べる'}
+            </button>
+          )}
+          <p className="mt-2 text-[0.75rem] text-ink-sub">現在地は、この端末の中だけで使い、クラミッケには送りません。</p>
+          {geo === 'denied' && <p role="alert" className="mt-2 text-[0.85rem] text-accent-red-text font-bold">現在地の利用が許可されていません。ブラウザの設定で、位置情報を許可してください。</p>}
+          {geo === 'error' && <p role="alert" className="mt-2 text-[0.85rem] text-accent-red-text font-bold">現在地を調べられませんでした。しばらくしてから、もう一度お試しください。</p>}
+        </div>
         <div className="mb-6 text-center">
           <button onClick={() => setShowMap((v) => !v)} aria-expanded={showMap} className="inline-flex items-center gap-2 min-h-[44px] px-5 border border-gold-deep text-gold-deep font-round font-bold">
             <MapIcon size={18} aria-hidden="true" />{showMap ? '地図を閉じる' : '地図で見る'}
@@ -214,7 +249,7 @@ export const SearchResultsPage = () => {
           </div>
         ) : (
           <ul className="grid gap-5">
-            {shown.map((h) => <HospitalCard key={h.id} h={h} selected={h.id === selectedId} onSelect={setSelectedId} />)}
+            {shown.map((h) => <HospitalCard key={h.id} h={h} selected={h.id === selectedId} onSelect={setSelectedId} distanceKm={distances.get(h.id)} />)}
           </ul>
         )}
 
