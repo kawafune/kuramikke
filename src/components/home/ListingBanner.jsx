@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { CircleArrowRight } from 'lucide-react';
 import logoImg from '../../assets/cralogo.svg';
 import mikeImg from '../../assets/mike.svg';
@@ -6,7 +7,7 @@ import hospitalIco from '../../assets/search_ico.svg';
 
 // 掲載依頼バナー（施設運営者向け）。画像にせずHTMLで組み、文字を読み上げ・拡大できるようにする
 export const ListingBanner = () => (
-  <a href="#" className="group block relative mt-4 md:mt-6 pt-7">
+  <Link to="/business" className="group block relative mt-4 md:mt-6 pt-7">
     {/* 見出しタブ */}
     <span className="absolute top-0 left-0 bg-white border border-b-0 border-gold px-4 md:px-5 pt-1 pb-0.5 font-round font-bold text-gold-deep text-[0.75rem] md:text-[0.85rem] tracking-[0.1em]">
       病院・介護施設運営者のみなさまへ
@@ -25,13 +26,10 @@ export const ListingBanner = () => (
             <span className="text-accent-red-text">掲載</span>しませんか？
           </span>
         </span>
-        {/* 【要人間確認】料金条件の表記 */}
-        <span className="flex justify-center gap-2 md:-mr-4" aria-label="掲載料無料、年間費無料">
-          <span className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-accent-red-text text-white flex flex-col items-center justify-center font-round font-bold leading-tight text-[0.9rem] md:text-[1.1rem]">
-            掲載料<span className="text-[1.3rem] md:text-[1.7rem]">無料</span>
-          </span>
-          <span className="w-20 h-20 md:w-24 md:h-24 mt-6 rounded-full bg-accent-red-text text-white flex flex-col items-center justify-center font-round font-bold leading-tight text-[0.8rem] md:text-[0.95rem]">
-            年間費<span className="text-[1.1rem] md:text-[1.3rem]">無料</span>
+        {/* 料金は、掲載のご案内（/business）で説明する。ここでは「無料」とは書かない */}
+        <span className="flex justify-center md:-mr-4">
+          <span className="w-28 h-28 md:w-36 md:h-36 rounded-full bg-accent-red-text text-white flex flex-col items-center justify-center text-center font-round font-bold leading-tight text-[0.95rem] md:text-[1.15rem]">
+            募集開始の<span className="text-[1.15rem] md:text-[1.5rem]">特典</span>あり
           </span>
         </span>
       </span>
@@ -39,5 +37,5 @@ export const ListingBanner = () => (
     <span className="absolute right-0 bottom-0 flex items-center gap-1.5 bg-gold-deep text-white font-round font-bold text-[0.8rem] pl-6 pr-3 py-1.5 [clip-path:polygon(14px_0,100%_0,100%_100%,0_100%)]">
       詳しくはこちら <CircleArrowRight size={16} aria-hidden="true" />
     </span>
-  </a>
+  </Link>
 );
