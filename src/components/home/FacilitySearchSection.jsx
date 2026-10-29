@@ -20,10 +20,10 @@ const HOSPITAL_LINKS = [
   { label: '専門外来を探す', Icon: Microscope, color: 'text-[#4BB4C8]' },
   { label: '特徴から探す', Icon: HeartPulse, color: 'text-[#F08A9C]', to: '/search/results' },
 ];
-// 老人ホームは、いまは仮のデータ。実データを取り込んだら to を付ける
+// 老人ホーム：実データ（介護サービス情報公表システム）を取り込み済み。費用・入居状況などのデータはまだ無いので、その検索は準備中
 const CARE_LINKS = [
-  { label: '介護施設検索トップ', Icon: House, color: 'text-[#B07A4F]' },
-  { label: '施設種別', Icon: Building2, color: 'text-accent-red' },
+  { label: '介護施設検索トップ', Icon: House, color: 'text-[#B07A4F]', to: '/search/nursing' },
+  { label: '施設種別', Icon: Building2, color: 'text-accent-red', to: '/search/nursing' },
   { label: '今すぐ入居可能', Icon: DoorOpen, color: 'text-[#4BB4C8]' },
   { label: '看護・医療体制から探す', Icon: Accessibility, color: 'text-[#5E9BD6]' },
   { label: '目的から探す', Icon: Target, color: 'text-[#7DB54A]' },

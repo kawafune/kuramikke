@@ -33,6 +33,11 @@ def read_rows(path):
     raise SystemExit(f'文字コードを判定できません：{path}')
 
 
+def short_pref(name):
+    """'東京都'→'東京'、'石川県'→'石川'（北海道はそのまま）。医療機関のデータと表記をそろえる"""
+    return name if name == '北海道' else re.sub(r'[都府県]$', '', name or '')
+
+
 def num(v):
     try:
         x = float(v)
@@ -59,12 +64,12 @@ def main():
             lat, lng = num(r.get('緯度')), num(r.get('経度'))
             addr = nfkc(r.get('住所'))
             by_pref[code].append({
-                'id': r['事業所番号'],           # 事業所番号（10桁）。先頭2桁が都道府県コード
+                'id': f"{r['事業所番号']}-{service}",  # 事業所番号（10桁、先頭2桁が都道府県コード）－サービスコード。同じ事業所が複数のサービスを持つため
                 'service': service,
                 'serviceName': r.get('サービスの種類', ''),
                 'name': nfkc(r['事業所名']),
                 'kana': nfkc(r.get('事業所名カナ')),
-                'pref': r.get('都道府県名', ''),
+                'pref': short_pref(r.get('都道府県名', '')),
                 'city': r.get('市区町村名', ''),
                 'address': addr,
                 'tel': nfkc(r.get('電話番号')) or None,
