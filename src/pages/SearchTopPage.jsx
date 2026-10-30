@@ -43,10 +43,10 @@ export const SearchTopPage = () => {
       <Breadcrumb items={[{ label: '病院・介護施設を探す' }]} />
       <div className="max-w-content mx-auto px-4 py-10 md:py-14">
         <SectionTitle as="h1">病院・介護施設を探す</SectionTitle>
-        <EmergencyNotice />
         <div className="h-8" />
         <SearchTypeTabs active="hospital" />
         <p className="text-right -mt-4 mb-4 text-[0.85rem]"><Link to="/search/favorites" className="text-accent-red-text underline underline-offset-4">お気に入り（{ids.length}件）</Link></p>
+        <EmergencyNotice />
 
         <p className="text-center my-10 md:my-14 font-round font-bold text-[1.05rem] md:text-[1.25rem] tracking-[0.1em]">
           病院・診療所の掲載数

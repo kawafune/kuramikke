@@ -4,6 +4,7 @@ import {
   House, Building2, DoorOpen, Accessibility, Target, Timer, Sparkles,
 } from 'lucide-react';
 import { SectionTitle } from '../ui/SectionTitle';
+import { TopSearch } from './TopSearch';
 
 import { Link } from 'react-router-dom';
 import { useSite } from '../../context/siteContext';
@@ -64,9 +65,10 @@ const LinkGrid = ({ title, links }) => {
 };
 
 export const FacilitySearchSection = () => (
-  <section className="py-12 md:py-14 px-4">
+  <section className="pt-6 pb-12 md:pt-4 md:pb-14 px-4">
     <div className="max-w-content mx-auto">
-      <SectionTitle>病院・介護施設を探す</SectionTitle>
+      <SectionTitle className="!mb-5 md:!mb-5">病院・介護施設を探す</SectionTitle>
+      <TopSearch />
       <LinkGrid title="病院を探す" links={HOSPITAL_LINKS} />
       <LinkGrid title="介護施設を探す" links={CARE_LINKS} />
     </div>
