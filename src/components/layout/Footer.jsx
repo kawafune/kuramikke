@@ -12,6 +12,7 @@ const SUB_LINKS = [
   { label: '掲載のお申込み', to: '/business' },
   { label: 'ご利用規約', to: '/terms' },
   { label: 'プライバシーポリシー', to: '/privacy' },
+  { label: '免責事項', to: '/disclaimer' },
   { label: 'サイトマップ' },
   { label: '運営会社' },
   { label: 'お問い合わせ' },
