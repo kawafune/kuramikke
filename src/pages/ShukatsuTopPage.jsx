@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ShieldCheck, Users, User } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { PageHero } from '../components/ui/PageHero';
+import heroImg from '../assets/shukatsu_hero.webp';
 import { SectionTitle } from '../components/ui/SectionTitle';
 import { RichText } from '../components/ui/RichText';
 import { AdBanner } from '../components/ui/AdBanner';
@@ -113,7 +114,7 @@ export const ShukatsuTopPage = () => {
   return (
     <>
       <Breadcrumb items={[{ label: '終活サポート' }]} />
-      <PageHero title={<>終活<br />サポート</>} />
+      <PageHero title={<>終活<br />サポート</>} image={heroImg} imagePosition="50% 72%" />
 
       <section className="max-w-[820px] mx-auto px-4 py-12 md:py-16 text-center">
         <SectionTitle>はじめてでも、迷わないために</SectionTitle>

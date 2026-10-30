@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, X, Map as MapIcon, LocateFixed } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Map as MapIcon, LocateFixed, SlidersHorizontal } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { SectionTitle } from '../components/ui/SectionTitle';
 import { Button } from '../components/ui/Button';
@@ -12,6 +12,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { PREFECTURES } from '../data/nav';
 import { useKaigoPrefData } from '../hooks/useMedical';
 import { distanceKm } from '../lib/distance';
+import { getLastPref, setLastPref } from '../lib/lastPref';
 import { KAIGO_TYPES, CAPACITY_OPTIONS, PREF_CODES, KAIGO_SOURCE_NAME, searchKaigo } from '../data/kaigo';
 
 const PAGE_SIZE = 10;
@@ -41,6 +42,7 @@ export const NursingSearchPage = () => {
   const params = readParams(sp);
   const [showMap, setShowMap] = useState(false);
   const [draft, setDraft] = useState(params);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const code = PREF_CODES[params.pref] ?? '';
   const { items, loading, error } = useKaigoPrefData(code);
@@ -61,6 +63,8 @@ export const NursingSearchPage = () => {
   const to = Math.min(total, page * PAGE_SIZE);
 
   const update = (next) => setSp(toQuery({ ...params, page: 1, ...next }));
+  useEffect(() => { setLastPref(params.pref); }, [params.pref]);
+  const lastPref = getLastPref();
   const askLocation = () => {
     if (!navigator.geolocation) { setGeo('error'); return; }
     setGeo('loading');
@@ -91,6 +95,12 @@ export const NursingSearchPage = () => {
           {!params.pref ? 'エリアを選んでください' : loading ? '読み込んでいます…' : <>全<span className="text-accent-red-text text-[1.6rem] md:text-[1.9rem] mx-0.5">{total}</span>件／{from}〜{to}件を表示中</>}
         </p>
 
+        <div className="md:hidden mb-4 text-center">
+          <button onClick={() => setPanelOpen((v) => !v)} aria-expanded={panelOpen || !params.pref} className="inline-flex items-center gap-2 min-h-[44px] px-5 border border-gold-deep text-gold-deep font-round font-bold">
+            <SlidersHorizontal size={18} aria-hidden="true" />{panelOpen || !params.pref ? '条件の入力欄を閉じる' : '条件を変える'}
+          </button>
+        </div>
+        <div className={panelOpen || !params.pref ? 'block' : 'hidden md:block'}>
         {/* 再検索 */}
         <form
           onSubmit={(e) => { e.preventDefault(); update({ q: draft.q, pref: draft.pref, type: draft.type, size: draft.size }); }}
@@ -119,6 +129,7 @@ export const NursingSearchPage = () => {
           </label>
           <div className="flex items-end"><Button type="submit" icon={null} className="w-full">この条件で探す</Button></div>
         </form>
+        </div>
 
         {/* 選択中の条件 */}
         <div className="flex flex-col sm:flex-row border border-accent-red-text mb-6">
@@ -166,6 +177,9 @@ export const NursingSearchPage = () => {
         {!params.pref ? (
           <div className="bg-white border border-gold p-6 md:p-8">
             <p className="mb-4 text-center font-round font-bold">まず、エリア（都道府県）を選んでください</p>
+            {lastPref && (
+              <p className="mb-4 text-center"><button onClick={() => update({ pref: lastPref })} className="min-h-[44px] px-5 bg-gold-deep text-white font-round font-bold">前回のエリア「{lastPref}」で探す</button></p>
+            )}
             <ul className="flex flex-wrap justify-center gap-2">
               {PREFECTURES.map((p) => (
                 <li key={p}><button onClick={() => update({ pref: p })} className="min-h-[44px] px-4 bg-cream-100 hover:bg-cream-200 border border-gold text-[0.9rem]">{p}</button></li>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { PREFECTURES } from '../../data/nav';
+import { getLastPref } from '../../lib/lastPref';
 
 const field = 'w-full h-12 px-3 border border-gold rounded bg-white text-[0.95rem] focus:outline-none focus:border-gold-deep';
 
@@ -10,7 +11,7 @@ const field = 'w-full h-12 px-3 border border-gold rounded bg-white text-[0.95re
 export const TopSearch = () => {
   const navigate = useNavigate();
   const [target, setTarget] = useState('hospital');
-  const [pref, setPref] = useState('');
+  const [pref, setPref] = useState(getLastPref); // 前回のエリアを、最初から選んでおく
   const [q, setQ] = useState('');
 
   const submit = (e) => {

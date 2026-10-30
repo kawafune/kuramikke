@@ -119,7 +119,7 @@ export const BUSINESS_PAGES = [
 ];
 
 const OPERATOR = '合同会社Happiino';
-const ADDRESS = '東京都杉並区本天沼3-33-3';
+const ADDRESS = '東京都杉並区'; // 番地までは載せない（代表の意向）。請求があれば開示する旨を、運営会社ページに書く
 const REPRESENTATIVE = '川船 航';
 const MAIL = (subject) => ({ type: 'mailto', label: 'メールでお問い合わせ', subject, body: 'お問い合わせの内容：\n' });
 
@@ -391,9 +391,9 @@ export const LEGAL_PAGES = [
           { type: 'ul', items: [
             `会社名：${OPERATOR}`,
             `代表者：${REPRESENTATIVE}`,
-            `所在地：${ADDRESS}【要人間確認：郵便番号・建物名。自宅兼事務所の場合に、公開してよいか】`,
-            '設立：【要人間確認】',
-            '事業内容：デザイン・ディレクション業務／Webメディア・情報サイトの運営【要人間確認：載せる事業の範囲】',
+            `所在地：${ADDRESS}（番地以降は、ご請求があった場合に、遅滞なくお知らせします）【要専門家確認：特定商取引法などの表示義務に、この書き方で足りるか】`,
+            '設立：2017年3月',
+            '事業内容：デザイン・ディレクション業務／Webメディア・情報サイトの運営',
           ] },
         ],
       },

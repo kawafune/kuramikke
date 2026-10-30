@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, X, Map as MapIcon, LocateFixed } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Map as MapIcon, LocateFixed, SlidersHorizontal } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { SectionTitle } from '../components/ui/SectionTitle';
 import { Button } from '../components/ui/Button';
@@ -14,6 +14,7 @@ import { PREFECTURES } from '../data/nav';
 import { todayStatus } from '../lib/today';
 import { distanceKm } from '../lib/distance';
 import { usePrefData } from '../hooks/useMedical';
+import { getLastPref, setLastPref } from '../lib/lastPref';
 import { DEPARTMENTS, FEATURE_LIST, KINDS, PREF_CODES, WEEKDAYS, DATA_SOURCE_NAME, asOfLabel, DATA_ASOF, searchFacilities } from '../data/medical';
 
 const PAGE_SIZE = 10;
@@ -58,6 +59,7 @@ export const SearchResultsPage = () => {
   const [showMap, setShowMap] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [draft, setDraft] = useState(params);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [loc, setLoc] = useState(null); // 現在地。この端末の中だけで使う（URLにも、サーバーにも出さない）
   const [geo, setGeo] = useState('idle'); // idle / loading / denied / error
 
@@ -83,6 +85,9 @@ export const SearchResultsPage = () => {
   const to = Math.min(total, page * PAGE_SIZE);
 
   const update = (next) => setSp(toQuery({ ...params, page: 1, ...next }));
+  // 選んだエリアを覚えておく（次に探すとき、すぐ選べるように）
+  useEffect(() => { setLastPref(params.pref); }, [params.pref]);
+  const lastPref = getLastPref();
 
   // 選択中の条件（×で外せる）
   const chips = [
@@ -137,6 +142,13 @@ export const SearchResultsPage = () => {
           </ul>
         </div>
 
+        {/* スマホでは、条件の入力欄をたたんで、結果をすぐ見られるようにする（エリアが未選択のときは開く） */}
+        <div className="md:hidden mb-4 text-center">
+          <button onClick={() => setPanelOpen((v) => !v)} aria-expanded={panelOpen || !params.pref} className="inline-flex items-center gap-2 min-h-[44px] px-5 border border-gold-deep text-gold-deep font-round font-bold">
+            <SlidersHorizontal size={18} aria-hidden="true" />{panelOpen || !params.pref ? '条件の入力欄を閉じる' : '条件を変える'}
+          </button>
+        </div>
+        <div className={panelOpen || !params.pref ? 'block' : 'hidden md:block'}>
         {/* 条件を追加する */}
         <div className="flex flex-col sm:flex-row border border-[#2A7A73] mb-8">
           <p className="bg-[#2A7A73] text-white font-round font-bold px-5 py-3 sm:w-[11rem] shrink-0 text-center">条件を追加する</p>
@@ -202,6 +214,22 @@ export const SearchResultsPage = () => {
           </div>
           <div className="md:col-span-2 lg:col-span-6 text-center"><Button type="submit" icon={null}>この条件で再検索する</Button></div>
         </form>
+        </div>
+
+        {/* よく探される診療科目（ワンタッチで絞る） */}
+        {params.pref && (
+          <div className="mb-6">
+            <p className="text-[0.8rem] text-ink-sub mb-2">診療科目をワンタッチで：</p>
+            <ul className="flex flex-wrap gap-2">
+              {DEPARTMENTS.slice(0, 10).map((d) => (
+                <li key={d}>
+                  <button onClick={() => update({ dept: params.dept === d ? '' : d })} aria-pressed={params.dept === d}
+                    className={`min-h-[40px] px-3 border text-[0.85rem] ${params.dept === d ? 'bg-gold-deep text-white border-gold-deep' : 'bg-white text-gold-deep border-gold hover:bg-cream-50'}`}>{d}</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="mb-4 text-center">
           {near ? (
@@ -231,6 +259,9 @@ export const SearchResultsPage = () => {
         {!params.pref ? (
           <div className="bg-white border border-gold p-6 md:p-8">
             <p className="mb-4 text-center font-round font-bold">まず、エリア（都道府県）を選んでください</p>
+            {lastPref && (
+              <p className="mb-4 text-center"><button onClick={() => update({ pref: lastPref })} className="min-h-[44px] px-5 bg-gold-deep text-white font-round font-bold">前回のエリア「{lastPref}」で探す</button></p>
+            )}
             <ul className="flex flex-wrap justify-center gap-2">
               {PREFECTURES.map((p) => (
                 <li key={p}><button onClick={() => update({ pref: p })} className="min-h-[44px] px-4 bg-cream-100 hover:bg-cream-200 border border-gold text-[0.9rem]">{p}</button></li>
