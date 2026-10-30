@@ -12,16 +12,17 @@ const PreparingBadge = () => <span className="whitespace-nowrap text-[0.65rem] l
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { devMode, currentTarget, showTileNav, isAvailable, go, openLogin, logout } = useSite();
+  const { devMode, currentTarget, showTileNav, isAvailable, go, logout } = useSite();
 
   const to = (target) => {
     go(target);
     setIsMenuOpen(false);
   };
 
+  // 開発モードのときだけ「公開表示に戻す」を出す。一般の訪問者には、ボタンを出さない（開発モードには /dev から入る）
   const authButton = devMode
     ? <button onClick={logout} className="shrink-0 whitespace-nowrap h-10 px-6 bg-white border border-gold-deep text-gold-deep font-round font-bold text-[0.85rem] rounded">公開表示に戻す</button>
-    : <button onClick={openLogin} className="shrink-0 whitespace-nowrap h-10 px-6 bg-gold-deep text-white font-round font-bold text-[0.85rem] tracking-[0.15em] rounded shadow-[0_3px_0_theme(colors.gold.shadow)]">ログイン</button>;
+    : null;
 
   return (
     <header className="bg-white sticky top-0 z-50 border-b-[3px] border-gold-line">
@@ -113,7 +114,7 @@ export const Header = () => {
             </ul>
           </nav>
           <div className="p-5 flex flex-col items-center gap-5">
-            <div className="w-full [&>button]:w-full">{authButton}</div>
+            {authButton && <div className="w-full [&>button]:w-full">{authButton}</div>}
             <SnsIcons />
           </div>
         </div>

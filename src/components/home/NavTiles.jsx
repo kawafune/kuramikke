@@ -32,7 +32,7 @@ const Tile = ({ item, onNavigate }) => (
 export const NavTiles = ({ onNavigate }) => {
   const byTarget = Object.fromEntries(NAV_ITEMS.map((n) => [n.target, n]));
   return (
-    <nav aria-label="メインメニュー">
+    <nav aria-label="メインメニュー" className="pt-[5px]">
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1 md:gap-[5px]">
         <Tile item={byTarget.SEARCH} onNavigate={onNavigate} />
         <Tile item={byTarget.SHUKATSU} onNavigate={onNavigate} />

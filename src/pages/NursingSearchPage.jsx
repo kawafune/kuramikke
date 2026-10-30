@@ -161,7 +161,7 @@ export const NursingSearchPage = () => {
         </div>
         {showMap && <FacilityMap items={shown.filter((n) => n.lat !== null)} className="h-[300px] md:h-[380px] mb-8" />}
 
-        <AdBanner className="h-[60px] md:h-[75px] mb-8" />
+        <AdBanner placement="search" className="h-[60px] md:h-[75px] mb-8" />
 
         {!params.pref ? (
           <div className="bg-white border border-gold p-6 md:p-8">

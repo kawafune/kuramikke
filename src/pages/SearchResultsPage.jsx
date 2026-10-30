@@ -110,10 +110,9 @@ export const SearchResultsPage = () => {
 
   return (
     <>
-      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '検索結果' }]} />
+      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '病院を探す', to: '/search' }, { label: '検索結果' }]} />
       <div className="max-w-content mx-auto px-4 py-10 md:py-14">
         <SectionTitle as="h1">病院・介護施設を探す</SectionTitle>
-        <div className="h-6" />
         <SearchTypeTabs active="hospital" />
         <EmergencyNotice compact />
         <div className="h-8" />
@@ -227,7 +226,7 @@ export const SearchResultsPage = () => {
           <FacilityMap items={shown.filter((h) => h.lat !== null)} selectedId={selectedId} onSelect={setSelectedId} className="h-[300px] md:h-[380px] mb-8" />
         )}
 
-        <AdBanner className="h-[60px] md:h-[75px] mb-8" />
+        <AdBanner placement="search" className="h-[60px] md:h-[75px] mb-8" />
 
         {!params.pref ? (
           <div className="bg-white border border-gold p-6 md:p-8">

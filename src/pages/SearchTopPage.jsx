@@ -40,10 +40,9 @@ export const SearchTopPage = () => {
 
   return (
     <>
-      <Breadcrumb items={[{ label: '病院・介護施設を探す' }]} />
+      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '病院を探す' }]} />
       <div className="max-w-content mx-auto px-4 py-10 md:py-14">
         <SectionTitle as="h1">病院・介護施設を探す</SectionTitle>
-        <div className="h-8" />
         <SearchTypeTabs active="hospital" />
         <p className="text-right -mt-4 mb-4 text-[0.85rem]"><Link to="/search/favorites" className="text-accent-red-text underline underline-offset-4">お気に入り（{ids.length}件）</Link></p>
         <EmergencyNotice />
@@ -108,8 +107,8 @@ export const SearchTopPage = () => {
         </div>
 
         <div className="mt-10 grid gap-3 sm:grid-cols-2">
-          <AdBanner className="h-[80px]" />
-          <AdBanner className="h-[80px] hidden sm:flex" />
+          <AdBanner placement="search" className="h-[80px]" />
+          <AdBanner placement="search" className="h-[80px] hidden sm:flex" />
         </div>
         <p className="mt-6 text-[0.8rem] text-ink-sub">出典：{DATA_SOURCE_NAME}（{index ? asOfLabel(index.asOf) : '…'}時点）。報告された内容がそのまま載っており、古い情報や誤りを含む場合があります。受診の前に、必ず各医療機関へご確認ください。</p>
       </div>

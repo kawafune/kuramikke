@@ -13,9 +13,9 @@ const SUB_LINKS = [
   { label: 'ご利用規約', to: '/terms' },
   { label: 'プライバシーポリシー', to: '/privacy' },
   { label: '免責事項', to: '/disclaimer' },
-  { label: 'サイトマップ' },
-  { label: '運営会社' },
-  { label: 'お問い合わせ' },
+  { label: 'サイトマップ', to: '/sitemap' },
+  { label: '運営会社', to: '/company' },
+  { label: 'お問い合わせ', to: '/contact' },
 ];
 
 const PageTopButton = () => {

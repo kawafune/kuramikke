@@ -81,7 +81,7 @@ export const NursingDetailPage = () => {
           <Button to={`/search/nursing?pref=${encodeURIComponent(n.pref)}`} icon={null}>検索結果にもどる</Button>
           <Button to="/search" icon={null} variant="external">病院を探す</Button>
         </div>
-        <AdBanner className="h-[60px] md:h-[75px] mt-8" />
+        <AdBanner placement="search" className="h-[60px] md:h-[75px] mt-8" />
       </div>
     </>
   );

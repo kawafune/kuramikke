@@ -25,7 +25,7 @@ export const TopPage = ({ onTryAccess }) => {
 
       {devMode && (
         <div className="max-w-content mx-auto px-4 py-3">
-          <AdBanner className="h-[50px] md:h-[60px]" />
+          <AdBanner placement="home-top" className="h-[50px] md:h-[60px]" />
         </div>
       )}
 
@@ -36,7 +36,7 @@ export const TopPage = ({ onTryAccess }) => {
       {devMode && (
         <div className="max-w-content mx-auto px-4 py-5 md:py-6 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
           {/* スマホでは1枠だけにして、縦に間延びしないようにする */}
-          {[0, 1, 2].map((i) => <AdBanner key={i} className={`h-[70px] md:h-[90px] ${i > 0 ? 'hidden sm:flex' : ''}`} />)}
+          {[0, 1, 2].map((i) => <AdBanner key={i} placement="home-mid" className={`h-[70px] md:h-[90px] ${i > 0 ? 'hidden sm:flex' : ''}`} />)}
         </div>
       )}
 
@@ -45,7 +45,7 @@ export const TopPage = ({ onTryAccess }) => {
       {businessOpen && (
         <div className="max-w-content mx-auto px-4 pb-12 md:pb-16">
           <ListingBanner />
-          {devMode && <AdBanner className="h-[60px] md:h-[75px] mt-5" />}
+          {devMode && <AdBanner placement="home-bottom" className="h-[60px] md:h-[75px] mt-5" />}
         </div>
       )}
     </>

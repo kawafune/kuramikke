@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { LoginModal } from './components/ui/LoginModal';
@@ -17,6 +17,8 @@ import { GuideArticlePage } from './pages/GuideArticlePage';
 import { ComingSoonPage } from './pages/ComingSoonPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { InfoPage } from './pages/InfoPage';
+import { SitemapPage } from './pages/SitemapPage';
+import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
 
@@ -47,6 +49,13 @@ const DevOnly = ({ title, children }) => {
   return devMode ? children : <ComingSoonPage title={title} />;
 };
 
+// 開発モードへの入口（どこにもリンクしない）。/dev を開くと、パスワードの入力が出る
+const DevEntry = () => {
+  const { openLogin } = useSite();
+  useEffect(() => { openLogin(); }, [openLogin]);
+  return <Navigate to="/" replace />;
+};
+
 const Shell = () => {
   const { devMode, go, loginOpen, closeLogin, login } = useSite();
   return (
@@ -58,6 +67,8 @@ const Shell = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={HOME === 'shukatsu' && !devMode ? <ShukatsuTopPage /> : <TopPage onTryAccess={go} />} />
+          <Route path="/dev" element={<DevEntry />} />
+          <Route path="/sitemap" element={<SitemapPage />} />
           <Route path="/shukatsu" element={<ShukatsuTopPage />} />
           <Route path="/shukatsu/:slug" element={<GuideArticlePage />} />
           <Route path="/portal" element={<DevOnly title="ポータル型のTOP"><TopPage onTryAccess={go} /></DevOnly>} />
@@ -67,7 +78,8 @@ const Shell = () => {
           <Route path="/search/nursing" element={<DevOnly title="老人ホームを探す"><NursingSearchPage /></DevOnly>} />
           <Route path="/nursing-homes/:id" element={<DevOnly title="老人ホームを探す"><NursingDetailPage /></DevOnly>} />
           <Route path="/hospitals/:id" element={<DevOnly title="病院・介護施設を探す"><HospitalDetailPage /></DevOnly>} />
-          <Route path="/column" element={<DevOnly title="コラムを読む"><ComingSoonPage title="コラムを読む" /></DevOnly>} />
+          <Route path="/column" element={<ColumnListPage />} />
+          <Route path="/column/:slug" element={<ColumnArticlePage />} />
           <Route path="/community" element={<DevOnly title="絆を見つける"><ComingSoonPage title="絆を見つける" /></DevOnly>} />
           {[...BUSINESS_PAGES, ...LEGAL_PAGES].map((p) => <Route key={p.path} path={p.path} element={<InfoPage page={p} />} />)}
           <Route path="*" element={<NotFoundPage />} />

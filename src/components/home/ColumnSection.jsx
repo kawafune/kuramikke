@@ -4,7 +4,9 @@ import { SectionTitle } from '../ui/SectionTitle';
 import { Button } from '../ui/Button';
 import { CategoryTag } from '../ui/Tags';
 import { PhotoPlaceholder } from '../ui/PhotoPlaceholder';
-import { COLUMNS } from '../../data/dummy';
+import { Link } from 'react-router-dom';
+import { useSite } from '../../context/siteContext';
+import { getColumnItems, CATEGORY_LABEL } from '../../data/column';
 
 // 送り矢印（原案の金色の丸ボタン）
 const Arrow = ({ dir, onClick }) => (
@@ -20,17 +22,20 @@ const Arrow = ({ dir, onClick }) => (
 
 const ColumnCard = ({ col }) => (
   <article className="bg-white p-[10px] h-full flex flex-col">
-    <PhotoPlaceholder image={col.image} art={col.art} alt={col.title} className="aspect-square" />
-    <div className="mt-2"><CategoryTag>{col.category}</CategoryTag></div>
+    <PhotoPlaceholder art={col.art} alt={col.title} className="aspect-square" />
+    <div className="mt-2"><CategoryTag>{CATEGORY_LABEL[col.category]}</CategoryTag></div>
     <h3 className="font-sans font-normal text-[0.9rem] leading-relaxed mt-2 mb-3 line-clamp-2">
-      <a href="#" className="hover:text-gold-deep">{col.title}</a>
+      <Link to={col.to} className="hover:text-gold-deep">{col.title}</Link>
     </h3>
-    <p className="mt-auto bg-cream-300 text-[0.75rem] px-2 py-1">公開日時：{col.date}</p>
+    {col.date && <p className="mt-auto bg-cream-300 text-[0.75rem] px-2 py-1">公開日時：{col.date.replaceAll('-', '.')}</p>}
   </article>
 );
 
 export const ColumnSection = ({ onNavigate }) => {
   const trackRef = useRef(null);
+  const { devMode } = useSite();
+  const columns = getColumnItems(devMode).slice(-6).reverse(); // 新しい順に、最大6件
+  if (columns.length === 0) return null;
   const scroll = (dir) => {
     const el = trackRef.current;
     if (!el) return;
@@ -48,8 +53,8 @@ export const ColumnSection = ({ onNavigate }) => {
           ref={trackRef}
           className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-4 md:gap-12 px-[12%] md:px-0 scroll-px-[12%] md:scroll-px-0"
         >
-          {COLUMNS.map((col) => (
-            <li key={col.id} className="snap-start shrink-0 basis-[76%] sm:basis-[45%] md:basis-[calc((100%-6rem)/3)]">
+          {columns.map((col) => (
+            <li key={col.key} className="snap-start shrink-0 basis-[76%] sm:basis-[45%] md:basis-[calc((100%-6rem)/3)]">
               <ColumnCard col={col} />
             </li>
           ))}

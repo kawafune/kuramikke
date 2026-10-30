@@ -37,7 +37,7 @@ export const HospitalDetailPage = () => {
 
   return (
     <>
-      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '検索結果', to: '/search/results' }, { label: h.name }]} />
+      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '病院を探す', to: '/search' }, { label: '検索結果', to: `/search/results?pref=${encodeURIComponent(h.pref)}` }, { label: h.name }]} />
       <div className="max-w-[900px] mx-auto px-4 py-10 md:py-14">
         <EmergencyNotice compact />
         <article className="relative border border-gold bg-white p-5 md:p-10 mt-6">
@@ -98,7 +98,7 @@ export const HospitalDetailPage = () => {
           <Button to="/search/results" icon={null}>検索結果にもどる</Button>
           <Button to="/search" icon={null} variant="external">病院を探しなおす</Button>
         </div>
-        <AdBanner className="h-[60px] md:h-[75px] mt-8" />
+        <AdBanner placement="search" className="h-[60px] md:h-[75px] mt-8" />
       </div>
     </>
   );
