@@ -10,6 +10,7 @@ import { EmergencyNotice } from '../components/search/EmergencyNotice';
 import { useFavorites } from '../hooks/useFavorites';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { REGIONS } from '../data/regions';
+import { getLastPref } from '../lib/lastPref';
 import { DEPARTMENTS, DATA_SOURCE_NAME, asOfLabel, loadIndex } from '../data/medical';
 import { PREFECTURES } from '../data/nav';
 
@@ -20,7 +21,7 @@ export const SearchTopPage = () => {
   usePageTitle('病院・介護施設を探す');
   const navigate = useNavigate();
   const [q, setQ] = useState('');
-  const [pref, setPref] = useState('');
+  const [pref, setPref] = useState(getLastPref); // 前回のエリアを、最初から選んでおく
   const [dept, setDept] = useState('');
   const [tab, setTab] = useState('area'); // area＝エリアから / route＝路線から（準備中）
   const { ids } = useFavorites();
@@ -53,13 +54,14 @@ export const SearchTopPage = () => {
           から検索する
         </p>
 
-        <form onSubmit={(e) => { e.preventDefault(); go({ q }); }} className="max-w-[640px] mx-auto text-center">
+        <form onSubmit={(e) => { e.preventDefault(); go({ q, pref: getLastPref() }); }} className="max-w-[640px] mx-auto text-center">
           <label className="relative block">
             <span className="sr-only">キーワードで探す</span>
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-sub" aria-hidden="true" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="診療科目・名前・地名などを入力（例：渋谷　内科）" className={`${field} pl-10`} />
           </label>
           <Button type="submit" icon={null} className="mt-5">この条件で検索する</Button>
+          {getLastPref() && <p className="mt-2 text-[0.8rem] text-ink-sub">前回のエリア「{getLastPref()}」の中から探します。ほかのエリアは、下から選んでください。</p>}
         </form>
 
         {/* エリア／路線 */}

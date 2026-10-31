@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { SectionTitle } from '../ui/SectionTitle';
 import { RichText } from '../ui/RichText';
 
@@ -16,12 +17,12 @@ export const ListingSection = ({ groups, adNote, quiet = false }) => (
 
     <p className="mb-4 text-[0.85rem] bg-cream-50 p-4 leading-relaxed">
       <span className="inline-block bg-gold-deep text-white text-[0.7rem] px-2 py-0.5 mr-2 align-middle">広告</span>
-      <RichText text="このページの事業者の紹介は、広告です。掲載の審査基準は、準備ができ次第、公開します。【要人間確認：紹介料（成果報酬）の扱いを決めてから、文面を確定する】" />
+      このコーナーでの事業者の紹介は、広告（PR）です。提携事業者からの、広告掲載料または紹介手数料に基づいて運営しています。掲載基準については、<Link to="/business/standards" className="text-gold-deep underline underline-offset-4">こちら</Link>をご覧ください。
       {adNote && <><br /><RichText text={adNote} /></>}
     </p>
-    {/* 営業の電話を、クラミッケがしていると誤解されないための注記 */}
+    {/* 営業の電話を、クラミッケがしていると誤解されないための注記。個人情報の提供は、プライバシーポリシーにも書いてある */}
     <p className="mb-6 text-[0.85rem] leading-relaxed">
-      資料請求やお問い合わせをされると、<strong>各専門の事業者からご連絡があります</strong>。クラミッケから、お電話することはありません。
+      資料請求やお問い合わせフォームに入力された個人情報は、<strong>ご指定の事業者へ提供され、各事業者から直接ご連絡があります</strong>。クラミッケから、営業のお電話をすることはありません。（くわしくは<Link to="/privacy" className="text-gold-deep underline underline-offset-4">プライバシーポリシー</Link>）
     </p>
 
     <div className={`grid gap-4 ${quiet ? '' : 'sm:grid-cols-2'}`}>

@@ -31,7 +31,13 @@ const Block = ({ block }) => {
               <span className="shrink-0 w-9 h-9 rounded-full bg-gold-deep text-white font-round font-bold flex items-center justify-center" aria-hidden="true">{i + 1}</span>
               <span>
                 <strong className="block font-round text-[1rem]">{it.title}</strong>
-                <span className="block"><RichText text={it.text} /></span>
+                {it.text && <span className="block"><RichText text={it.text} /></span>}
+                {it.bullets && (
+                  <span className="block mt-1">
+                    {it.bullets.map((t) => <span key={t} className="block pl-4 -indent-4 text-[0.95rem]">・<RichText text={t} /></span>)}
+                  </span>
+                )}
+                {it.after && <span className="block mt-2 text-[0.9rem] bg-cream-50 p-2"><RichText text={it.after} /></span>}
                 {it.to && <Link to={it.to} className="text-gold-deep underline underline-offset-4 text-[0.9rem]">くわしく見る</Link>}
               </span>
             </li>

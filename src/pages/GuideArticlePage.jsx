@@ -64,6 +64,11 @@ export const GuideArticlePage = () => {
             <div className="border border-gold p-5 text-[0.85rem]">
               <p className="font-round font-bold mb-1">ご注意</p>
               <p><RichText text={page.note} /></p>
+              {page.officialLinks && (
+                <ul className="mt-3 space-y-1">
+                  {page.officialLinks.map((t) => <li key={t}>・<RichText text={t} /></li>)}
+                </ul>
+              )}
               {devMode && <p className="mt-2 text-ink-sub"><RichText text={page.sources} /></p>}
             </div>
           </div>
