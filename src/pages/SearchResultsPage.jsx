@@ -15,6 +15,7 @@ import { todayStatus } from '../lib/today';
 import { distanceKm } from '../lib/distance';
 import { usePrefData } from '../hooks/useMedical';
 import { getLastPref, setLastPref } from '../lib/lastPref';
+import { citiesOf } from '../lib/cities';
 import { DEPARTMENTS, FEATURE_LIST, KINDS, PREF_CODES, WEEKDAYS, DATA_SOURCE_NAME, asOfLabel, DATA_ASOF, searchFacilities } from '../data/medical';
 
 const PAGE_SIZE = 10;
@@ -26,6 +27,7 @@ const readParams = (sp) => ({
   pref: sp.get('pref') ?? '',
   dept: sp.get('dept') ?? '',
   kind: sp.get('kind') ?? '',
+  city: sp.get('city') ?? '',
   sort: sp.get('sort') ?? '',
   day: sp.get('day') ?? '',
   slot: sp.get('slot') ?? '',
@@ -40,6 +42,7 @@ const toQuery = (p) => {
   if (p.pref) sp.set('pref', p.pref);
   if (p.dept) sp.set('dept', p.dept);
   if (p.kind) sp.set('kind', p.kind);
+  if (p.city) sp.set('city', p.city);
   if (p.sort) sp.set('sort', p.sort);
   if (p.day !== '') sp.set('day', p.day);
   if (p.slot !== '') sp.set('slot', p.slot);
@@ -51,6 +54,62 @@ const toQuery = (p) => {
 
 const SLOTS = ['午前', '午後'];
 
+// 条件の入力欄。URLが変わるたびに作り直して（key）、入力中の内容を、いまの検索条件にそろえる
+const RefineForm = ({ params, items, onSubmit }) => {
+  const [draft, setDraft] = useState(params);
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); onSubmit({ q: draft.q, pref: draft.pref, city: draft.pref === params.pref ? draft.city : '', kind: draft.kind, dept: draft.dept, day: draft.day, slot: draft.slot }); }}
+      className="bg-cream-50 p-4 md:p-6 mb-6 grid gap-3 md:grid-cols-2 lg:grid-cols-6"
+    >
+      <label className="md:col-span-2 lg:col-span-2 text-[0.8rem]">キーワード（名前・地名・診療科）
+        <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="例：渋谷　内科" className={`${field} mt-1`} />
+      </label>
+      <label className="text-[0.8rem]">エリア
+        <select value={draft.pref} onChange={(e) => setDraft({ ...draft, pref: e.target.value })} className={`${field} mt-1`}>
+          <option value="">選んでください</option>
+          {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
+        </select>
+      </label>
+      {draft.pref && draft.pref === params.pref && (
+        <label className="text-[0.8rem]">市区町村
+          <select value={draft.city} onChange={(e) => setDraft({ ...draft, city: e.target.value })} className={`${field} mt-1`} disabled={!items}>
+            <option value="">すべて</option>
+            {citiesOf(items).map((c) => <option key={c.name} value={c.name}>{c.name}（{c.n}）</option>)}
+          </select>
+        </label>
+      )}
+      <label className="text-[0.8rem]">種類
+        <select value={draft.kind} onChange={(e) => setDraft({ ...draft, kind: e.target.value })} className={`${field} mt-1`}>
+          <option value="">病院・診療所</option>
+          {KINDS.map((k) => <option key={k.key} value={k.key}>{k.label}</option>)}
+        </select>
+      </label>
+      <label className="text-[0.8rem]">診療科目
+        <select value={draft.dept} onChange={(e) => setDraft({ ...draft, dept: e.target.value })} className={`${field} mt-1`}>
+          <option value="">すべて</option>
+          {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
+        </select>
+      </label>
+      <div className="grid grid-cols-2 gap-2">
+        <label className="text-[0.8rem]">曜日
+          <select value={draft.day} onChange={(e) => setDraft({ ...draft, day: e.target.value })} className={`${field} mt-1`}>
+            <option value="">指定なし</option>
+            {WEEKDAYS.map((d, i) => <option key={d} value={i}>{d}</option>)}
+          </select>
+        </label>
+        <label className="text-[0.8rem]">時間
+          <select value={draft.slot} onChange={(e) => setDraft({ ...draft, slot: e.target.value })} className={`${field} mt-1`}>
+            <option value="">指定なし</option>
+            {SLOTS.map((s, i) => <option key={s} value={i}>{s}</option>)}
+          </select>
+        </label>
+      </div>
+      <div className="md:col-span-2 lg:col-span-6 text-center"><Button type="submit" icon={null}>この条件で再検索する</Button></div>
+    </form>
+  );
+};
+
 // 検索結果（原案08）
 export const SearchResultsPage = () => {
   usePageTitle('検索結果｜病院を探す');
@@ -58,7 +117,6 @@ export const SearchResultsPage = () => {
   const params = readParams(sp);
   const [showMap, setShowMap] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [draft, setDraft] = useState(params);
   const [panelOpen, setPanelOpen] = useState(false);
   const [loc, setLoc] = useState(null); // 現在地。この端末の中だけで使う（URLにも、サーバーにも出さない）
   const [geo, setGeo] = useState('idle'); // idle / loading / denied / error
@@ -84,7 +142,8 @@ export const SearchResultsPage = () => {
   const from = total ? (page - 1) * PAGE_SIZE + 1 : 0;
   const to = Math.min(total, page * PAGE_SIZE);
 
-  const update = (next) => setSp(toQuery({ ...params, page: 1, ...next }));
+  // エリアを変えたら、市区町村の選択は外す
+  const update = (next) => setSp(toQuery({ ...params, page: 1, ...('pref' in next && next.pref !== params.pref ? { city: '' } : {}), ...next }));
   // 選んだエリアを覚えておく（次に探すとき、すぐ選べるように）
   useEffect(() => { setLastPref(params.pref); }, [params.pref]);
   const lastPref = getLastPref();
@@ -93,6 +152,7 @@ export const SearchResultsPage = () => {
   const chips = [
     params.q && { key: 'q', label: `「${params.q}」`, clear: { q: '' } },
     params.pref && { key: 'pref', label: params.pref, clear: { pref: '' } },
+    params.city && { key: 'city', label: params.city, clear: { city: '' } },
     params.kind && { key: 'kind', label: KINDS.find((k) => k.key === params.kind)?.label ?? params.kind, clear: { kind: '' } },
     params.dept && { key: 'dept', label: params.dept, clear: { dept: '' } },
     params.day !== '' && { key: 'day', label: `${WEEKDAYS[Number(params.day)]}曜日`, clear: { day: '', slot: '' } },
@@ -173,47 +233,7 @@ export const SearchResultsPage = () => {
         </div>
 
         {/* 再検索 */}
-        <form
-          onSubmit={(e) => { e.preventDefault(); update({ q: draft.q, pref: draft.pref, kind: draft.kind, dept: draft.dept, day: draft.day, slot: draft.slot }); }}
-          className="bg-cream-50 p-4 md:p-6 mb-6 grid gap-3 md:grid-cols-2 lg:grid-cols-6"
-        >
-          <label className="md:col-span-2 lg:col-span-2 text-[0.8rem]">キーワード（名前・地名・診療科）
-            <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="例：渋谷　内科" className={`${field} mt-1`} />
-          </label>
-          <label className="text-[0.8rem]">エリア
-            <select value={draft.pref} onChange={(e) => setDraft({ ...draft, pref: e.target.value })} className={`${field} mt-1`}>
-              <option value="">選んでください</option>
-              {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
-          </label>
-          <label className="text-[0.8rem]">種類
-            <select value={draft.kind} onChange={(e) => setDraft({ ...draft, kind: e.target.value })} className={`${field} mt-1`}>
-              <option value="">病院・診療所</option>
-              {KINDS.map((k) => <option key={k.key} value={k.key}>{k.label}</option>)}
-            </select>
-          </label>
-          <label className="text-[0.8rem]">診療科目
-            <select value={draft.dept} onChange={(e) => setDraft({ ...draft, dept: e.target.value })} className={`${field} mt-1`}>
-              <option value="">すべて</option>
-              {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
-            </select>
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            <label className="text-[0.8rem]">曜日
-              <select value={draft.day} onChange={(e) => setDraft({ ...draft, day: e.target.value })} className={`${field} mt-1`}>
-                <option value="">指定なし</option>
-                {WEEKDAYS.map((d, i) => <option key={d} value={i}>{d}</option>)}
-              </select>
-            </label>
-            <label className="text-[0.8rem]">時間
-              <select value={draft.slot} onChange={(e) => setDraft({ ...draft, slot: e.target.value })} className={`${field} mt-1`}>
-                <option value="">指定なし</option>
-                {SLOTS.map((s, i) => <option key={s} value={i}>{s}</option>)}
-              </select>
-            </label>
-          </div>
-          <div className="md:col-span-2 lg:col-span-6 text-center"><Button type="submit" icon={null}>この条件で再検索する</Button></div>
-        </form>
+        <RefineForm key={sp.toString()} params={params} items={items} onSubmit={update} />
         </div>
 
         {/* よく探される診療科目（ワンタッチで絞る） */}

@@ -13,6 +13,7 @@ import { PREFECTURES } from '../data/nav';
 import { useKaigoPrefData } from '../hooks/useMedical';
 import { distanceKm } from '../lib/distance';
 import { getLastPref, setLastPref } from '../lib/lastPref';
+import { citiesOf } from '../lib/cities';
 import { KAIGO_TYPES, CAPACITY_OPTIONS, PREF_CODES, KAIGO_SOURCE_NAME, searchKaigo } from '../data/kaigo';
 
 const PAGE_SIZE = 10;
@@ -23,6 +24,7 @@ const readParams = (sp) => ({
   q: sp.get('q') ?? '',
   pref: sp.get('pref') ?? '',
   type: sp.get('type') ?? '',
+  city: sp.get('city') ?? '',
   size: sp.get('size') ?? '',
   sort: sp.get('sort') ?? '',
   page: Math.max(1, Number(sp.get('page')) || 1),
@@ -30,9 +32,51 @@ const readParams = (sp) => ({
 
 const toQuery = (p) => {
   const sp = new URLSearchParams();
-  ['q', 'pref', 'type', 'size', 'sort'].forEach((k) => p[k] && sp.set(k, p[k]));
+  ['q', 'pref', 'city', 'type', 'size', 'sort'].forEach((k) => p[k] && sp.set(k, p[k]));
   if (p.page > 1) sp.set('page', String(p.page));
   return sp;
+};
+
+// 条件の入力欄。URLが変わるたびに作り直して（key）、入力中の内容を、いまの検索条件にそろえる
+const RefineForm = ({ params, items, onSubmit }) => {
+  const [draft, setDraft] = useState(params);
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); onSubmit({ q: draft.q, pref: draft.pref, city: draft.pref === params.pref ? draft.city : '', type: draft.type, size: draft.size }); }}
+      className="bg-cream-50 p-4 md:p-6 mb-4 grid gap-3 md:grid-cols-2 lg:grid-cols-5"
+    >
+      <label className="md:col-span-2 lg:col-span-5 text-[0.8rem]">キーワード（施設名・地名・運営法人）
+        <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="例：世田谷" className={`${field} mt-1`} />
+      </label>
+      <label className="text-[0.8rem]">エリア
+        <select value={draft.pref} onChange={(e) => setDraft({ ...draft, pref: e.target.value })} className={`${field} mt-1`}>
+          <option value="">選んでください</option>
+          {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
+        </select>
+      </label>
+      {draft.pref && draft.pref === params.pref && (
+        <label className="text-[0.8rem]">市区町村
+          <select value={draft.city} onChange={(e) => setDraft({ ...draft, city: e.target.value })} className={`${field} mt-1`} disabled={!items}>
+            <option value="">すべて</option>
+            {citiesOf(items).map((c) => <option key={c.name} value={c.name}>{c.name}（{c.n}）</option>)}
+          </select>
+        </label>
+      )}
+      <label className="text-[0.8rem]">施設の種類
+        <select value={draft.type} onChange={(e) => setDraft({ ...draft, type: e.target.value })} className={`${field} mt-1`}>
+          <option value="">すべて</option>
+          {KAIGO_TYPES.map((t) => <option key={t.code} value={t.code}>{t.label}</option>)}
+        </select>
+      </label>
+      <label className="text-[0.8rem]">定員
+        <select value={draft.size} onChange={(e) => setDraft({ ...draft, size: e.target.value })} className={`${field} mt-1`}>
+          <option value="">指定なし</option>
+          {CAPACITY_OPTIONS.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+        </select>
+      </label>
+      <div className="flex items-end"><Button type="submit" icon={null} className="w-full">この条件で探す</Button></div>
+    </form>
+  );
 };
 
 // 老人ホームを探す（検索と結果を1ページにまとめている）
@@ -41,7 +85,6 @@ export const NursingSearchPage = () => {
   const [sp, setSp] = useSearchParams();
   const params = readParams(sp);
   const [showMap, setShowMap] = useState(false);
-  const [draft, setDraft] = useState(params);
   const [panelOpen, setPanelOpen] = useState(false);
 
   const code = PREF_CODES[params.pref] ?? '';
@@ -62,7 +105,7 @@ export const NursingSearchPage = () => {
   const from = total ? (page - 1) * PAGE_SIZE + 1 : 0;
   const to = Math.min(total, page * PAGE_SIZE);
 
-  const update = (next) => setSp(toQuery({ ...params, page: 1, ...next }));
+  const update = (next) => setSp(toQuery({ ...params, page: 1, ...('pref' in next && next.pref !== params.pref ? { city: '' } : {}), ...next }));
   useEffect(() => { setLastPref(params.pref); }, [params.pref]);
   const lastPref = getLastPref();
   const askLocation = () => {
@@ -79,6 +122,7 @@ export const NursingSearchPage = () => {
   const chips = [
     params.q && { key: 'q', label: `「${params.q}」`, clear: { q: '' } },
     params.pref && { key: 'pref', label: params.pref, clear: { pref: '' } },
+    params.city && { key: 'city', label: params.city, clear: { city: '' } },
     params.type && { key: 'type', label: KAIGO_TYPES.find((t) => t.code === params.type)?.label ?? params.type, clear: { type: '' } },
     params.size && { key: 'size', label: CAPACITY_OPTIONS.find((o) => o.key === params.size)?.label ?? params.size, clear: { size: '' } },
   ].filter(Boolean);
@@ -102,33 +146,7 @@ export const NursingSearchPage = () => {
         </div>
         <div className={panelOpen || !params.pref ? 'block' : 'hidden md:block'}>
         {/* 再検索 */}
-        <form
-          onSubmit={(e) => { e.preventDefault(); update({ q: draft.q, pref: draft.pref, type: draft.type, size: draft.size }); }}
-          className="bg-cream-50 p-4 md:p-6 mb-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4"
-        >
-          <label className="md:col-span-2 lg:col-span-4 text-[0.8rem]">キーワード（施設名・地名・運営法人）
-            <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="例：世田谷" className={`${field} mt-1`} />
-          </label>
-          <label className="text-[0.8rem]">エリア
-            <select value={draft.pref} onChange={(e) => setDraft({ ...draft, pref: e.target.value })} className={`${field} mt-1`}>
-              <option value="">選んでください</option>
-              {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
-          </label>
-          <label className="text-[0.8rem]">施設の種類
-            <select value={draft.type} onChange={(e) => setDraft({ ...draft, type: e.target.value })} className={`${field} mt-1`}>
-              <option value="">すべて</option>
-              {KAIGO_TYPES.map((t) => <option key={t.code} value={t.code}>{t.label}</option>)}
-            </select>
-          </label>
-          <label className="text-[0.8rem]">定員
-            <select value={draft.size} onChange={(e) => setDraft({ ...draft, size: e.target.value })} className={`${field} mt-1`}>
-              <option value="">指定なし</option>
-              {CAPACITY_OPTIONS.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
-            </select>
-          </label>
-          <div className="flex items-end"><Button type="submit" icon={null} className="w-full">この条件で探す</Button></div>
-        </form>
+        <RefineForm key={sp.toString()} params={params} items={items} onSubmit={update} />
         </div>
 
         {/* 選択中の条件 */}

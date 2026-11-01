@@ -50,11 +50,12 @@ export const KAIGO_SOURCE_NAME = '厚生労働省 介護サービス情報公表
 const norm = (s) => s.normalize('NFKC');
 
 // 検索。params：{ q, type（サービスコード）, size（small/large）}。items は、1県分
-export const searchKaigo = (items, { q = '', type = '', size = '' } = {}) => {
+export const searchKaigo = (items, { q = '', city = '', type = '', size = '' } = {}) => {
   const words = norm(q).split(/\s+/).filter(Boolean);
   const sizeRule = CAPACITY_OPTIONS.find((o) => o.key === size);
   return items.filter((f) => {
     if (type && f.service !== type) return false;
+    if (city && f.city !== city) return false;
     if (sizeRule && !sizeRule.test(f.capacity)) return false;
     if (words.length) {
       const text = `${f.name}${f.kana}${f.address}${f.corp ?? ''}`;

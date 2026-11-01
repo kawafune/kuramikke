@@ -459,4 +459,4 @@ export const LEGAL_PAGES = [
   },
 ];
 
-export const BUSINESS_BY_PATH = Object.fromEntries(BUSINESS_PAGES.map((p) => [p.path, p]));
+export const BUSINESS_BY_PATH = Object.fromEntries([...BUSINESS_PAGES, ...LEGAL_PAGES].map((p) => [p.path, p])); // 事業者向け・規約類のページを、パスで引く

@@ -85,10 +85,11 @@ export const DATA_SOURCE_NAME = '厚生労働省 医療情報ネット（ナビ�
 
 // 検索。params：{ q, dept, kind, day（0〜7）, slot（0＝午前 / 1＝午後）, features: [key] }。items は、1県分
 const norm = (s) => s.normalize('NFKC');
-export const searchFacilities = (items, { q = '', dept = '', kind = '', day = '', slot = '', features = [] } = {}) => {
+export const searchFacilities = (items, { q = '', city = '', dept = '', kind = '', day = '', slot = '', features = [] } = {}) => {
   const words = norm(q).split(/\s+/).filter(Boolean);
   return items.filter((f) => {
     if (kind && f.kind !== kind) return false;
+    if (city && f.city !== city) return false;
     if (dept && !f.departments.includes(dept)) return false;
     if (features.some((k) => !f.features.includes(k))) return false;
     if (words.length) {

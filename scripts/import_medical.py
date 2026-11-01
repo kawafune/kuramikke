@@ -15,7 +15,7 @@
 生データ（CSV）はリポジトリに入れない。出力の形は docs/design/data-plan.md を参照。
 標準ライブラリだけで動く。
 """
-import csv, json, sys, unicodedata, argparse
+import csv, json, re, sys, unicodedata, argparse
 from pathlib import Path
 from collections import defaultdict
 
@@ -28,6 +28,19 @@ PREF = {
     '37': '香川', '38': '愛媛', '39': '高知', '40': '福岡', '41': '佐賀', '42': '長崎', '43': '熊本', '44': '大分', '45': '宮崎',
     '46': '鹿児島', '47': '沖縄',
 }
+
+
+# 市区町村コード（5桁）→ 名前。scripts/build_municipalities.py で作る。無いコードは、住所から取り出す
+MUNICIPALITIES = json.loads((Path(__file__).with_name('municipalities.json')).read_text(encoding='utf-8')) if Path(__file__).with_name('municipalities.json').exists() else {}
+CITY_FROM_ADDRESS = re.compile(r'^(?:北海道|東京都|(?:京都|大阪)府|.{2,3}県)(?:.+?郡)?(.+?[市区町村])')
+
+
+def city_of(pref_code, city_code, address):
+    name = MUNICIPALITIES.get(f'{pref_code}{city_code}')
+    if name:
+        return name
+    m = CITY_FROM_ADDRESS.match(address)
+    return m.group(1) if m else ''
 
 
 def nfkc(s):
@@ -104,6 +117,7 @@ def facility(row, kind):
         'kana': nfkc(row['正式名称（フリガナ）']),
         'pref': PREF.get(code, ''),
         'address': nfkc(row['所在地']),
+        'city': city_of(code, row['市区町村コード'], nfkc(row['所在地'])),
         'lat': float(lat) if ok else None,
         'lng': float(lng) if ok else None,
         'url': row['案内用ホームページアドレス'] or None,
