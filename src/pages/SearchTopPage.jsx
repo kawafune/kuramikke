@@ -11,6 +11,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { REGIONS } from '../data/regions';
 import { getLastPref } from '../lib/lastPref';
+import { useCities } from '../hooks/useCities';
 import { DEPARTMENTS, DATA_SOURCE_NAME, asOfLabel, loadIndex } from '../data/medical';
 import { PREFECTURES } from '../data/nav';
 
@@ -22,6 +23,8 @@ export const SearchTopPage = () => {
   const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [pref, setPref] = useState(getLastPref); // 前回のエリアを、最初から選んでおく
+  const [city, setCity] = useState('');
+  const cities = useCities('hospital', pref);
   const [dept, setDept] = useState('');
   const [tab, setTab] = useState('area'); // area＝エリアから / route＝路線から（準備中）
   const { ids } = useFavorites();
@@ -88,14 +91,25 @@ export const SearchTopPage = () => {
               </dl>
             )}
 
-            <form onSubmit={(e) => { e.preventDefault(); go({ pref, dept }); }} className="mt-8 bg-cream-50 p-4 flex flex-col md:flex-row md:items-end gap-3">
+            <form onSubmit={(e) => { e.preventDefault(); go({ pref, city: pref ? city : '', dept }); }} className="mt-8 bg-cream-50 p-4 flex flex-col md:flex-row md:items-end gap-3">
               <p className="font-round font-bold text-gold-deep md:mr-2 md:pb-2.5 whitespace-nowrap">条件を指定して検索</p>
               <label className="flex-1 text-[0.8rem]">エリア
-                <select value={pref} onChange={(e) => setPref(e.target.value)} className={`${field} mt-1`}>
+                <select value={pref} onChange={(e) => { setPref(e.target.value); setCity(''); }} className={`${field} mt-1`}>
                   <option value="">すべて</option>
                   {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
                 </select>
               </label>
+              {cities.length > 0 && (
+                <>
+                  <span aria-hidden="true" className="hidden md:block pb-2 text-gold text-[1.4rem]">×</span>
+                  <label className="flex-1 text-[0.8rem]">市区町村
+                    <select value={city} onChange={(e) => setCity(e.target.value)} className={`${field} mt-1`}>
+                      <option value="">すべて</option>
+                      {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </label>
+                </>
+              )}
               <span aria-hidden="true" className="hidden md:block pb-2 text-gold text-[1.4rem]">×</span>
               <label className="flex-1 text-[0.8rem]">診療科目
                 <select value={dept} onChange={(e) => setDept(e.target.value)} className={`${field} mt-1`}>

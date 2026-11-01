@@ -5,6 +5,7 @@ import { Logo } from '../ui/Logo';
 import { SnsIcons } from '../ui/SnsIcons';
 import { NAV_ITEMS, PREFECTURES } from '../../data/nav';
 import { useSite } from '../../context/siteContext';
+import { BUSINESS_BY_PATH } from '../../data/businessPages';
 
 // to があるものはサイト内のページ。ほかは、ページができるまで仮のリンク
 const SUB_LINKS = [
@@ -82,7 +83,7 @@ export const Footer = () => {
       </div>
 
       <ul className="flex flex-wrap justify-center gap-y-2 text-[0.8rem] pb-6">
-        {SUB_LINKS.map(({ label, to }, i) => (
+        {SUB_LINKS.filter(({ to }) => devMode || !to || BUSINESS_BY_PATH[to]?.published !== false).map(({ label, to }, i) => (
           <li key={label} className={`px-3 leading-none ${i > 0 ? 'border-l border-ink' : ''}`}>
             {to
               ? <Link to={to} className="hover:text-gold-deep">{label}</Link>

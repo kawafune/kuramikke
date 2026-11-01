@@ -165,7 +165,7 @@ def main():
     for code, items in sorted(by_pref.items()):
         items.sort(key=lambda f: f['id'])
         (out / f'{code}.json').write_text(json.dumps(items, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
-        index[code] = {'pref': PREF.get(code, ''), 'count': len(items)}
+        index[code] = {'pref': PREF.get(code, ''), 'count': len(items), 'cities': list(dict.fromkeys(f['city'] for f in items if f['city']))}  # 市区町村の一覧（TOPの検索窓で使う。データの順）
     (out / 'index.json').write_text(json.dumps({'source': '厚生労働省 医療情報ネット（ナビイ） オープンデータ', 'asOf': '2025-06-01', 'prefs': index}, ensure_ascii=False, indent=1), encoding='utf-8')
     print('出力：', out, f'（{len(index)}県）')
 

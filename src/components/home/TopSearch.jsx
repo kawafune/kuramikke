@@ -4,6 +4,7 @@ import { Search } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { PREFECTURES } from '../../data/nav';
 import { getLastPref } from '../../lib/lastPref';
+import { useCities } from '../../hooks/useCities';
 
 const field = 'w-full h-12 px-3 border border-gold rounded bg-white text-[0.95rem] focus:outline-none focus:border-gold-deep';
 
@@ -12,12 +13,15 @@ export const TopSearch = () => {
   const navigate = useNavigate();
   const [target, setTarget] = useState('hospital');
   const [pref, setPref] = useState(getLastPref); // 前回のエリアを、最初から選んでおく
+  const [city, setCity] = useState('');
   const [q, setQ] = useState('');
+  const cities = useCities(target, pref);
 
   const submit = (e) => {
     e.preventDefault();
     const sp = new URLSearchParams();
     if (pref) sp.set('pref', pref);
+    if (pref && city) sp.set('city', city);
     if (q.trim()) sp.set('q', q.trim());
     navigate(`${target === 'hospital' ? '/search/results' : '/search/nursing'}?${sp.toString()}`);
   };
@@ -33,13 +37,21 @@ export const TopSearch = () => {
           </label>
         ))}
       </fieldset>
-      <div className="grid gap-3 md:grid-cols-[10rem_1fr_auto] md:items-end">
+      <div className={`grid gap-3 md:items-end ${cities.length ? 'md:grid-cols-[9rem_11rem_1fr_auto]' : 'md:grid-cols-[10rem_1fr_auto]'}`}>
         <label className="text-[0.8rem]">エリア
-          <select value={pref} onChange={(e) => setPref(e.target.value)} className={`${field} mt-1`}>
+          <select value={pref} onChange={(e) => { setPref(e.target.value); setCity(''); }} className={`${field} mt-1`}>
             <option value="">選んでください</option>
             {PREFECTURES.map((p) => <option key={p} value={p}>{p}</option>)}
           </select>
         </label>
+        {cities.length > 0 && (
+          <label className="text-[0.8rem]">市区町村
+            <select value={city} onChange={(e) => setCity(e.target.value)} className={`${field} mt-1`}>
+              <option value="">すべて</option>
+              {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </label>
+        )}
         <label className="text-[0.8rem]">{target === 'hospital' ? '診療科目・名前・地名' : '施設名・地名・運営法人'}
           <span className="relative block mt-1">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-sub" aria-hidden="true" />
