@@ -76,9 +76,15 @@ const Block = ({ block }) => {
     case 'download':
       return (
         <div className="mb-5 flex flex-col sm:flex-row sm:items-center gap-3">
-          <span aria-disabled="true" className="inline-flex items-center justify-center gap-2 min-h-[44px] px-6 bg-ink-sub/70 text-white font-round font-bold text-[0.85rem] rounded cursor-not-allowed">
-            <Download size={18} aria-hidden="true" />{block.label}
-          </span>
+          {block.href ? (
+            <a href={block.href} download className="inline-flex items-center justify-center gap-2 min-h-[44px] px-6 bg-gold-deep text-white font-round font-bold text-[0.9rem] rounded shadow-[0_3px_0_theme(colors.gold.shadow)] hover:brightness-110">
+              <Download size={18} aria-hidden="true" />{block.label}
+            </a>
+          ) : (
+            <span aria-disabled="true" className="inline-flex items-center justify-center gap-2 min-h-[44px] px-6 bg-ink-sub/70 text-white font-round font-bold text-[0.85rem] rounded cursor-not-allowed">
+              <Download size={18} aria-hidden="true" />{block.label}
+            </span>
+          )}
           <span className="text-[0.85rem]">{block.note}</span>
         </div>
       );

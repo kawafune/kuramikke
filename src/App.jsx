@@ -21,11 +21,26 @@ import { SitemapPage } from './pages/SitemapPage';
 import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
+import { initAnalytics, trackPageView } from './lib/analytics';
 
 // ページを移動したら、先頭にスクロールする
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+};
+
+// アクセス解析（測定IDがあるときだけ。開発モードの閲覧は計測しない）。ページを移動するたびに、閲覧を記録する
+const Analytics = () => {
+  const { pathname, search } = useLocation();
+  const { devMode } = useSite();
+  useEffect(() => {
+    if (devMode) return;
+    initAnalytics();
+    // ページの題名が付いてから記録する
+    const t = setTimeout(() => trackPageView(pathname + search), 300);
+    return () => clearTimeout(t);
+  }, [pathname, search, devMode]);
   return null;
 };
 
@@ -61,6 +76,7 @@ const Shell = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
+      <Analytics />
       <DevBanner />
       <Header />
 
