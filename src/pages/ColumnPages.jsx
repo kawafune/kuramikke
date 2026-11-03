@@ -40,7 +40,7 @@ const Sidebar = ({ items, active }) => (
         {items.slice(-5).reverse().map((it) => (
           <li key={it.key}>
             <Link to={it.to} className="flex gap-3 hover:text-gold-deep">
-              <PhotoPlaceholder art={it.art} alt="" className="w-16 h-16 shrink-0" />
+              <PhotoPlaceholder image={it.image} art={it.art} alt="" className="w-16 h-16 shrink-0" />
               <span className="text-[0.8rem] leading-snug">{it.title}</span>
             </Link>
           </li>
@@ -83,7 +83,7 @@ export const ColumnListPage = () => {
             <ul>
               {shown.map((it, i) => (
                 <li key={it.key} className={`flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 ${i % 2 === 1 ? 'bg-cream-50' : ''}`}>
-                  <Link to={it.to} className="sm:w-[220px] shrink-0" aria-hidden="true" tabIndex={-1}><PhotoPlaceholder art={it.art} alt="" className="aspect-[4/3]" /></Link>
+                  <Link to={it.to} className="sm:w-[220px] shrink-0" aria-hidden="true" tabIndex={-1}><PhotoPlaceholder image={it.image} art={it.art} alt="" className="aspect-[4/3]" /></Link>
                   <div className="min-w-0">
                     {it.date && <p className="inline-block bg-cream-300 text-[0.75rem] px-2 py-0.5 mb-2">公開日時：{dateLabel(it.date)}</p>}
                     <p className="mb-2"><CategoryTag>{CATEGORY_LABEL[it.category]}</CategoryTag></p>
@@ -143,7 +143,7 @@ export const ColumnArticlePage = () => {
             <h2 id="related" className="text-center text-gold-deep text-[1.05rem] mb-5">関連記事</h2>
             <ul className="grid gap-4 sm:grid-cols-2">
               {related.map((it) => (
-                <li key={it.key}><Link to={it.to} className="flex gap-3 hover:text-gold-deep"><PhotoPlaceholder art={it.art} alt="" className="w-20 h-20 shrink-0" /><span className="text-[0.85rem] leading-snug">{it.title}</span></Link></li>
+                <li key={it.key}><Link to={it.to} className="flex gap-3 hover:text-gold-deep"><PhotoPlaceholder image={it.image} art={it.art} alt="" className="w-20 h-20 shrink-0" /><span className="text-[0.85rem] leading-snug">{it.title}</span></Link></li>
               ))}
             </ul>
           </section>

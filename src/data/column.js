@@ -6,6 +6,7 @@
 // expertReview : 'required'＝専門家の確認が済むまで、published を true にしても公開されない / 'done'＝確認済み / 'none'＝不要
 // 本文の部品（blocks）は終活ガイドと同じ（data/shukatsuGuide.js の冒頭を参照）。【要確認】は、開発モードでだけ目立つ。
 import { GUIDE_PAGES, isReadable } from './shukatsuGuide';
+import { PHOTOS } from './photos';
 
 export const COLUMN_CATEGORIES = [
   { key: 'shukatsu', label: '終活', art: 'note' },
@@ -663,10 +664,10 @@ export const isArticleReadable = (a, devMode) => devMode || isArticlePublic(a);
 // 一覧に並べるもの（終活ガイドの記事も含む）。読めるものだけ。新しい順（日付の無い終活ガイドは、番号順で、先に並べる）
 export const getColumnItems = (devMode) => {
   const guides = [...GUIDE_PAGES].sort((a, b) => a.no - b.no).filter((g) => isReadable(g, devMode)).map((g) => ({
-    key: `guide-${g.slug}`, to: `/shukatsu/${g.slug}`, category: 'shukatsu', title: g.title, excerpt: g.short, date: '', art: 'note',
+    key: `guide-${g.slug}`, to: `/shukatsu/${g.slug}`, category: 'shukatsu', title: g.title, excerpt: g.short, date: '', art: 'note', image: PHOTOS[`guide:${g.slug}`],
   }));
   const articles = COLUMN_ARTICLES.filter((a) => isArticleReadable(a, devMode)).map((a) => ({
-    key: `column-${a.slug}`, to: `/column/${a.slug}`, category: a.category, title: a.title, excerpt: a.excerpt, date: a.date, art: a.art,
+    key: `column-${a.slug}`, to: `/column/${a.slug}`, category: a.category, title: a.title, excerpt: a.excerpt, date: a.date, art: a.art, image: PHOTOS[`column:${a.slug}`],
   }));
   return [...guides, ...articles];
 };

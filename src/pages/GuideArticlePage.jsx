@@ -9,6 +9,7 @@ import { ListingSection } from '../components/shukatsu/ListingSection';
 import { NotFoundPage } from './NotFoundPage';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useSite } from '../context/siteContext';
+import { PHOTOS } from '../data/photos';
 import { GUIDE_BY_SLUG, GUIDE_PAGES, isReadable } from '../data/shukatsuGuide';
 
 const Notice = ({ title }) => (
@@ -38,7 +39,7 @@ export const GuideArticlePage = () => {
   return (
     <>
       <Breadcrumb items={[{ label: '終活サポート', to: '/shukatsu' }, { label: page.title }]} />
-      <PageHero title={page.title} />
+      <PageHero title={page.title} image={PHOTOS[`guide:${page.slug}`]} />
 
       <div className="max-w-content mx-auto px-4 py-10 md:py-14 lg:grid lg:grid-cols-[1fr_260px] lg:gap-12">
         <article className="min-w-0 max-w-[760px]">
@@ -72,6 +73,14 @@ export const GuideArticlePage = () => {
               {devMode && <p className="mt-2 text-ink-sub"><RichText text={page.sources} /></p>}
             </div>
           </div>
+
+          {page.reviewedAt && (
+            <aside aria-label="記事の作成・更新情報" className="mt-6 bg-cream-50 p-4 text-[0.8rem] leading-relaxed">
+              <p className="font-round font-bold mb-1">記事の作成・更新情報</p>
+              <p>最終確認日：{page.reviewedAt}</p>
+              <p className="text-ink-sub">※ この記事は、確認時点における関係法令および公的機関の公開情報にもとづき、クラミッケ編集部が作成・確認しています。法改正や自治体の条例等により内容が異なる場合がありますので、最新の手続きについては、各公的窓口や専門家へご確認ください。</p>
+            </aside>
+          )}
 
           <nav aria-label="前後のページ" className="mt-10 flex justify-between gap-3 text-[0.9rem]">
             {prev ? <Link to={`/shukatsu/${prev.slug}`} className="text-gold-deep underline underline-offset-4">← {prev.title}</Link> : <span />}

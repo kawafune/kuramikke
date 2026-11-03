@@ -30,7 +30,7 @@ export const ListingSection = ({ groups, adNote, quiet = false, target = '事業
     </p>
     {/* 営業の電話を、クラミッケがしていると誤解されないための注記。個人情報の提供は、プライバシーポリシーにも書いてある */}
     <p className="mb-6 text-[0.85rem] leading-relaxed">
-      資料請求やお問い合わせフォームに入力された個人情報は、<strong>ご指定の{target}へ提供され、各{target}から直接ご連絡があります</strong>。クラミッケから、営業のお電話をすることはありません。{linkable('/privacy') && <>（くわしくは<Link to="/privacy" className="text-gold-deep underline underline-offset-4">プライバシーポリシー</Link>）</>}
+      クラミッケは、利用者のみなさまの個人情報を、{target}に渡すことはありません。<strong>ご相談・お申し込みは、各{target}へ直接お願いします</strong>。クラミッケから、営業のお電話をすることもありません。{linkable('/privacy') && <>（くわしくは<Link to="/privacy" className="text-gold-deep underline underline-offset-4">プライバシーポリシー</Link>）</>}
     </p>
 
     <div className={`grid gap-4 ${quiet ? '' : 'sm:grid-cols-2'}`}>

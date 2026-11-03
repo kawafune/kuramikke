@@ -6,6 +6,7 @@ import { GuideBlocks } from '../components/shukatsu/GuideBlocks';
 import { ComingSoonPage } from './ComingSoonPage';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useSite } from '../context/siteContext';
+import { PHOTOS } from '../data/photos';
 
 // 事業者向けなどの、1ページで完結する案内ページ（data/businessPages.js）
 export const InfoPage = ({ page }) => {
@@ -16,7 +17,7 @@ export const InfoPage = ({ page }) => {
   return (
     <>
       <Breadcrumb items={[{ label: page.crumb }]} />
-      <PageHero title={page.title} />
+      <PageHero title={page.title} image={PHOTOS[`page:${page.path}`]} />
       <article className="max-w-[760px] mx-auto px-4 py-10 md:py-14">
         {!page.published && (
           <p className="mb-6 text-[0.85rem] bg-[#FFE3DD] text-accent-red-text font-bold p-3">
