@@ -16,6 +16,7 @@
 - 「募集開始の特典あり」の確定（先着数・期限・金額）→ Claudeから声がけする
 
 ## 公開（グローバルTOP・正規URL）への流れ
+（独自ドメインの手順は `docs/design/domain-switch.md`。ドメインはムームードメインで問題なし）
 1. 手書き用エンディングノート（PDF）：作成済み（`/downloads/ending-note.pdf`）→ 代表が確認
 2. 最寄り駅での検索：**実装済み**（駅データ 国土数値情報 N02-25、9,046駅、CC BY 4.0。出典は画面・利用規約に表示）→ 代表が使い心地を確認
 3. 1・2の確認後：`HOME='portal'`、`READY.SEARCH=true` に切り替え → 独自ドメイン kura-mikke.com をVercelに設定（代表）→ Google アナリティクス設定（代表）→ 公開表示のリンク巡回（Claude）→ ASP申請（代表）
