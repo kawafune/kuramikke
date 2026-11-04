@@ -16,6 +16,8 @@ import { distanceKm } from '../lib/distance';
 import { usePrefData } from '../hooks/useMedical';
 import { getLastPref, setLastPref } from '../lib/lastPref';
 import { citiesOf } from '../lib/cities';
+import { StationPicker } from '../components/search/StationPicker';
+import { encodeStation, parseStation, PREF_NAME_BY_CODE, RADIUS_OPTIONS, DEFAULT_RADIUS, STATION_SOURCE } from '../data/stations';
 import { DEPARTMENTS, FEATURE_LIST, KINDS, PREF_CODES, WEEKDAYS, DATA_SOURCE_NAME, asOfLabel, DATA_ASOF, searchFacilities } from '../data/medical';
 
 const PAGE_SIZE = 10;
@@ -28,6 +30,8 @@ const readParams = (sp) => ({
   dept: sp.get('dept') ?? '',
   kind: sp.get('kind') ?? '',
   city: sp.get('city') ?? '',
+  st: sp.get('st') ?? '',
+  r: sp.get('r') ?? '',
   sort: sp.get('sort') ?? '',
   day: sp.get('day') ?? '',
   slot: sp.get('slot') ?? '',
@@ -43,6 +47,8 @@ const toQuery = (p) => {
   if (p.dept) sp.set('dept', p.dept);
   if (p.kind) sp.set('kind', p.kind);
   if (p.city) sp.set('city', p.city);
+  if (p.st) sp.set('st', p.st);
+  if (p.st && p.r) sp.set('r', p.r);
   if (p.sort) sp.set('sort', p.sort);
   if (p.day !== '') sp.set('day', p.day);
   if (p.slot !== '') sp.set('slot', p.slot);
@@ -59,9 +65,21 @@ const RefineForm = ({ params, items, onSubmit }) => {
   const [draft, setDraft] = useState(params);
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); onSubmit({ q: draft.q, pref: draft.pref, city: draft.pref === params.pref ? draft.city : '', kind: draft.kind, dept: draft.dept, day: draft.day, slot: draft.slot }); }}
+      onSubmit={(e) => { e.preventDefault(); onSubmit({ q: draft.q, st: draft.st, r: draft.st ? draft.r : '', pref: draft.pref, city: draft.pref === params.pref ? draft.city : '', kind: draft.kind, dept: draft.dept, day: draft.day, slot: draft.slot }); }}
       className="bg-cream-50 p-4 md:p-6 mb-6 grid gap-3 md:grid-cols-2 lg:grid-cols-6"
     >
+      <div className="md:col-span-2 lg:col-span-6 border border-dashed border-gold p-3 bg-white">
+        <p className="font-round font-bold text-gold-deep text-[0.85rem] mb-2">駅から探す（直線距離）</p>
+        <div className="grid gap-3 sm:grid-cols-[1fr_9rem]">
+          <StationPicker onPick={(s) => setDraft({ ...draft, st: encodeStation(s), pref: PREF_NAME_BY_CODE[s.p], city: '' })} />
+          <label className="text-[0.8rem]">距離
+            <select value={draft.r || String(DEFAULT_RADIUS)} onChange={(e) => setDraft({ ...draft, r: e.target.value })} className={`${field} mt-1`}>
+              {RADIUS_OPTIONS.map((km) => <option key={km} value={km}>{km}km以内</option>)}
+            </select>
+          </label>
+        </div>
+        <p className="mt-1 text-[0.75rem] text-ink-sub">駅名を入力して、候補から選び、下のボタン（再検索）を押してください。{draft.st && draft.st !== params.st && <strong className="text-gold-deep">（{parseStation(draft.st)?.name}駅を選びました）</strong>}</p>
+      </div>
       <label className="md:col-span-2 lg:col-span-2 text-[0.8rem]">キーワード（名前・地名・診療科）
         <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="例：渋谷　内科" className={`${field} mt-1`} />
       </label>
@@ -128,12 +146,19 @@ export const SearchResultsPage = () => {
   const results = items
     ? searchFacilities(items, params).filter((h) => !params.now || todayStatus(h.schedule, nowDate).kind === 'open')
     : [];
+  // 駅から探す：駅から指定の距離（直線）以内に絞って、近い順に並べる。座標が無い施設は、除く
+  const station = parseStation(params.st);
+  const radius = Number(params.r) || DEFAULT_RADIUS;
   // 近い順：現在地がわかっているときだけ。座標が無い施設は、最後に並べる
-  const near = params.sort === 'near' && loc !== null;
+  const near = !station && params.sort === 'near' && loc !== null;
+  const center = station ?? (near ? loc : null);
   const distances = new Map();
-  if (near) {
-    results.forEach((h) => { if (h.lat !== null) distances.set(h.id, distanceKm(loc, h)); });
+  if (center) {
+    results.forEach((h) => { if (h.lat !== null) distances.set(h.id, distanceKm(center, h)); });
     results.sort((a, b) => (distances.get(a.id) ?? Infinity) - (distances.get(b.id) ?? Infinity));
+    if (station) {
+      for (let i = results.length - 1; i >= 0; i -= 1) if (!((distances.get(results[i].id) ?? Infinity) <= radius)) results.splice(i, 1);
+    }
   }
   const total = results.length;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -152,6 +177,7 @@ export const SearchResultsPage = () => {
   const chips = [
     params.q && { key: 'q', label: `「${params.q}」`, clear: { q: '' } },
     params.pref && { key: 'pref', label: params.pref, clear: { pref: '' } },
+    station && { key: 'st', label: `${station.name}駅から${radius}km以内`, clear: { st: '', r: '' } },
     params.city && { key: 'city', label: params.city, clear: { city: '' } },
     params.kind && { key: 'kind', label: KINDS.find((k) => k.key === params.kind)?.label ?? params.kind, clear: { kind: '' } },
     params.dept && { key: 'dept', label: params.dept, clear: { dept: '' } },
@@ -300,7 +326,7 @@ export const SearchResultsPage = () => {
           </div>
         ) : (
           <ul className="grid gap-5">
-            {shown.map((h) => <HospitalCard key={h.id} h={h} selected={h.id === selectedId} onSelect={setSelectedId} distanceKm={distances.get(h.id)} />)}
+            {shown.map((h) => <HospitalCard key={h.id} h={h} selected={h.id === selectedId} onSelect={setSelectedId} distanceKm={distances.get(h.id)} distanceFrom={station ? `${station.name}駅` : '現在地'} />)}
           </ul>
         )}
 
@@ -315,7 +341,7 @@ export const SearchResultsPage = () => {
           </nav>
         )}
 
-        <p className="mt-8 text-[0.75rem] text-ink-sub">出典：{DATA_SOURCE_NAME}（{asOfLabel(DATA_ASOF)}時点）。報告された内容がそのまま載っており、古い情報や誤りを含む場合があります。受診の前に、必ず各医療機関へご確認ください。</p>
+        <p className="mt-8 text-[0.75rem] text-ink-sub">出典：{DATA_SOURCE_NAME}（{asOfLabel(DATA_ASOF)}時点）。{station && <>駅のデータは、{STATION_SOURCE}を加工して作成しています。駅からの距離は、直線距離の目安です。</>}報告された内容がそのまま載っており、古い情報や誤りを含む場合があります。受診の前に、必ず各医療機関へご確認ください。</p>
       </div>
     </>
   );

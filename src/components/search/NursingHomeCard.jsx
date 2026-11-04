@@ -11,14 +11,14 @@ const Label = ({ children }) => (
 );
 
 // 検索結果の介護施設のカード（病院のカードと同じ並び）。公的データに入っている項目だけを出す
-export const NursingHomeCard = ({ n, distanceKm }) => (
+export const NursingHomeCard = ({ n, distanceKm, distanceFrom = '現在地' }) => (
   <li>
     <article className="bg-white border border-gold p-5 md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="mb-1 flex flex-wrap items-center gap-2">
             <span className="inline-block bg-cream-200 text-[0.7rem] px-2 py-0.5">{KAIGO_TYPE_LABEL[n.service]}</span>
-            {distanceKm !== undefined && <span className="inline-block bg-[#2A7A73] text-white text-[0.75rem] font-bold px-2 py-0.5">現在地から{formatKm(distanceKm)}</span>}
+            {distanceKm !== undefined && <span className="inline-block bg-[#2A7A73] text-white text-[0.75rem] font-bold px-2 py-0.5">{distanceFrom}から{formatKm(distanceKm)}</span>}
           </p>
           <h3 className="text-[1.15rem] md:text-[1.3rem] border-l-[6px] border-gold pl-3">
             <Link to={`/nursing-homes/${n.id}`} className="hover:text-gold-deep">{n.name}</Link>

@@ -14,6 +14,8 @@ import { useKaigoPrefData } from '../hooks/useMedical';
 import { distanceKm } from '../lib/distance';
 import { getLastPref, setLastPref } from '../lib/lastPref';
 import { citiesOf } from '../lib/cities';
+import { StationPicker } from '../components/search/StationPicker';
+import { encodeStation, parseStation, PREF_NAME_BY_CODE, RADIUS_OPTIONS, DEFAULT_RADIUS, STATION_SOURCE } from '../data/stations';
 import { KAIGO_TYPES, CAPACITY_OPTIONS, PREF_CODES, KAIGO_SOURCE_NAME, searchKaigo } from '../data/kaigo';
 
 const PAGE_SIZE = 10;
@@ -25,6 +27,8 @@ const readParams = (sp) => ({
   pref: sp.get('pref') ?? '',
   type: sp.get('type') ?? '',
   city: sp.get('city') ?? '',
+  st: sp.get('st') ?? '',
+  r: sp.get('r') ?? '',
   size: sp.get('size') ?? '',
   sort: sp.get('sort') ?? '',
   page: Math.max(1, Number(sp.get('page')) || 1),
@@ -33,6 +37,8 @@ const readParams = (sp) => ({
 const toQuery = (p) => {
   const sp = new URLSearchParams();
   ['q', 'pref', 'city', 'type', 'size', 'sort'].forEach((k) => p[k] && sp.set(k, p[k]));
+  if (p.st) sp.set('st', p.st);
+  if (p.st && p.r) sp.set('r', p.r);
   if (p.page > 1) sp.set('page', String(p.page));
   return sp;
 };
@@ -42,9 +48,21 @@ const RefineForm = ({ params, items, onSubmit }) => {
   const [draft, setDraft] = useState(params);
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); onSubmit({ q: draft.q, pref: draft.pref, city: draft.pref === params.pref ? draft.city : '', type: draft.type, size: draft.size }); }}
+      onSubmit={(e) => { e.preventDefault(); onSubmit({ q: draft.q, st: draft.st, r: draft.st ? draft.r : '', pref: draft.pref, city: draft.pref === params.pref ? draft.city : '', type: draft.type, size: draft.size }); }}
       className="bg-cream-50 p-4 md:p-6 mb-4 grid gap-3 md:grid-cols-2 lg:grid-cols-5"
     >
+      <div className="md:col-span-2 lg:col-span-5 border border-dashed border-gold p-3 bg-white">
+        <p className="font-round font-bold text-gold-deep text-[0.85rem] mb-2">駅から探す（直線距離）</p>
+        <div className="grid gap-3 sm:grid-cols-[1fr_9rem]">
+          <StationPicker onPick={(s) => setDraft({ ...draft, st: encodeStation(s), pref: PREF_NAME_BY_CODE[s.p], city: '' })} />
+          <label className="text-[0.8rem]">距離
+            <select value={draft.r || String(DEFAULT_RADIUS)} onChange={(e) => setDraft({ ...draft, r: e.target.value })} className={`${field} mt-1`}>
+              {RADIUS_OPTIONS.map((km) => <option key={km} value={km}>{km}km以内</option>)}
+            </select>
+          </label>
+        </div>
+        <p className="mt-1 text-[0.75rem] text-ink-sub">駅名を入力して、候補から選び、下のボタン（再検索）を押してください。{draft.st && draft.st !== params.st && <strong className="text-gold-deep">（{parseStation(draft.st)?.name}駅を選びました）</strong>}</p>
+      </div>
       <label className="md:col-span-2 lg:col-span-5 text-[0.8rem]">キーワード（施設名・地名・運営法人）
         <input value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} placeholder="例：世田谷" className={`${field} mt-1`} />
       </label>
@@ -92,11 +110,18 @@ export const NursingSearchPage = () => {
   const results = items ? searchKaigo(items, params) : [];
   const [loc, setLoc] = useState(null); // 現在地。この端末の中だけで使う
   const [geo, setGeo] = useState('idle');
-  const near = params.sort === 'near' && loc !== null;
+  // 駅から探す：駅から指定の距離（直線）以内に絞って、近い順に並べる
+  const station = parseStation(params.st);
+  const radius = Number(params.r) || DEFAULT_RADIUS;
+  const near = !station && params.sort === 'near' && loc !== null;
+  const center = station ?? (near ? loc : null);
   const distances = new Map();
-  if (near) {
-    results.forEach((n) => { if (n.lat !== null) distances.set(n.id, distanceKm(loc, n)); });
+  if (center) {
+    results.forEach((n) => { if (n.lat !== null) distances.set(n.id, distanceKm(center, n)); });
     results.sort((x, y) => (distances.get(x.id) ?? Infinity) - (distances.get(y.id) ?? Infinity));
+    if (station) {
+      for (let i = results.length - 1; i >= 0; i -= 1) if (!((distances.get(results[i].id) ?? Infinity) <= radius)) results.splice(i, 1);
+    }
   }
   const total = results.length;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -122,6 +147,7 @@ export const NursingSearchPage = () => {
   const chips = [
     params.q && { key: 'q', label: `「${params.q}」`, clear: { q: '' } },
     params.pref && { key: 'pref', label: params.pref, clear: { pref: '' } },
+    station && { key: 'st', label: `${station.name}駅から${radius}km以内`, clear: { st: '', r: '' } },
     params.city && { key: 'city', label: params.city, clear: { city: '' } },
     params.type && { key: 'type', label: KAIGO_TYPES.find((t) => t.code === params.type)?.label ?? params.type, clear: { type: '' } },
     params.size && { key: 'size', label: CAPACITY_OPTIONS.find((o) => o.key === params.size)?.label ?? params.size, clear: { size: '' } },
@@ -215,7 +241,7 @@ export const NursingSearchPage = () => {
             <Button to={`/search/nursing?pref=${encodeURIComponent(params.pref)}`} icon={null}>条件をすべて外す</Button>
           </div>
         ) : (
-          <ul className="grid gap-5">{shown.map((n) => <NursingHomeCard key={n.id} n={n} distanceKm={distances.get(n.id)} />)}</ul>
+          <ul className="grid gap-5">{shown.map((n) => <NursingHomeCard key={n.id} n={n} distanceKm={distances.get(n.id)} distanceFrom={station ? `${station.name}駅` : '現在地'} />)}</ul>
         )}
 
         {pages > 1 && (
@@ -226,7 +252,7 @@ export const NursingSearchPage = () => {
           </nav>
         )}
 
-        <p className="mt-8 text-[0.75rem] text-ink-sub">出典：{KAIGO_SOURCE_NAME}（2026年6月末時点）。報告された内容がそのまま載っており、古い情報や誤りを含む場合があります。見学や契約の前に、必ず各施設へご確認ください。</p>
+        <p className="mt-8 text-[0.75rem] text-ink-sub">出典：{KAIGO_SOURCE_NAME}（2026年6月末時点）。{station && <>駅のデータは、{STATION_SOURCE}を加工して作成しています。駅からの距離は、直線距離の目安です。</>}報告された内容がそのまま載っており、古い情報や誤りを含む場合があります。見学や契約の前に、必ず各施設へご確認ください。</p>
       </div>
     </>
   );
