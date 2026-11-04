@@ -9,7 +9,7 @@ import { useSite } from '../context/siteContext';
 import { PHOTOS } from '../data/photos';
 
 // 事業者向けなどの、1ページで完結する案内ページ（data/businessPages.js）
-export const InfoPage = ({ page }) => {
+export const InfoPage = ({ page, form = null, hideMail = false }) => {
   const { devMode } = useSite();
   usePageTitle(page.title);
   if (!page.published && !devMode) return <ComingSoonPage title={page.title} />;
@@ -25,7 +25,8 @@ export const InfoPage = ({ page }) => {
           </p>
         )}
         <p className="mb-10 text-[1.05rem]"><RichText text={page.lead} /></p>
-        {page.sections.map((s) => (
+        {form}
+        {page.sections.filter((s) => !(hideMail && s.blocks.some((b) => b.type === 'mailto'))).map((s) => (
           <section key={s.h} className="mb-10">
             <h2 className="text-[1.15rem] md:text-[1.25rem] border-l-[6px] border-gold pl-3 mb-5 text-ink">{s.h}</h2>
             <GuideBlocks blocks={s.blocks} />

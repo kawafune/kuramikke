@@ -17,6 +17,7 @@ import { GuideArticlePage } from './pages/GuideArticlePage';
 import { ComingSoonPage } from './pages/ComingSoonPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { InfoPage } from './pages/InfoPage';
+import { ContactForm } from './components/ContactForm';
 import { SitemapPage } from './pages/SitemapPage';
 import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
@@ -64,6 +65,13 @@ const DevOnly = ({ title, children }) => {
   return devMode ? children : <ComingSoonPage title={title} />;
 };
 
+// お問い合わせ：フォームが使えるとき（環境変数 VITE_CONTACT_FORM=1、または開発モード）は、フォームを出す。そうでなければ、メール方式
+const ContactRoute = ({ page }) => {
+  const { devMode } = useSite();
+  const formOn = devMode || import.meta.env.VITE_CONTACT_FORM === '1';
+  return <InfoPage page={page} form={formOn ? <ContactForm /> : null} hideMail={formOn} />;
+};
+
 // 開発モードへの入口（どこにもリンクしない）。/dev を開くと、パスワードの入力が出る
 const DevEntry = () => {
   const { openLogin } = useSite();
@@ -97,7 +105,7 @@ const Shell = () => {
           <Route path="/column" element={<ColumnListPage />} />
           <Route path="/column/:slug" element={<ColumnArticlePage />} />
           <Route path="/community" element={<DevOnly title="絆を見つける"><ComingSoonPage title="絆を見つける" /></DevOnly>} />
-          {[...BUSINESS_PAGES, ...LEGAL_PAGES].map((p) => <Route key={p.path} path={p.path} element={<InfoPage page={p} />} />)}
+          {[...BUSINESS_PAGES, ...LEGAL_PAGES].map((p) => <Route key={p.path} path={p.path} element={p.path === '/contact' ? <ContactRoute page={p} /> : <InfoPage page={p} />} />)}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
