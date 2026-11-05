@@ -40,7 +40,7 @@ export const SitemapPage = () => {
     { title: 'コラムを読む', to: '/column', ready: isAvailable('COLUMN'), children: [] },
     { title: '絆を見つける', to: '/community', ready: isAvailable('COMMUNITY'), children: [] },
     { title: '掲載のご案内（病院・施設・事業者の方へ）', to: '/business', ready: pageReady(byPath['/business']), children: [{ label: '掲載事業者の審査基準', to: '/business/standards', ready: pageReady(byPath['/business/standards']) }] },
-    ...['/privacy', '/terms', '/disclaimer', '/company', '/contact'].map((path) => ({ title: byPath[path].title, to: path, ready: pageReady(byPath[path]), children: [] })),
+    ...['/about', '/privacy', '/terms', '/disclaimer', '/company', '/contact'].map((path) => ({ title: byPath[path].title, to: path, ready: pageReady(byPath[path]), children: [] })),
   ];
 
   const shown = groups

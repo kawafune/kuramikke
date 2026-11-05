@@ -10,6 +10,7 @@ import { BUSINESS_BY_PATH } from '../../data/businessPages';
 // to があるものはサイト内のページ。ほかは、ページができるまで仮のリンク
 const SUB_LINKS = [
   { label: 'ホーム', to: '/' },
+  { label: 'クラミッケとは', to: '/about' },
   { label: '掲載のお申込み', to: '/business' },
   { label: 'ご利用規約', to: '/terms' },
   { label: 'プライバシーポリシー', to: '/privacy' },
