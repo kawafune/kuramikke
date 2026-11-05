@@ -91,7 +91,7 @@ export const HospitalDetailPage = () => {
 
         <aside className="mt-8 border border-dashed border-gold p-5 bg-cream-50 text-[0.9rem]">
           <p className="font-round font-bold mb-1">この医療機関の方へ</p>
-          <p>写真、お知らせ、医師の紹介などを追加して、掲載することもできます。掲載のご案内は、準備中です。</p>
+          <p>写真、お知らせ、医師の紹介などを追加して、掲載することもできます。<Link to="/business" className="text-gold-deep underline underline-offset-4">掲載のご案内</Link>をご覧ください。</p>
         </aside>
 
         <div className="mt-8 flex flex-wrap gap-4 justify-center">

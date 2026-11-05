@@ -22,7 +22,7 @@ import { SitemapPage } from './pages/SitemapPage';
 import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
-import { initAnalytics, trackPageView } from './lib/analytics';
+import { initAnalytics, initOutboundTracking, trackPageView } from './lib/analytics';
 
 // ページを移動したら、先頭にスクロールする
 const ScrollToTop = () => {
@@ -38,6 +38,7 @@ const Analytics = () => {
   useEffect(() => {
     if (devMode) return;
     initAnalytics();
+    initOutboundTracking();
     // ページの題名が付いてから記録する
     const t = setTimeout(() => trackPageView(pathname + search), 300);
     return () => clearTimeout(t);

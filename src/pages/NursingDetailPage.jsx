@@ -74,7 +74,7 @@ export const NursingDetailPage = () => {
 
         <aside className="mt-8 border border-dashed border-gold p-5 bg-cream-50 text-[0.9rem]">
           <p className="font-round font-bold mb-1">この施設の方へ</p>
-          <p>費用、写真、見学の案内、スタッフの紹介などを追加して、掲載することもできます。<Link to="/business" className="text-gold-deep underline underline-offset-4">掲載のご案内</Link>は、準備中です。</p>
+          <p>費用、写真、見学の案内、スタッフの紹介などを追加して、掲載することもできます。<Link to="/business" className="text-gold-deep underline underline-offset-4">掲載のご案内</Link>をご覧ください。</p>
         </aside>
 
         <div className="mt-8 flex flex-wrap gap-4 justify-center">
