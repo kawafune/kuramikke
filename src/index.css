@@ -45,3 +45,11 @@ select {
 .kura-map .leaflet-control-attribution a { color: #8A6D0B; }
 .kura-map .leaflet-tooltip { border: none; border-radius: 9999px; padding: 4px 12px; font-weight: 700; color: #4C4C4C; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18); }
 .kura-map .leaflet-tooltip-top::before { border-top-color: #fff; }
+/* ベクトル地図（MapLibre） */
+.kura-map .maplibregl-map { font-family: inherit; }
+.kura-map .maplibregl-ctrl-group { border-radius: 9999px; overflow: hidden; box-shadow: 0 0 0 1px rgba(204, 173, 48, 0.5); }
+.kura-map .maplibregl-ctrl-group button { width: 36px; height: 36px; }
+.kura-map .maplibregl-ctrl-attrib { background: rgba(255, 255, 255, 0.85); border-top-left-radius: 8px; font-size: 10px; color: #6b6b6b; }
+.kura-map .maplibregl-ctrl-attrib a { color: #8A6D0B; }
+.kura-map .maplibregl-cooperative-gesture-screen { font-size: 0.95rem; }
+.kura-pin { background: none; border: 0; padding: 0; cursor: pointer; line-height: 0; }

@@ -16,7 +16,7 @@ const ready = (k) => new RegExp(`${k}:\\s*true`).test(site);
 
 if (ready('SHUKATSU')) urls.push('/shukatsu');
 chunks(read('src/data/shukatsuGuide.js'), 'slug').filter(isPublic).forEach((c) => urls.push(`/shukatsu/${pick(c, 'slug')}`));
-if (ready('SEARCH')) urls.push('/search', '/search/nursing');
+if (ready('SEARCH')) urls.push('/search', '/search/nursing', '/search/map');
 if (ready('COLUMN')) {
   urls.push('/column');
   chunks(read('src/data/column.js'), 'slug').filter(isPublic).forEach((c) => urls.push(`/column/${pick(c, 'slug')}`));

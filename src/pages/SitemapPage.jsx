@@ -34,6 +34,7 @@ export const SitemapPage = () => {
     { title: '病院・介護施設を探す', to: '/search', ready: isAvailable('SEARCH'), children: [
       { label: '病院・診療所を探す', to: '/search', ready: isAvailable('SEARCH') },
       { label: '老人ホーム・介護施設を探す', to: '/search/nursing', ready: isAvailable('SEARCH') },
+      { label: 'マップから探す', to: '/search/map', ready: isAvailable('SEARCH') },
       { label: 'お気に入り', to: '/search/favorites', ready: isAvailable('SEARCH') },
     ] },
     { title: '終活サポート', to: '/shukatsu', ready: isAvailable('SHUKATSU'), children: GUIDE_PAGES.filter((g) => g.status === 'ready').map((g) => ({ label: g.title, to: `/shukatsu/${g.slug}`, ready: isReadable(g, false) })) },

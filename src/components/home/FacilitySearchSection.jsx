@@ -17,7 +17,7 @@ const HOSPITAL_LINKS = [
   { label: '休日診療', Icon: CalendarDays, color: 'text-[#5E9BD6]', to: '/search/results?f=holiday' },
   { label: '夜間も受付', Icon: Moon, color: 'text-[#3A3A8C]', to: '/search/results?f=night' },
   { label: '本日診療可', Icon: Clock, color: 'text-[#5E9BD6]', to: '/search/results?now=1' },
-  { label: 'マップから探す', Icon: MapPin, color: 'text-accent-red' },
+  { label: 'マップから探す', Icon: MapPin, color: 'text-accent-red', to: '/search/map' },
   { label: '専門外来を探す', Icon: Microscope, color: 'text-[#4BB4C8]' },
   { label: '特徴から 探す', Icon: HeartPulse, color: 'text-[#F08A9C]', to: '/search/results' },
 ];
@@ -28,7 +28,7 @@ const CARE_LINKS = [
   { label: '今すぐ入居可能', Icon: DoorOpen, color: 'text-[#4BB4C8]' },
   { label: '看護・医療体制から探す', Icon: Accessibility, color: 'text-[#5E9BD6]' },
   { label: '目的から探す', Icon: Target, color: 'text-[#7DB54A]' },
-  { label: 'マップから探す', Icon: MapPin, color: 'text-accent-red' },
+  { label: 'マップから探す', Icon: MapPin, color: 'text-accent-red', to: '/search/map?t=kaigo' },
   { label: '特徴から探す', Icon: Timer, color: 'text-accent-red' },
   { label: '新規開設施設', Icon: Sparkles, color: 'text-accent-red' },
 ];

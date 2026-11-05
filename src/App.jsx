@@ -23,6 +23,7 @@ import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
 import { LpPage } from './pages/LpPage';
+import { MapSearchPage } from './pages/MapSearchPage';
 import { initAnalytics, initOutboundTracking, trackPageView } from './lib/analytics';
 
 // ページを移動したら、先頭にスクロールする
@@ -120,6 +121,7 @@ const Shell = () => {
           <Route path="/portal" element={<DevOnly title="ポータル型のTOP"><TopPage onTryAccess={go} /></DevOnly>} />
           <Route path="/search" element={<Gate target="SEARCH" title="病院・介護施設を探す"><SearchTopPage /></Gate>} />
           <Route path="/search/results" element={<Gate target="SEARCH" title="病院・介護施設を探す"><SearchResultsPage /></Gate>} />
+          <Route path="/search/map" element={<Gate target="SEARCH" title="マップから探す"><MapSearchPage /></Gate>} />
           <Route path="/search/favorites" element={<Gate target="SEARCH" title="お気に入りの病院"><FavoritesPage /></Gate>} />
           <Route path="/search/nursing" element={<Gate target="SEARCH" title="老人ホームを探す"><NursingSearchPage /></Gate>} />
           <Route path="/nursing-homes/:id" element={<Gate target="SEARCH" title="老人ホームを探す"><NursingDetailPage /></Gate>} />
