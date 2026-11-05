@@ -21,13 +21,13 @@ const Arrow = ({ dir, onClick }) => (
 );
 
 const ColumnCard = ({ col }) => (
-  <article className="bg-white p-[10px] h-full flex flex-col">
-    <PhotoPlaceholder image={col.image} art={col.art} alt={col.title} className="aspect-square" />
+  <article className="bg-white rounded-2xl border border-gold/30 p-3 h-full flex flex-col transition-colors hover:border-gold">
+    <PhotoPlaceholder image={col.image} art={col.art} alt={col.title} className="aspect-square rounded-xl" />
     <div className="mt-2"><CategoryTag>{CATEGORY_LABEL[col.category]}</CategoryTag></div>
     <h3 className="font-sans font-normal text-[0.9rem] leading-relaxed mt-2 mb-3 line-clamp-2">
       <Link to={col.to} className="hover:text-gold-deep">{col.title}</Link>
     </h3>
-    {col.date && <p className="mt-auto bg-cream-300 text-[0.75rem] px-2 py-1">公開日時：{col.date.replaceAll('-', '.')}</p>}
+    {col.date && <p className="mt-auto bg-cream-100 rounded-full text-[0.75rem] px-3 py-1 self-start">公開日時：{col.date.replaceAll('-', '.')}</p>}
   </article>
 );
 
