@@ -72,3 +72,4 @@
 - 2026-11-05 正規URL切替の準備: 旧ページのソースを確認（UA-140810147-1＝Universal Analytics はサービス終了済み／GTM-59TXV3Q は中身不明）。新サイトは GA4 を直接設置済みのため、旧タグは移さない。index.html に description・OGP・Twitterカード、og画像（/images/ogp.png）、apple-touch-icon.png を追加。SNSアイコンはリンク切れ（#）だったため、旧ページにあった Happiino のFacebook・Xを設定し、Instagramは URL が決まるまで非表示。「クラミッケとは」に「めざす社会」を追加。
 - 切替後の確認: GA4リアルタイムで自分のアクセスが見えるか／Facebook・Xでリンク共有してOGP画像が出るか／Search Console登録とサイトマップ送信。
 - 2026-11-05: 正規URL kura-mikke.com に切替済み（Vercel: apex=Production, www→apex 308、ムームーDNS A 216.198.79.1）。GSCにサイトマップ送信済み。フッターの「開発用ログイン」を削除（開発モードは /dev のパスワード入力）。フォーム公開手順: docs/design/contact-form-launch.md
+- 2026-11-05: 「地図で見る」を本物の地図に（Leaflet＋国土地理院の標準地図タイル、無料・キー不要、出典「地理院タイル」表示）。FacilityMap の props は従来どおり。実際のタイル表示は本番で確認。アクセスが増えたらタイル提供元の変更を検討。
