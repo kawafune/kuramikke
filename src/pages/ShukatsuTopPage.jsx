@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Users, User } from 'lucide-react';
+import { ShieldCheck, Users, User, ArrowRight } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { PageHero } from '../components/ui/PageHero';
 import heroImg from '../assets/shukatsu_hero.webp';
@@ -19,7 +19,7 @@ const TONE = {
 };
 
 const StatusChip = ({ children, tone = 'soon' }) => (
-  <span className={`absolute top-0 right-0 text-[0.7rem] leading-none px-2 py-1.5 ${tone === 'draft' ? 'bg-accent-red-text text-white' : 'bg-cream-200 text-ink'}`}>{children}</span>
+  <span className={`absolute top-3 right-3 rounded-full text-[0.7rem] leading-none px-2.5 py-1.5 ${tone === 'draft' ? 'bg-accent-red-text text-white' : 'bg-cream-200 text-ink'}`}>{children}</span>
 );
 
 const GuideCard = ({ page, tone }) => {
@@ -27,22 +27,27 @@ const GuideCard = ({ page, tone }) => {
   const readable = isReadable(page, devMode);
   const body = (
     <>
-      <strong className={`block font-round text-[1.05rem] mb-1 ${tone.text}`}>{page.title}</strong>
-      <span className="block text-[0.85rem] leading-relaxed">{page.short}</span>
+      <span className="flex-1 min-w-0">
+        <strong className={`block font-round text-[1.05rem] mb-1 ${tone.text}`}>{page.title}</strong>
+        <span className="block text-[0.85rem] leading-relaxed">{page.short}</span>
+      </span>
+      <span className={`shrink-0 grid place-items-center w-8 h-8 rounded-full ${tone.bg} text-white transition-transform group-hover:translate-x-1`} aria-hidden="true">
+        <ArrowRight size={16} strokeWidth={2.4} />
+      </span>
     </>
   );
   if (readable) {
     const draft = !page.published || page.expertReview === 'required';
     return (
       <li className="relative">
-        <Link to={`/shukatsu/${page.slug}`} className={`block h-full border border-gold-line border-l-[6px] ${tone.bar} bg-white p-5 pt-7 hover:bg-cream-50`}>{body}</Link>
+        <Link to={`/shukatsu/${page.slug}`} className={`group flex items-center gap-4 h-full rounded-xl border border-gold-line border-l-[6px] ${tone.bar} bg-white px-5 py-5 transition-colors hover:border-gold hover:bg-cream-50`}>{body}</Link>
         {draft && <StatusChip tone="draft">{page.expertReview === 'required' ? '専門家の確認待ち' : '下書き'}</StatusChip>}
       </li>
     );
   }
   return (
     <li className="relative">
-      <div aria-disabled="true" className={`h-full border border-line border-l-[6px] ${tone.bar} bg-white/70 p-5 pt-7 opacity-70`}>{body}</div>
+      <div aria-disabled="true" className={`flex items-center gap-4 h-full rounded-xl border border-line border-l-[6px] ${tone.bar} bg-white/70 px-5 py-5 opacity-70`}>{body}</div>
       <StatusChip>準備中</StatusChip>
     </li>
   );
@@ -65,7 +70,7 @@ const EntrancePicker = () => {
               aria-selected={on}
               aria-controls={`panel-${e.id}`}
               onClick={() => setActive(e.id)}
-              className={`min-h-[76px] px-2 py-3 flex flex-col items-center justify-center gap-1 border-2 ${t.border} font-round font-bold ${on ? `${t.bg} text-white` : `bg-white ${t.text}`}`}
+              className={`min-h-[76px] px-2 py-3 flex flex-col items-center justify-center gap-1 rounded-xl border-2 transition-colors ${t.border} font-round font-bold ${on ? `${t.bg} text-white` : `bg-white ${t.text}`}`}
             >
               <t.Icon size={22} aria-hidden="true" />
               <span className="text-[0.95rem] leading-tight">{e.title}</span>
@@ -87,14 +92,14 @@ const EntrancePicker = () => {
               className={`${active === e.id ? 'block' : 'hidden'} lg:block`}
             >
               {/* PC：見出しの札 */}
-              <div className={`hidden lg:block border-t-8 ${t.border} ${t.soft} p-5 mb-4 text-center`}>
-                <t.Icon className={`mx-auto mb-1 ${t.text}`} size={32} aria-hidden="true" />
+              <div className={`hidden lg:block rounded-2xl ${t.soft} px-6 py-6 mb-4 text-center`}>
+                <span className={`mx-auto mb-2 grid place-items-center w-14 h-14 rounded-full ${t.bg} text-white`}><t.Icon size={28} aria-hidden="true" /></span>
                 <h2 className={`text-[1.3rem] ${t.text}`}>{e.title}</h2>
                 <p className={`font-round font-bold text-[0.9rem] mb-2 ${t.text}`}>{e.sub}</p>
                 <p className="text-[0.85rem]">{e.text}</p>
               </div>
               {/* スマホ：タブの下の説明 */}
-              <p className={`lg:hidden text-[0.9rem] mb-4 p-4 ${t.soft}`}>{e.text}</p>
+              <p className={`lg:hidden text-[0.9rem] mb-4 p-4 rounded-xl ${t.soft}`}>{e.text}</p>
               <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                 {e.slugs.map((slug) => <GuideCard key={slug} page={GUIDE_BY_SLUG[slug]} tone={t} />)}
               </ul>
@@ -138,8 +143,8 @@ export const ShukatsuTopPage = () => {
           <SectionTitle>クラミッケのお約束</SectionTitle>
           <ul className="grid gap-4 sm:grid-cols-2">
             {PROMISES.map((p) => (
-              <li key={p.title} className="flex gap-3 border border-gold-line p-5">
-                <ShieldCheck className="shrink-0 text-gold-deep mt-1" size={24} aria-hidden="true" />
+              <li key={p.title} className="flex gap-4 rounded-2xl border border-gold/40 bg-cream-50 p-5 md:p-6">
+                <span className="shrink-0 grid place-items-center w-11 h-11 rounded-full bg-white text-gold-deep" aria-hidden="true"><ShieldCheck size={22} /></span>
                 <span>
                   <strong className="block font-round mb-1">{p.title}</strong>
                   <span className="text-[0.9rem]"><RichText text={p.text} /></span>
@@ -157,8 +162,8 @@ export const ShukatsuTopPage = () => {
         <SectionTitle>終活セミナー・イベント</SectionTitle>
         <p className="mb-6">同じ気持ちの方とお話しできる、セミナーやイベントをご紹介します。</p>
         {isAvailable('COMMUNITY')
-          ? <Link to="/community" className="inline-block bg-gold-deep text-white font-round font-bold px-8 py-3 shadow-[0_3px_0_theme(colors.gold.shadow)]">イベントを探す</Link>
-          : <p className="inline-block bg-cream-200 text-[0.85rem] px-4 py-2">準備中です</p>}
+          ? <Link to="/community" className="inline-block rounded-full bg-gold-deep text-white font-round font-bold px-8 py-3">イベントを探す</Link>
+          : <p className="inline-block rounded-full bg-white border border-gold/40 text-[0.85rem] px-5 py-2">準備中です</p>}
       </section>
 
       {/* 事業者向けの入口（控えめに） */}

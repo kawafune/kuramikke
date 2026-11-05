@@ -6,7 +6,7 @@ import shukatsuIco from '../../assets/nav_shukatsu.svg';
 // 終活ガイドへの入口。「病院・介護施設を探す」の下に置く（探している人が、次に必要になりやすい情報）
 export const ShukatsuBanner = () => (
   <section aria-labelledby="shukatsu-banner-title" className="max-w-content mx-auto px-4 pb-12 md:pb-14">
-    <Link to="/shukatsu" className="group flex flex-col md:flex-row items-center gap-4 md:gap-8 bg-cream-100 border border-gold/50 rounded-2xl px-5 md:px-10 py-6 hover:bg-cream-200 transition-colors">
+    <Link to="/shukatsu" className="group flex flex-col md:flex-row items-center gap-4 md:gap-8 bg-cream-50 border border-gold/50 rounded-2xl px-5 md:px-10 py-6 hover:bg-cream-100 hover:border-gold transition-colors">
       <img src={shukatsuIco} alt="" aria-hidden="true" className="h-14 md:h-16 w-auto shrink-0" />
       <span className="flex-1 text-center md:text-left">
         <span id="shukatsu-banner-title" className="block font-round font-bold text-gold-deep text-[1.1rem] md:text-[1.25rem] tracking-[0.08em]">終活ガイド｜ご家族のために、ご自身のために</span>

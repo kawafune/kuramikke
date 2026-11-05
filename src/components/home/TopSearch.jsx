@@ -40,7 +40,7 @@ export const TopSearch = () => {
   };
 
   return (
-    <form onSubmit={submit} className="max-w-[860px] mx-auto mb-10 bg-white border border-gold/60 rounded-2xl p-4 md:p-6">
+    <form onSubmit={submit} className="max-w-[860px] mx-auto mb-10 bg-cream-50 border border-gold/60 rounded-2xl p-4 md:p-6">
       <fieldset className="flex flex-wrap justify-center gap-x-6 gap-y-1 mb-4">
         <legend className="sr-only">探すもの</legend>
         {[['hospital', '病院・診療所'], ['nursing', '老人ホーム・介護施設']].map(([v, label]) => (
