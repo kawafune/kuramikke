@@ -68,3 +68,4 @@
 - 2026-11-05: TOPのMVボタンをモダン化（角丸カード＋アイコン円＋矢印）。TOPの検索枠・リンク枠・終活バナー・掲載バナーも角丸に統一。作業方針：正規URL化までは公開表示だけで確認（コードは共通なので開発側にも自動で入る）。
 - 2026-11-05: コラムを公開（READY.COLUMN=true）。画像のある7本（family-doctor, nursing-home-types, first-step-friends, medicine-notebook, emergency-call, watching-service, smartphone-photo）を published、expertReview='later'（公開後に代表が確認）。【要確認】は公開向けの文に置き換え。終活ガイド8本と「クラミッケとは」にも画像を追加。掲載バナーの背景を白に戻した。
 - 2026-11-05: TOPのコラム欄カードとコラム一覧・サイドバーを角丸に。スマホで「最新記事」の小さい画像が横いっぱいに広がり、題名が縦書き状になる崩れを修正（PhotoPlaceholder の w-full 競合）。
+- 2026-11-05: 終活サポートの記事カードのhoverを、分類の色（紺／青緑）の薄い面＋同色の枠に変更。
