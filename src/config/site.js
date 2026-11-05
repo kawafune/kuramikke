@@ -9,7 +9,7 @@ export const READY = {
   TOP: true,
   SHUKATSU: true,
   SEARCH: true, // 2026-11-05：病院・診療所・老人ホーム・駅からの検索を公開
-  COLUMN: false,
+  COLUMN: true,
   COMMUNITY: false,
 };
 

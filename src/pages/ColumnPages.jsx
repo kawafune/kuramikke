@@ -1,3 +1,4 @@
+import { PHOTOS } from '../data/photos';
 import React from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
@@ -130,6 +131,7 @@ export const ColumnArticlePage = () => {
         )}
         <p className="mb-3 flex flex-wrap items-center gap-3"><CategoryTag>{CATEGORY_LABEL[a.category]}</CategoryTag><span className="text-[0.8rem] text-ink-sub">公開日時：{dateLabel(a.date)}</span></p>
         <h1 className="text-[1.4rem] md:text-[1.7rem] leading-snug mb-6">{a.title}</h1>
+        {PHOTOS[`column:${a.slug}`] && <img src={PHOTOS[`column:${a.slug}`]} alt="" className="w-full aspect-[16/9] object-cover rounded-2xl mb-8" />}
         <p className="mb-10"><RichText text={a.lead} /></p>
         {a.sections.map((s) => (
           <section key={s.h} className="mb-10">
