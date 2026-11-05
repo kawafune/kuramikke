@@ -8,7 +8,7 @@ import { useCities } from '../../hooks/useCities';
 import { StationPicker } from '../search/StationPicker';
 import { encodeStation, PREF_NAME_BY_CODE, RADIUS_OPTIONS, DEFAULT_RADIUS } from '../../data/stations';
 
-const field = 'w-full h-12 px-3 border border-gold rounded bg-white text-[0.95rem] focus:outline-none focus:border-gold-deep';
+const field = 'w-full h-12 px-3 border border-gold/70 rounded-lg bg-white text-[0.95rem] focus:outline-none focus:border-gold-deep';
 
 // 「病院・介護施設を探す」の検索窓。探す対象（病院・診療所／老人ホーム）を選んで、エリアとキーワードを入れる
 export const TopSearch = () => {
@@ -40,7 +40,7 @@ export const TopSearch = () => {
   };
 
   return (
-    <form onSubmit={submit} className="max-w-[860px] mx-auto mb-10 bg-white border border-gold p-4 md:p-6">
+    <form onSubmit={submit} className="max-w-[860px] mx-auto mb-10 bg-white border border-gold/60 rounded-2xl p-4 md:p-6">
       <fieldset className="flex flex-wrap justify-center gap-x-6 gap-y-1 mb-4">
         <legend className="sr-only">探すもの</legend>
         {[['hospital', '病院・診療所'], ['nursing', '老人ホーム・介護施設']].map(([v, label]) => (

@@ -33,7 +33,7 @@ const CARE_LINKS = [
   { label: '新規開設施設', Icon: Sparkles, color: 'text-accent-red' },
 ];
 
-const cell = 'group w-full h-full min-h-[64px] md:min-h-[70px] flex items-center gap-2 md:gap-3 px-3 md:px-4 border border-gold rounded text-left';
+const cell = 'group w-full h-full min-h-[64px] md:min-h-[70px] flex items-center gap-2 md:gap-3 px-3 md:px-4 border border-gold/50 rounded-xl text-left transition-colors';
 
 const LinkGrid = ({ title, links }) => {
   const { devMode } = useSite();
@@ -41,12 +41,12 @@ const LinkGrid = ({ title, links }) => {
   if (shown.length === 0) return null;
   return (
     <div className="mb-8">
-      <h3 className="text-gold-deep text-[1rem] tracking-[0.12em] mb-3">{title}</h3>
+      <h3 className="flex items-center gap-2 text-gold-deep text-[1rem] tracking-[0.12em] mb-3"><span className="w-1.5 h-5 rounded-full bg-gold" aria-hidden="true" />{title}</h3>
       <ul className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-[9px]">
         {shown.map(({ label, Icon, color, to }) => (
           <li key={label}>
             {to ? (
-              <Link to={to} className={`${cell} bg-white hover:bg-cream-50`}>
+              <Link to={to} className={`${cell} bg-white hover:bg-cream-50 hover:border-gold`}>
                 <Icon size={28} strokeWidth={1.6} className={`shrink-0 ${color}`} aria-hidden="true" />
                 <span className="flex-1 font-round font-bold text-[0.8rem] md:text-[0.85rem] leading-snug">{label}</span>
                 <CircleArrowRight size={18} className="shrink-0 text-gold-deep transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
@@ -65,7 +65,7 @@ const LinkGrid = ({ title, links }) => {
 };
 
 export const FacilitySearchSection = () => (
-  <section className="pt-6 pb-12 md:pt-4 md:pb-14 px-4">
+  <section className="pt-8 pb-12 md:pt-10 md:pb-14 px-4">
     <div className="max-w-content mx-auto">
       <SectionTitle className="!mb-5 md:!mb-5">病院・介護施設を探す</SectionTitle>
       <TopSearch />

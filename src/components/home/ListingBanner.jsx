@@ -9,10 +9,10 @@ import hospitalIco from '../../assets/search_ico.svg';
 export const ListingBanner = () => (
   <Link to="/business" className="group block relative mt-4 md:mt-6 pt-7">
     {/* 見出しタブ */}
-    <span className="absolute top-0 left-0 bg-white border border-b-0 border-gold px-4 md:px-5 pt-1 pb-0.5 font-round font-bold text-gold-deep text-[0.75rem] md:text-[0.85rem] tracking-[0.1em]">
+    <span className="absolute top-0 left-0 bg-white border border-b-0 border-gold rounded-t-lg px-4 md:px-5 pt-1 pb-0.5 font-round font-bold text-gold-deep text-[0.75rem] md:text-[0.85rem] tracking-[0.1em]">
       病院・介護施設・終活事業者のみなさまへ
     </span>
-    <span className="block border border-gold bg-white px-4 md:px-10 pt-6 pb-12 md:pb-10 group-hover:bg-cream-50 transition-colors">
+    <span className="block border border-gold rounded-2xl rounded-tl-none bg-white px-4 md:px-10 pt-6 pb-12 md:pb-10 group-hover:bg-cream-50 transition-colors">
       <span className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
         <span className="flex-1">
           <span className="flex items-end gap-2 md:gap-4">
@@ -34,7 +34,7 @@ export const ListingBanner = () => (
         </span>
       </span>
     </span>
-    <span className="absolute right-0 bottom-0 flex items-center gap-1.5 bg-gold-deep text-white font-round font-bold text-[0.8rem] pl-6 pr-3 py-1.5 [clip-path:polygon(14px_0,100%_0,100%_100%,0_100%)]">
+    <span className="absolute right-0 bottom-0 rounded-br-2xl flex items-center gap-1.5 bg-gold-deep text-white font-round font-bold text-[0.8rem] pl-6 pr-3 py-1.5 [clip-path:polygon(14px_0,100%_0,100%_100%,0_100%)]">
       詳しくはこちら <CircleArrowRight size={16} aria-hidden="true" />
     </span>
   </Link>
