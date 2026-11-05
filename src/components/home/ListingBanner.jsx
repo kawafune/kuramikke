@@ -10,7 +10,7 @@ export const ListingBanner = () => (
   <Link to="/business" className="group block relative mt-4 md:mt-6 pt-7">
     {/* 見出しタブ */}
     <span className="absolute top-0 left-0 bg-white border border-b-0 border-gold px-4 md:px-5 pt-1 pb-0.5 font-round font-bold text-gold-deep text-[0.75rem] md:text-[0.85rem] tracking-[0.1em]">
-      病院・介護施設運営者のみなさまへ
+      病院・介護施設・終活事業者のみなさまへ
     </span>
     <span className="block border border-gold bg-white px-4 md:px-10 pt-6 pb-12 md:pb-10 group-hover:bg-cream-50 transition-colors">
       <span className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
@@ -22,7 +22,7 @@ export const ListingBanner = () => (
             <img src={mikeImg} alt="" aria-hidden="true" className="h-12 md:h-16 w-auto" />
           </span>
           <span className="block mt-3 font-round font-bold text-[1.05rem] md:text-[1.6rem] tracking-[0.08em] leading-snug">
-            <span className="text-[#2E8FA8]">病院</span>・<span className="text-[#8A5A33]">施設情報</span>を
+            <span className="text-[#2E8FA8]">病院</span>・<span className="text-[#8A5A33]">施設</span>・<span className="text-[#8A5A33]">終活</span>の情報を
             <span className="text-accent-red-text">掲載</span>しませんか？
           </span>
         </span>
