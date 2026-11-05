@@ -69,3 +69,5 @@
 - 2026-11-05: コラムを公開（READY.COLUMN=true）。画像のある7本（family-doctor, nursing-home-types, first-step-friends, medicine-notebook, emergency-call, watching-service, smartphone-photo）を published、expertReview='later'（公開後に代表が確認）。【要確認】は公開向けの文に置き換え。終活ガイド8本と「クラミッケとは」にも画像を追加。掲載バナーの背景を白に戻した。
 - 2026-11-05: TOPのコラム欄カードとコラム一覧・サイドバーを角丸に。スマホで「最新記事」の小さい画像が横いっぱいに広がり、題名が縦書き状になる崩れを修正（PhotoPlaceholder の w-full 競合）。
 - 2026-11-05: 終活サポートの記事カードのhoverを、分類の色（紺／青緑）の薄い面＋同色の枠に変更。
+- 2026-11-05 正規URL切替の準備: 旧ページのソースを確認（UA-140810147-1＝Universal Analytics はサービス終了済み／GTM-59TXV3Q は中身不明）。新サイトは GA4 を直接設置済みのため、旧タグは移さない。index.html に description・OGP・Twitterカード、og画像（/images/ogp.png）、apple-touch-icon.png を追加。SNSアイコンはリンク切れ（#）だったため、旧ページにあった Happiino のFacebook・Xを設定し、Instagramは URL が決まるまで非表示。「クラミッケとは」に「めざす社会」を追加。
+- 切替後の確認: GA4リアルタイムで自分のアクセスが見えるか／Facebook・Xでリンク共有してOGP画像が出るか／Search Console登録とサイトマップ送信。

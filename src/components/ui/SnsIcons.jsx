@@ -9,10 +9,11 @@ const XLogo = (props) => (
 );
 
 // 原案のSNS（Google+はサービス終了のため削除、TwitterはXに変更）
+// url が空のものは、表示しない（押しても何も起きないリンクを、出さないため）。旧ページに載っていた Happiino のアカウントを、仮に設定
 const SNS = [
-  { name: 'Facebook', bg: 'bg-sns-facebook', Icon: Facebook, fill: true },
-  { name: 'X', bg: 'bg-sns-x', Icon: XLogo },
-  { name: 'Instagram', bg: 'bg-sns-instagram', Icon: Instagram },
+  { name: 'Facebook', bg: 'bg-sns-facebook', Icon: Facebook, fill: true, url: 'https://www.facebook.com/happiinocc/' },
+  { name: 'X', bg: 'bg-sns-x', Icon: XLogo, url: 'https://twitter.com/happiino_jp' },
+  { name: 'Instagram', bg: 'bg-sns-instagram', Icon: Instagram, url: '' },
 ];
 
 export const SnsIcons = ({ size = 'sm' }) => {
@@ -20,10 +21,9 @@ export const SnsIcons = ({ size = 'sm' }) => {
   const icon = size === 'lg' ? 'w-6 h-6' : 'w-4 h-4';
   return (
     <ul className="flex items-center gap-2 md:gap-3">
-      {SNS.map(({ name, bg, Icon, fill }) => (
+      {SNS.filter((s) => s.url).map(({ name, bg, Icon, fill, url }) => (
         <li key={name}>
-          {/* 【要確認】各SNSアカウントのURL */}
-          <a href="#" aria-label={`クラミッケの${name}`} className={`${box} ${bg} rounded-full flex items-center justify-center text-white hover:opacity-80`}>
+          <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`クラミッケの${name}`} className={`${box} ${bg} rounded-full flex items-center justify-center text-white hover:opacity-80`}>
             <Icon className={icon} {...(fill ? { fill: 'currentColor', strokeWidth: 0 } : {})} />
           </a>
         </li>
