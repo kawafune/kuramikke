@@ -71,3 +71,4 @@
 - 2026-11-05: 終活サポートの記事カードのhoverを、分類の色（紺／青緑）の薄い面＋同色の枠に変更。
 - 2026-11-05 正規URL切替の準備: 旧ページのソースを確認（UA-140810147-1＝Universal Analytics はサービス終了済み／GTM-59TXV3Q は中身不明）。新サイトは GA4 を直接設置済みのため、旧タグは移さない。index.html に description・OGP・Twitterカード、og画像（/images/ogp.png）、apple-touch-icon.png を追加。SNSアイコンはリンク切れ（#）だったため、旧ページにあった Happiino のFacebook・Xを設定し、Instagramは URL が決まるまで非表示。「クラミッケとは」に「めざす社会」を追加。
 - 切替後の確認: GA4リアルタイムで自分のアクセスが見えるか／Facebook・Xでリンク共有してOGP画像が出るか／Search Console登録とサイトマップ送信。
+- 2026-11-05: 正規URL kura-mikke.com に切替済み（Vercel: apex=Production, www→apex 308、ムームーDNS A 216.198.79.1）。GSCにサイトマップ送信済み。フッターの「開発用ログイン」を削除（開発モードは /dev のパスワード入力）。フォーム公開手順: docs/design/contact-form-launch.md

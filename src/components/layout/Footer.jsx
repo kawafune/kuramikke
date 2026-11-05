@@ -93,8 +93,7 @@ export const Footer = () => {
         ))}
       </ul>
     </div>
-    {/* 一時的：代表が開発モードに入るためのリンク（公開が落ち着いたら外す） */}
-    {!devMode && <p className="text-center pb-3"><Link to="/dev" className="text-[0.7rem] text-ink-sub underline underline-offset-2">開発用ログイン</Link></p>}
+    {/* 開発モードへは、/dev（パスワード入力）から入る。フッターのリンクは、2026-11-05 に外した */}
     <p className="bg-gold-deep text-white text-center text-[0.75rem] py-3 tracking-[0.1em]">
       ©Happiino All Rights Reserved.
     </p>
