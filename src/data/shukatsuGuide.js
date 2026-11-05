@@ -82,11 +82,12 @@ export const GUIDE_PAGES = [
     ],
     note: '終活の進め方に、決まった正解はありません。このページは、一般的なご案内であり、特定の方法や契約をおすすめするものではありません。ご自身のペースで、心地よい方法を選んでみてください。',
     officialLinks: [
-      '厚生労働省：「人生会議（ACP：アドバンス・ケア・プランニング）」について（もしものときの医療やケアに関する話し合い）',
-      '法務省：「成年後見制度・任意後見制度」について（判断能力が低下したときの財産管理や生活のサポート）',
-      '消費者庁・独立行政法人 国民生活センター：終活サービスや生前契約に関する注意点について',
+      { text: '厚生労働省：「人生会議（ACP：アドバンス・ケア・プランニング）」について（もしものときの医療やケアに関する話し合い）', url: 'https://www.mhlw.go.jp/acp-jinseikaigi/' },
+      { text: '厚生労働省：「成年後見制度（成年後見はやわかり）」について（判断能力が低下したときの財産管理や生活のサポート）', url: 'https://guardianship.mhlw.go.jp/' },
+      { text: '国民生活センター：高齢者の消費者被害（終活サービスや生前契約に関する注意点を含む）', url: 'https://www.kokusen.go.jp/soudan_now/data/koureisha.html' },
+      { text: '消費者庁：消費者ホットライン「188（いやや！）」について', url: 'https://www.caa.go.jp/policies/policy/local_cooperation/local_consumer_administration/hotline/' },
     ],
-    sources: '【要確認】公的機関のページへのリンク（公式のURL）を追加する',
+    sources: '公的機関のリンクは、検索で確認した公式ページを載せている。代表が、リンク先と、ご注意の文言との対応を確認する（年1回の見直し）',
   },
 
   {
@@ -151,12 +152,12 @@ export const GUIDE_PAGES = [
     ],
     note: 'エンディングノートに、法的な効力はありません。財産の引き継ぎ（相続）や法的な手続きについては、必ず、弁護士・司法書士・税理士などの専門家にご相談ください。',
     officialLinks: [
-      '法務省：「自筆証書遺言書保管制度」について（エンディングノートと遺言書の違いの解説など）',
-      '厚生労働省：「人生会議（ACP）」について（医療・ケアに関する意思決定のサポート）',
-      '公益社団法人 日本臓器移植ネットワーク：「臓器提供の意思表示」について',
+      { text: '法務省：「自筆証書遺言書保管制度」について（エンディングノートと遺言書の違いの解説など）', url: 'https://www.moj.go.jp/MINJI/minji03_00051.html' },
+      { text: '厚生労働省：「人生会議（ACP）」について（医療・ケアに関する意思決定のサポート）', url: 'https://www.mhlw.go.jp/acp-jinseikaigi/' },
+      { text: '公益社団法人 日本臓器移植ネットワーク：「臓器提供の意思表示」について', url: 'https://www.jotnw.or.jp/learn/method/' },
       'お住まいの市区町村（地域包括支援センターや社会福祉協議会など）でも、独自のエンディングノートを無料で配布している場合があります。お近くの窓口でぜひ確認してみてください。',
     ],
-    sources: '【要確認】公的機関のページへのリンク（公式のURL）を追加する。手書き用PDF（scripts/pdf/ending_note.html から作成）の項目を、確認する',
+    sources: '公的機関のリンクは、検索で確認した公式ページを載せている。代表が、リンク先と、ご注意の文言との対応を確認する（年1回の見直し）',
   },
 
   {
@@ -218,10 +219,11 @@ export const GUIDE_PAGES = [
     ],
     note: 'お墓や供養のかたちに、ひとつの正解はありません。ただし、法令や自治体の条例がかかわる手続きについては、各事業者や、お住まいの市区町村の窓口にご確認ください。',
     officialLinks: [
-      '厚生労働省：「墓地、埋葬等に関する法律」および「散骨に関するガイドライン」について',
+      { text: '厚生労働省：「墓地・埋葬等」について（墓地、埋葬等に関する法律）', url: 'https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000123872.html' },
+      { text: '厚生労働省：「散骨に関するガイドライン（散骨事業者向け）」', url: 'https://www.mhlw.go.jp/content/11130500/001321304.pdf' },
       '各市区町村の窓口：「改葬許可」に関するお手続きについて',
     ],
-    sources: '【要確認】公的機関のページへのリンク（公式のURL）を追加する。費用の目安（数万円〜50万円）の出典と、調査年を控えておく',
+    sources: '公的機関のリンクは、検索で確認した公式ページを載せている。代表が、リンク先と、ご注意の文言との対応を確認する（年1回の見直し）',
     listings: [
       { group: '霊園・石材店', text: 'お墓の購入や、永代供養をご案内する事業者' },
       { group: '散骨・宇宙葬', text: '散骨や宇宙葬の専門ルールにのっとり、実施・ご案内をする事業者' },
@@ -308,6 +310,10 @@ export const GUIDE_PAGES = [
       },
     ],
     note: 'このページは、一般的な法制度や手続きのご案内です。自治体や状況によって、手続きの方法や必要書類、費用は異なります。くわしくは、お住まいの市区町村の窓口や、葬儀社にご確認ください。',
+    officialLinks: [
+      { text: '国民生活センター：葬儀サービスのトラブルについて', url: 'https://www.kokusen.go.jp/mimamori/mj_mailmag/mj-shinsen475.html' },
+      { text: '消費者庁：消費者ホットライン「188（いやや！）」について', url: 'https://www.caa.go.jp/policies/policy/local_cooperation/local_consumer_administration/hotline/' },
+    ],
     sources: '【要確認】国民生活センター等のページへのリンク（公式のURL）を追加する。「平均○○万円」などの数字を載せる場合は、出典・調査年・対象範囲（お布施や飲食費を含むか）を明記する',
     listings: [
       { group: '葬儀社', text: '家族葬・一日葬・直葬などに対応する事業者' },
@@ -462,7 +468,11 @@ export const GUIDE_PAGES = [
       },
     ],
     note: 'このページは、一般的なご案内です。ご家族の状況によって、進め方は変わります。個別の判断は、専門家にご相談ください。',
-    sources: '【要確認】公的機関（国民生活センター・環境省・自治体など）のページへのリンク（公式のURL）を追加する',
+    officialLinks: [
+      { text: '国民生活センター：遺品整理を頼むときの、事業者選びについて', url: 'https://www.kokusen.go.jp/mimamori/mj_mailmag/mj-shinsen525.html' },
+      { text: '消費者庁：消費者ホットライン「188（いやや！）」について', url: 'https://www.caa.go.jp/policies/policy/local_cooperation/local_consumer_administration/hotline/' },
+    ],
+    sources: '公的機関のリンクは、検索で確認した公式ページを載せている。代表が、リンク先と、ご注意の文言との対応を確認する（年1回の見直し）',
     listings: [
       { group: '遺品整理・生前整理の事業者', text: '遠方の方の立ち会いなしの対応など、ご相談を受けている事業者' },
     ],
@@ -528,12 +538,14 @@ export const GUIDE_PAGES = [
     ],
     note: 'このページは、一般的な法制度や手続きのご案内です。ご家族の状況によって、必要な手続きや期限は変わります。実際の対応にあたっては、必ず、各分野の専門家や公的機関にご確認ください。',
     officialLinks: [
-      '法務省・法務局：「相続登記の義務化」「自筆証書遺言書保管制度」「法定相続情報証明制度」について',
-      '国税庁：「相続税の申告のしかた」「基礎控除」について',
-      '日本年金機構：「年金を受けている方が亡くなったとき」の手続きについて',
-      '法テラス（日本司法支援センター）：法的トラブルの相談窓口案内について',
+      { text: '法務省：「相続登記の申請義務化」について', url: 'https://www.moj.go.jp/MINJI/minji05_00599.html' },
+      { text: '法務省：「自筆証書遺言書保管制度」について', url: 'https://www.moj.go.jp/MINJI/minji03_00051.html' },
+      { text: '法務局：「法定相続情報証明制度」について', url: 'https://houmukyoku.moj.go.jp/homu/page7_000013.html' },
+      { text: '国税庁：相続税について（申告のしかた・基礎控除など）', url: 'https://www.nta.go.jp/taxes/tetsuzuki/shinsei/shinkoku/sozoku/sozoku.htm' },
+      { text: '日本年金機構：年金を受けている方が亡くなったとき', url: 'https://www.nenkin.go.jp/service/jukyu/tetsuduki/kyotsu/jukyu/20140731-01.html' },
+      { text: '法テラス（日本司法支援センター）：法的トラブルの相談窓口案内について', url: 'https://www.houterasu.or.jp/site/about-houterasu/houterasutoha.html' },
     ],
-    sources: '【要確認】公的機関のページへのリンク（公式のURL）を追加する。手続きの期限（年金・登記・税）は、制度の変更に注意（年1回の見直し）',
+    sources: '公的機関のリンクは、検索で確認した公式ページを載せている。代表が、リンク先と、ご注意の文言との対応を確認する（年1回の見直し）',
     listingTarget: '事務所',
     listings: [
       { group: '弁護士・司法書士', text: '相続手続き、遺産分割、相続登記や遺言の相談を受けている事務所' },
@@ -620,11 +632,13 @@ export const GUIDE_PAGES = [
     note: 'このページは、一般的な制度のご案内であり、特定の金融商品や契約を勧誘・推奨するものではありません。お金や法律の手続きは、ご自身の資産状況やご家族の構成によって最適な方法が変わりますので、個別の判断については、必ず公的窓口や各分野の専門家にご相談ください。',
     officialLinks: [
       '日本年金機構：「年金の受給（老齢年金）」「ねんきんネット」について',
-      '厚生労働省：「高額療養費制度を利用される皆さまへ」「成年後見制度利用促進」について',
-      '金融庁：「高齢社会における金融サービスのあり方」「金融トラブルへのご注意」について',
-      '消費者庁・独立行政法人 国民生活センター：高齢者の消費者トラブル防止について',
+      { text: '厚生労働省：「高額療養費制度を利用される皆さまへ」', url: 'https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juuyou/kougakuiryou/index.html' },
+      { text: '厚生労働省：「成年後見制度（成年後見はやわかり）」について', url: 'https://guardianship.mhlw.go.jp/' },
+      { text: '金融庁：「金融トラブルへのご注意」「詐欺的な投資勧誘等にご注意ください」について', url: 'https://www.fsa.go.jp/ordinary/chuui/attention.html' },
+      { text: '国民生活センター：高齢者の消費者被害・見守り情報について', url: 'https://www.kokusen.go.jp/mimamori/' },
+      { text: '警察庁：「還付金詐欺」について（相談は、警察相談専用電話「#9110」へ）', url: 'https://www.npa.go.jp/bureau/safetylife/sos47/case/refund/' },
     ],
-    sources: '【要確認】公的機関のページへのリンク（公式のURL）を追加する。年金の増減率・各制度の数字は、年1回、最新の制度を確認する',
+    sources: '公的機関のリンクは、検索で確認した公式ページを載せている。代表が、リンク先と、ご注意の文言との対応を確認する（年1回の見直し）',
     listings: [
       { group: 'ファイナンシャルプランナー（FP）', text: '老後のライフプラン設計や、家計・保険の見直しのご相談を受けている事業者' },
       { group: '信託銀行・財産管理サポート', text: '遺言信託や、老後の財産管理・遺産整理業務を取り扱う事業者' },
@@ -694,12 +708,15 @@ export const GUIDE_PAGES = [
     ],
     note: '資産運用は、元本割れなどのリスクを伴うものであり、ご自身の判断と責任において行うものです。クラミッケは、金融商品取引業者および金融商品仲介業者ではないため、投資の助言や特定の商品の勧誘、契約の仲介（媒介）は、一切行いません。お取引にあたっては、各金融機関が交付する「契約締結前交付書面」や「目論見書」等の内容を、十分にご確認ください。',
     officialLinks: [
-      '金融庁：「NISA特設ウェブサイト」「免許・許可・登録等を受けている事業者一覧」「投資詐欺・金融トラブルへのご注意」について',
-      '厚生労働省・iDeCo公式サイト：「iDeCo（個人型確定拠出年金）の加入資格・手続き」について',
-      '消費者庁・独立行政法人 国民生活センター：高齢者の金融商品・投資トラブル防止について',
+      { text: '金融庁：「NISA特設ウェブサイト」', url: 'https://www.fsa.go.jp/policy/nisa2/index.html' },
+      { text: '金融庁：「免許・許可・登録等を受けている事業者一覧」', url: 'https://www.fsa.go.jp/menkyo/menkyo.html' },
+      { text: '金融庁：「詐欺的な投資勧誘等にご注意ください」', url: 'https://www.fsa.go.jp/ordinary/chuui/attention.html' },
+      { text: '金融庁：「金融サービス利用者相談室」', url: 'https://www.fsa.go.jp/receipt/soudansitu/index.html' },
+      { text: '厚生労働省：「iDeCo（個人型確定拠出年金）の概要」／iDeCo公式サイト（加入資格・手続き）', url: 'https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/nenkin/kyoshutsu/ideco.html' },
       '日本証券業協会：「高齢のお客様の投資・お取引にあたって」について',
+      { text: '消費者庁・国民生活センター：高齢者の消費者トラブル防止について', url: 'https://www.kokusen.go.jp/soudan_now/data/koureisha.html' },
     ],
-    sources: '【要確認】公的機関のページへのリンク（公式のURL）を追加する。税制・対象年齢・金額は、年1回、最新の制度を確認する',
+    sources: '公的機関のリンクは、検索で確認した公式ページを載せている。代表が、リンク先と、ご注意の文言との対応を確認する（年1回の見直し）',
     adText: 'このコーナーでの事業者の紹介は、広告（PR）です。提携事業者からの広告掲載料（広告報酬）に基づいて運営しており、クラミッケが特定の金融商品や口座開設を勧誘・推奨するものではありません。',
     listings: [
       { group: '金融機関・証券会社', text: 'シニア世代向けの資産管理や、NISAなどのご相談を受けている登録金融機関' },

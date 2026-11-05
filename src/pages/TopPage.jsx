@@ -8,11 +8,13 @@ import { ListingBanner } from '../components/home/ListingBanner';
 import { AdBanner } from '../components/ui/AdBanner';
 import { useSite } from '../context/siteContext';
 import { BUSINESS_BY_PATH } from '../data/businessPages';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 // TOPの構成：タイル → 病院・介護施設を探す（検索窓つき） → 終活ガイド → コラム → 絆を見つける → 掲載のご案内
 // 公開表示では、準備ができていないもの（仮の内容・広告枠・公開前のページ）は出さない。開発モードでは、すべて出す。
 export const TopPage = ({ onTryAccess }) => {
   const { devMode, isAvailable } = useSite();
+  usePageTitle(); // タイトルを戻し、正規のURLを設定する
   const searchOpen = devMode || isAvailable('SEARCH');
   const columnOpen = devMode || isAvailable('COLUMN');
   const communityOpen = devMode || isAvailable('COMMUNITY');

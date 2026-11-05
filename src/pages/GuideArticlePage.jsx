@@ -67,7 +67,9 @@ export const GuideArticlePage = () => {
               <p><RichText text={page.note} /></p>
               {page.officialLinks && (
                 <ul className="mt-3 space-y-1">
-                  {page.officialLinks.map((t) => <li key={t}>・<RichText text={t} /></li>)}
+                  {page.officialLinks.map((l) => (typeof l === 'string'
+                    ? <li key={l}>・<RichText text={l} /></li>
+                    : <li key={l.url}>・<a href={l.url} target="_blank" rel="noopener noreferrer" className="text-gold-deep underline underline-offset-4">{l.text}</a></li>))}
                 </ul>
               )}
               {devMode && <p className="mt-2 text-ink-sub"><RichText text={page.sources} /></p>}

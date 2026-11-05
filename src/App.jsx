@@ -79,6 +79,12 @@ const DevEntry = () => {
   return <Navigate to="/" replace />;
 };
 
+// 公開してよい機能（config/site.js の READY）は、誰でも見られる。まだの機能は、開発モードの人だけ
+const Gate = ({ target, title, children }) => {
+  const { devMode, isAvailable } = useSite();
+  return devMode || isAvailable(target) ? children : <ComingSoonPage title={title} />;
+};
+
 const Shell = () => {
   const { devMode, go, loginOpen, closeLogin, login } = useSite();
   return (
@@ -96,12 +102,12 @@ const Shell = () => {
           <Route path="/shukatsu" element={<ShukatsuTopPage />} />
           <Route path="/shukatsu/:slug" element={<GuideArticlePage />} />
           <Route path="/portal" element={<DevOnly title="ポータル型のTOP"><TopPage onTryAccess={go} /></DevOnly>} />
-          <Route path="/search" element={<DevOnly title="病院・介護施設を探す"><SearchTopPage /></DevOnly>} />
-          <Route path="/search/results" element={<DevOnly title="病院・介護施設を探す"><SearchResultsPage /></DevOnly>} />
-          <Route path="/search/favorites" element={<DevOnly title="お気に入りの病院"><FavoritesPage /></DevOnly>} />
-          <Route path="/search/nursing" element={<DevOnly title="老人ホームを探す"><NursingSearchPage /></DevOnly>} />
-          <Route path="/nursing-homes/:id" element={<DevOnly title="老人ホームを探す"><NursingDetailPage /></DevOnly>} />
-          <Route path="/hospitals/:id" element={<DevOnly title="病院・介護施設を探す"><HospitalDetailPage /></DevOnly>} />
+          <Route path="/search" element={<Gate target="SEARCH" title="病院・介護施設を探す"><SearchTopPage /></Gate>} />
+          <Route path="/search/results" element={<Gate target="SEARCH" title="病院・介護施設を探す"><SearchResultsPage /></Gate>} />
+          <Route path="/search/favorites" element={<Gate target="SEARCH" title="お気に入りの病院"><FavoritesPage /></Gate>} />
+          <Route path="/search/nursing" element={<Gate target="SEARCH" title="老人ホームを探す"><NursingSearchPage /></Gate>} />
+          <Route path="/nursing-homes/:id" element={<Gate target="SEARCH" title="老人ホームを探す"><NursingDetailPage /></Gate>} />
+          <Route path="/hospitals/:id" element={<Gate target="SEARCH" title="病院・介護施設を探す"><HospitalDetailPage /></Gate>} />
           <Route path="/column" element={<ColumnListPage />} />
           <Route path="/column/:slug" element={<ColumnArticlePage />} />
           <Route path="/community" element={<DevOnly title="絆を見つける"><ComingSoonPage title="絆を見つける" /></DevOnly>} />

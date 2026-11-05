@@ -2,13 +2,13 @@
 
 // トップページに何を出すか。'shukatsu'＝終活ガイド / 'portal'＝病院・施設・出逢いのポータル型（現在のTOP）
 // 検索側が整ったら 'portal' に切り替える。開発モードでは、TOP（/）はいつもポータル型。終活ガイドのTOPは /shukatsu で見られる。
-export const HOME = 'shukatsu';
+export const HOME = 'portal'; // 2026-11-05：検索が整ったので、ポータル型のTOPに切り替え
 
 // 一般の訪問者に公開している機能（false は「準備中」。開発モードのパスワードを入れた人だけが見られる）
 export const READY = {
   TOP: true,
   SHUKATSU: true,
-  SEARCH: false,
+  SEARCH: true, // 2026-11-05：病院・診療所・老人ホーム・駅からの検索を公開
   COLUMN: false,
   COMMUNITY: false,
 };

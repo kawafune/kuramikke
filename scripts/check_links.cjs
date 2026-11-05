@@ -7,7 +7,7 @@ const { chromium } = require('playwright');
 
 const base = process.argv[2] ?? 'http://localhost:4173';
 const dev = process.argv[3] === 'dev';
-const SKIP = [/^\/hospitals\//, /^\/nursing-homes\//, /^\/search\/results/, /^\/search\/nursing\?/, /^\/dev$/, /^\/portal/];
+const SKIP = [/^\/downloads\//, /^\/data\//, /^\/hospitals\//, /^\/nursing-homes\//, /^\/search\/results/, /^\/search\/nursing\?/, /^\/dev$/, /^\/portal/];
 
 (async () => {
   const browser = await chromium.launch();

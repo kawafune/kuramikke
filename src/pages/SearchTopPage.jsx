@@ -12,6 +12,8 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { REGIONS } from '../data/regions';
 import { getLastPref } from '../lib/lastPref';
 import { useCities } from '../hooks/useCities';
+import { StationPicker } from '../components/search/StationPicker';
+import { encodeStation, PREF_NAME_BY_CODE, RADIUS_OPTIONS, DEFAULT_RADIUS } from '../data/stations';
 import { DEPARTMENTS, DATA_SOURCE_NAME, asOfLabel, loadIndex } from '../data/medical';
 import { PREFECTURES } from '../data/nav';
 
@@ -26,7 +28,8 @@ export const SearchTopPage = () => {
   const [city, setCity] = useState('');
   const cities = useCities('hospital', pref);
   const [dept, setDept] = useState('');
-  const [tab, setTab] = useState('area'); // area＝エリアから / route＝路線から（準備中）
+  const [tab, setTab] = useState('area'); // area＝エリアから / station＝駅名から
+  const [radius, setRadius] = useState(String(DEFAULT_RADIUS));
   const { ids } = useFavorites();
   const [index, setIndex] = useState(null);
   useEffect(() => {
@@ -71,11 +74,22 @@ export const SearchTopPage = () => {
         <div className="mt-14">
           <div role="tablist" className="flex">
             <button role="tab" aria-selected={tab === 'area'} onClick={() => setTab('area')} className={`min-h-[48px] px-6 font-round font-bold border border-b-0 border-gold ${tab === 'area' ? 'bg-white text-accent-red-text' : 'bg-cream-50 text-accent-red-text/70'}`}>エリアから探す</button>
-            <button role="tab" aria-selected={tab === 'route'} onClick={() => setTab('route')} className={`min-h-[48px] px-6 font-round font-bold border border-b-0 border-gold ${tab === 'route' ? 'bg-white text-[#2A7A73]' : 'bg-cream-50 text-[#2A7A73]/70'}`}>路線から探す</button>
+            <button role="tab" aria-selected={tab === 'station'} onClick={() => setTab('station')} className={`min-h-[48px] px-6 font-round font-bold border border-b-0 border-gold ${tab === 'station' ? 'bg-white text-[#2A7A73]' : 'bg-cream-50 text-[#2A7A73]/70'}`}>駅名から探す</button>
           </div>
           <div role="tabpanel" className="border border-gold bg-white p-5 md:p-8">
-            {tab === 'route' ? (
-              <p className="py-10 text-center">路線から探す機能は、準備中です。</p>
+            {tab === 'station' ? (
+              <div className="py-4 max-w-[560px] mx-auto">
+                <p className="mb-3 text-[0.9rem]">駅名を入れて、候補から選ぶと、その駅から近い病院・診療所を、近い順に探せます。（直線距離）</p>
+                <div className="grid gap-3 sm:grid-cols-[1fr_9rem]">
+                  <StationPicker onPick={(s) => navigate(`/search/results?${new URLSearchParams({ pref: PREF_NAME_BY_CODE[s.p], st: encodeStation(s), r: radius }).toString()}`)} />
+                  <label className="text-[0.8rem]">距離
+                    <select value={radius} onChange={(e) => setRadius(e.target.value)} className={`${field} mt-1`}>
+                      {RADIUS_OPTIONS.map((km) => <option key={km} value={km}>{km}km以内</option>)}
+                    </select>
+                  </label>
+                </div>
+                <p className="mt-2 text-[0.75rem] text-ink-sub">駅を選ぶと、すぐに検索結果が開きます。駅のデータ：国土数値情報（鉄道データ）国土交通省を加工して作成</p>
+              </div>
             ) : (
               <dl className="space-y-3">
                 {REGIONS.map((r) => (
