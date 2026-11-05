@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { SectionTitle } from '../components/ui/SectionTitle';
@@ -28,7 +28,8 @@ export const SearchTopPage = () => {
   const [city, setCity] = useState('');
   const cities = useCities('hospital', pref);
   const [dept, setDept] = useState('');
-  const [tab, setTab] = useState('area'); // area＝エリアから / station＝駅名から
+  const [sp] = useSearchParams();
+  const [tab, setTab] = useState(() => (sp.get('tab') === 'station' ? 'station' : 'area')); // area＝エリアから / station＝駅名から（?tab=station で、駅名から開く）
   const [radius, setRadius] = useState(String(DEFAULT_RADIUS));
   const { ids } = useFavorites();
   const [index, setIndex] = useState(null);

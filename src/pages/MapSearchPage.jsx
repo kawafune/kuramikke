@@ -12,23 +12,14 @@ import { PREFECTURES } from '../data/nav';
 import { PREF_CODES, KIND_LABEL, DATA_SOURCE_NAME } from '../data/medical';
 import { KAIGO_TYPE_LABEL, KAIGO_SOURCE_NAME } from '../data/kaigo';
 import { PREF_CENTERS } from '../data/prefCenters';
-import { PREF_NAME_BY_CODE } from '../data/stations';
 import { getLastPref, setLastPref } from '../lib/lastPref';
 import { distanceKm, formatKm } from '../lib/distance';
+import { nearestPref } from '../lib/nearestPref';
 
 // 「マップから探す」。県（または現在地）を選ぶと、その地図が開き、表示している範囲の病院・施設が、ピンで出る。
 // ピンを押すと、地図の下に、その施設のカードが出る。?t=kaigo で、老人ホーム・介護施設。現在地は、この端末の中だけで使う。
 const MAX_PINS = 120; // これより多いときは、地図の中心に近い順に、この数だけピンを出す（地図が重くならないように）
 const LIST_SIZE = 20;
-
-const nearestPref = (lat, lng) => {
-  let best = null;
-  Object.entries(PREF_CENTERS).forEach(([code, [la, ln]]) => {
-    const d = distanceKm({ lat, lng }, { lat: la, lng: ln });
-    if (!best || d < best.d) best = { code, d };
-  });
-  return best ? PREF_NAME_BY_CODE[best.code] : '';
-};
 
 const viewOfPref = (pref) => {
   const c = PREF_CENTERS[PREF_CODES[pref]];

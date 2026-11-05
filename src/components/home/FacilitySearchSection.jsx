@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   CircleArrowRight, Hospital, Stethoscope, CalendarDays, Moon, Clock, MapPin, Microscope, HeartPulse,
-  House, Building2, DoorOpen, Accessibility, Target, Timer, Sparkles,
+  House, Building2, DoorOpen, Accessibility, Target, Timer, Sparkles, TrainFront, LocateFixed,
 } from 'lucide-react';
 import { SectionTitle } from '../ui/SectionTitle';
 import { TopSearch } from './TopSearch';
@@ -20,6 +20,7 @@ const HOSPITAL_LINKS = [
   { label: 'マップから 探す', Icon: MapPin, color: 'text-accent-red', to: '/search/map' },
   { label: '専門外来を探す', Icon: Microscope, color: 'text-[#4BB4C8]' },
   { label: '特徴から 探す', Icon: HeartPulse, color: 'text-[#F08A9C]', to: '/search/results' },
+  { label: '駅から 探す', Icon: TrainFront, color: 'text-[#2A7A73]', to: '/search?tab=station' },
 ];
 // 老人ホーム：実データ（介護サービス情報公表システム）を取り込み済み。費用・入居状況などのデータはまだ無いので、その検索は準備中
 const CARE_LINKS = [
@@ -29,6 +30,7 @@ const CARE_LINKS = [
   { label: '看護・医療体制から探す', Icon: Accessibility, color: 'text-[#5E9BD6]' },
   { label: '目的から探す', Icon: Target, color: 'text-[#7DB54A]' },
   { label: 'マップから 探す', Icon: MapPin, color: 'text-accent-red', to: '/search/map?t=kaigo' },
+  { label: '現在地から 近い施設', Icon: LocateFixed, color: 'text-[#2A7A73]', to: '/search/nursing?near=1' },
   { label: '特徴から探す', Icon: Timer, color: 'text-accent-red' },
   { label: '新規開設施設', Icon: Sparkles, color: 'text-accent-red' },
 ];

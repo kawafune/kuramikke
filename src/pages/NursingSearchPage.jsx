@@ -11,6 +11,7 @@ import { SearchTypeTabs } from '../components/search/SearchTypeTabs';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { PREFECTURES } from '../data/nav';
 import { useKaigoPrefData } from '../hooks/useMedical';
+import { nearestPref } from '../lib/nearestPref';
 import { distanceKm } from '../lib/distance';
 import { getLastPref, setLastPref } from '../lib/lastPref';
 import { citiesOf } from '../lib/cities';
@@ -109,7 +110,7 @@ export const NursingSearchPage = () => {
   const { items, loading, error } = useKaigoPrefData(code);
   const results = items ? searchKaigo(items, params) : [];
   const [loc, setLoc] = useState(null); // 現在地。この端末の中だけで使う
-  const [geo, setGeo] = useState('idle');
+  const [geo, setGeo] = useState(() => (sp.get('near') === '1' ? 'loading' : 'idle')); // ?near=1：開いたらすぐ、現在地から近い順にする（TOPの「現在地から近い施設」）
   // 駅から探す：駅から指定の距離（直線）以内に絞って、近い順に並べる
   const station = parseStation(params.st);
   const radius = Number(params.r) || DEFAULT_RADIUS;
@@ -133,15 +134,29 @@ export const NursingSearchPage = () => {
   const update = (next) => setSp(toQuery({ ...params, page: 1, ...('pref' in next && next.pref !== params.pref ? { city: '' } : {}), ...next }));
   useEffect(() => { setLastPref(params.pref); }, [params.pref]);
   const lastPref = getLastPref();
-  const askLocation = () => {
-    if (!navigator.geolocation) { setGeo('error'); return; }
-    setGeo('loading');
+  // 現在地を調べて、近い順にする。県がまだ選ばれていなければ、現在地から近い県を選ぶ
+  const locate = () => {
     navigator.geolocation.getCurrentPosition(
-      (pos) => { setLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setGeo('idle'); update({ sort: 'near' }); },
+      (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        setLoc({ lat, lng });
+        setGeo('idle');
+        update({ sort: 'near', ...(params.pref ? {} : { pref: nearestPref(lat, lng) }) });
+      },
       (err) => setGeo(err.code === 1 ? 'denied' : 'error'),
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 },
     );
   };
+  const askLocation = () => {
+    if (!navigator.geolocation) { setGeo('error'); return; }
+    setGeo('loading');
+    locate();
+  };
+  useEffect(() => {
+    if (sp.get('near') !== '1') return;
+    if (navigator.geolocation) locate();
+    else setSp(toQuery(params), { replace: true });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const pageLink = (n) => `?${toQuery({ ...params, page: n }).toString()}`;
 
   const chips = [
