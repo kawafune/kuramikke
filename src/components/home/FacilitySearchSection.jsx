@@ -12,18 +12,18 @@ import { useSite } from '../../context/siteContext';
 // アイコンは原案イラスト受領までの仮（色は原案の雰囲気に寄せた）
 // to があるものだけが、公開表示に出る。to が無いものは、開発モードでだけ「準備中」として並べる
 const HOSPITAL_LINKS = [
-  { label: '病院検索トップ', Icon: Hospital, color: 'text-[#4BB4C8]', to: '/search' },
+  { label: '病院を くわしく探す', Icon: Hospital, color: 'text-[#4BB4C8]', to: '/search' },
   { label: '診療科目', Icon: Stethoscope, color: 'text-[#5E9BD6]', to: '/search' },
   { label: '休日診療', Icon: CalendarDays, color: 'text-[#5E9BD6]', to: '/search/results?f=holiday' },
   { label: '夜間も受付', Icon: Moon, color: 'text-[#3A3A8C]', to: '/search/results?f=night' },
   { label: '本日診療可', Icon: Clock, color: 'text-[#5E9BD6]', to: '/search/results?now=1' },
   { label: 'マップから探す', Icon: MapPin, color: 'text-accent-red' },
   { label: '専門外来を探す', Icon: Microscope, color: 'text-[#4BB4C8]' },
-  { label: '特徴から探す', Icon: HeartPulse, color: 'text-[#F08A9C]', to: '/search/results' },
+  { label: '特徴から 探す', Icon: HeartPulse, color: 'text-[#F08A9C]', to: '/search/results' },
 ];
 // 老人ホーム：実データ（介護サービス情報公表システム）を取り込み済み。費用・入居状況などのデータはまだ無いので、その検索は準備中
 const CARE_LINKS = [
-  { label: '介護施設検索トップ', Icon: House, color: 'text-[#B07A4F]', to: '/search/nursing' },
+  { label: '施設を くわしく探す', Icon: House, color: 'text-[#B07A4F]', to: '/search/nursing' },
   { label: '施設種別', Icon: Building2, color: 'text-accent-red', to: '/search/nursing' },
   { label: '今すぐ入居可能', Icon: DoorOpen, color: 'text-[#4BB4C8]' },
   { label: '看護・医療体制から探す', Icon: Accessibility, color: 'text-[#5E9BD6]' },
@@ -33,7 +33,10 @@ const CARE_LINKS = [
   { label: '新規開設施設', Icon: Sparkles, color: 'text-accent-red' },
 ];
 
-const cell = 'group w-full h-full min-h-[64px] md:min-h-[70px] flex items-center gap-2 md:gap-3 px-3 md:px-4 border border-gold/50 rounded-xl text-left transition-colors';
+// ラベルの半角スペースは「ここで折り返してよい」位置（スマホで変な所で切れないように）
+const Label = ({ text }) => text.split(' ').map((w, i) => <span key={i} className="inline-block">{w}</span>);
+
+const cell = 'group w-full h-full min-h-[64px] md:min-h-[70px] flex items-center gap-2 md:gap-3 px-2.5 md:px-4 border border-gold/50 rounded-xl text-left transition-colors';
 
 const LinkGrid = ({ title, links }) => {
   const { devMode } = useSite();
@@ -48,13 +51,13 @@ const LinkGrid = ({ title, links }) => {
             {to ? (
               <Link to={to} className={`${cell} bg-white hover:bg-cream-50 hover:border-gold`}>
                 <Icon size={28} strokeWidth={1.6} className={`shrink-0 ${color}`} aria-hidden="true" />
-                <span className="flex-1 font-round font-bold text-[0.8rem] md:text-[0.85rem] leading-snug">{label}</span>
+                <span className="flex-1 font-round font-bold text-[0.8rem] md:text-[0.85rem] leading-snug max-md:tracking-[0.02em]"><Label text={label} /></span>
                 <CircleArrowRight size={18} className="shrink-0 text-gold-deep transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
               </Link>
             ) : (
               <span aria-disabled="true" className={`${cell} bg-cream-50 opacity-60`}>
                 <Icon size={28} strokeWidth={1.6} className={`shrink-0 ${color}`} aria-hidden="true" />
-                <span className="flex-1 font-round font-bold text-[0.8rem] md:text-[0.85rem] leading-snug">{label}<span className="ml-1 text-[0.65rem] bg-cream-200 px-1.5 py-0.5 whitespace-nowrap">準備中</span></span>
+                <span className="flex-1 font-round font-bold text-[0.8rem] md:text-[0.85rem] leading-snug max-md:tracking-[0.02em]"><Label text={label} /><span className="ml-1 text-[0.65rem] bg-cream-200 px-1.5 py-0.5 whitespace-nowrap">準備中</span></span>
               </span>
             )}
           </li>
