@@ -34,3 +34,14 @@ select {
   background-size: 0.85rem auto;
   padding-right: 2.6rem !important;
 }
+
+/* 地図（Leaflet）の見た目を、サイトに合わせる */
+.kura-map .leaflet-container { background: #FAF7EA; font-family: inherit; }
+.kura-map .leaflet-tile-pane { filter: sepia(0.18) saturate(0.85) brightness(1.03); }
+.kura-map .leaflet-bar { border: none; border-radius: 9999px; overflow: hidden; box-shadow: 0 0 0 1px rgba(204, 173, 48, 0.5); }
+.kura-map .leaflet-bar a { width: 36px; height: 36px; line-height: 36px; color: #8A6D0B; background: #fff; border-bottom-color: rgba(204, 173, 48, 0.35); font-size: 20px; }
+.kura-map .leaflet-bar a:hover { background: #FAF7EA; color: #8A6D0B; }
+.kura-map .leaflet-control-attribution { background: rgba(255, 255, 255, 0.85); border-top-left-radius: 8px; font-size: 10px; color: #6b6b6b; }
+.kura-map .leaflet-control-attribution a { color: #8A6D0B; }
+.kura-map .leaflet-tooltip { border: none; border-radius: 9999px; padding: 4px 12px; font-weight: 700; color: #4C4C4C; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18); }
+.kura-map .leaflet-tooltip-top::before { border-top-color: #fff; }

@@ -22,6 +22,7 @@ import { SitemapPage } from './pages/SitemapPage';
 import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
+import { LpPage } from './pages/LpPage';
 import { initAnalytics, initOutboundTracking, trackPageView } from './lib/analytics';
 
 // ページを移動したら、先頭にスクロールする
@@ -88,6 +89,20 @@ const Gate = ({ target, title, children }) => {
 
 const Shell = () => {
   const { devMode, go, loginOpen, closeLogin, login } = useSite();
+  const { pathname } = useLocation();
+  // 広告用のLP（隠しページ）は、サイトのヘッダー・フッターを出さない
+  if (pathname.startsWith('/lp/')) {
+    return (
+      <>
+        <ScrollToTop />
+        <Analytics />
+        <Routes>
+          <Route path="/lp/kuramikke" element={<LpPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </>
+    );
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />

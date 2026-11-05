@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
 // 病院・老人ホームで共用する地図部品。本物の地図（Leaflet＋国土地理院の地図タイル）。
-// 国土地理院の標準地図：無料・キー不要。出典の表示が必要（下の ATTRIBUTION）。アクセスが増えたら、タイルの提供元の変更を検討する。
+// 国土地理院の「淡色地図」：無料・キー不要。色を抑えた地図に、サイトの色味（クリーム）を少し重ねている（index.css の .kura-map）。出典の表示が必要（下の ATTRIBUTION）。アクセスが増えたら、タイルの提供元の変更を検討する。
 //   items: [{ id, name, lat, lng }]、selectedId、onSelect(id)
-const TILE_URL = 'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png';
+const TILE_URL = 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png';
 const ATTRIBUTION = '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">地理院タイル</a>（国土地理院）';
 
 // ピン（色は、選択中＝赤、ほか＝ゴールド）
@@ -59,6 +59,7 @@ export const FacilityMap = ({ items, selectedId, onSelect, className = '' }) => 
       if (cancelled || !elRef.current || state.current) return;
       const L = mod.default ?? mod;
       const map = L.map(elRef.current, { scrollWheelZoom: false, zoomControl: true }).setView([35.68, 139.76], 12);
+      map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener noreferrer">Leaflet</a>');
       L.tileLayer(TILE_URL, { attribution: ATTRIBUTION, maxZoom: 18, minZoom: 5 }).addTo(map);
       state.current = { L, map, layer: L.layerGroup().addTo(map) };
       draw();
@@ -75,7 +76,7 @@ export const FacilityMap = ({ items, selectedId, onSelect, className = '' }) => 
   }, [items, selectedId, onSelect]);
 
   return (
-    <div className={`relative overflow-hidden border border-gold rounded-xl bg-[#EEF3E6] ${className}`}>
+    <div className={`kura-map relative overflow-hidden border border-gold/50 rounded-2xl bg-cream-50 ${className}`}>
       <div ref={elRef} className="absolute inset-0" role="region" aria-label="地図" />
     </div>
   );
