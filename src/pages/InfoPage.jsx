@@ -25,7 +25,7 @@ export const InfoPage = ({ page, form = null, hideMail = false }) => {
           </p>
         )}
         <p className="mb-10 text-[1.05rem]"><RichText text={page.lead} /></p>
-        {form}
+        {form && <div className="mb-12">{form}</div>}
         {page.sections.filter((s) => !(hideMail && s.blocks.some((b) => b.type === 'mailto'))).map((s) => (
           <section key={s.h} className="mb-10">
             <h2 className="text-[1.15rem] md:text-[1.25rem] border-l-[6px] border-gold pl-3 mb-5 text-ink">{s.h}</h2>
