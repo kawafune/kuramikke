@@ -72,7 +72,9 @@ const DevOnly = ({ title, children }) => {
 const ContactRoute = ({ page }) => {
   const { devMode } = useSite();
   const formOn = devMode || import.meta.env.VITE_CONTACT_FORM === '1';
-  return <InfoPage page={page} form={formOn ? <ContactForm /> : null} hideMail={formOn} />;
+  // フォームで受け付けているときは、メール向けの案内文（lead・note）を、フォーム向けに差し替える
+  const p = formOn ? { ...page, lead: page.leadForm ?? page.lead, note: page.noteForm ?? page.note } : page;
+  return <InfoPage page={p} form={formOn ? <ContactForm /> : null} hideMail={formOn} />;
 };
 
 // 開発モードへの入口（どこにもリンクしない）。/dev を開くと、パスワードの入力が出る
