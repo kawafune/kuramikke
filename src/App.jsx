@@ -23,6 +23,7 @@ import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
 import { LpPage } from './pages/LpPage';
+import { CommunityTopPage, CommunityEventPage } from './pages/CommunityPages';
 import { MapSearchPage } from './pages/MapSearchPage';
 import { initAnalytics, initOutboundTracking, trackPageView } from './lib/analytics';
 
@@ -130,7 +131,8 @@ const Shell = () => {
           <Route path="/hospitals/:id" element={<Gate target="SEARCH" title="病院・介護施設を探す"><HospitalDetailPage /></Gate>} />
           <Route path="/column" element={<ColumnListPage />} />
           <Route path="/column/:slug" element={<ColumnArticlePage />} />
-          <Route path="/community" element={<DevOnly title="絆を見つける"><ComingSoonPage title="絆を見つける" /></DevOnly>} />
+          <Route path="/community" element={<CommunityTopPage />} />
+          <Route path="/community/:slug" element={<CommunityEventPage />} />
           {[...BUSINESS_PAGES, ...LEGAL_PAGES].map((p) => <Route key={p.path} path={p.path} element={p.path === '/contact' ? <ContactRoute page={p} /> : <InfoPage page={p} />} />)}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

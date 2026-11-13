@@ -1,30 +1,25 @@
 import React from 'react';
-import { MapPin, User } from 'lucide-react';
-import { FeatureTag } from './Tags';
+import { Link } from 'react-router-dom';
+import { CalendarDays, MapPin, Wifi } from 'lucide-react';
 import { PhotoPlaceholder } from './PhotoPlaceholder';
+import { EVENT_CATEGORY_LABEL } from '../../data/events';
 
-// 出逢いのイベントカード（TOP・出逢いTOP・一覧で共通）
-export const EventCard = ({ event, bordered = false }) => (
-  <article className={`h-full bg-white p-3 md:p-[10px] flex flex-col ${bordered ? 'border border-gold' : ''}`}>
-    <PhotoPlaceholder image={event.image} art={event.art} alt={event.title} className="aspect-[4/3]" />
-    <h3 className="font-sans font-normal text-[0.9rem] leading-relaxed mt-3 mb-2 line-clamp-2">
-      <a href="#" className="hover:text-gold-deep">{event.title}</a>
-    </h3>
-    <p className="bg-cream-200 text-center py-1 mb-2">
-      <span className="text-[1.25rem] tracking-[0.1em]">{event.date}</span>
-      <span className="text-[0.7rem] ml-2">開催決定</span>
+// イベントのカード（絆を見つける：一覧・TOPで共通）。主催は外部の事業者・団体で、クラミッケは紹介するだけ。
+// 呼び出す側で <li> に包む（ColumnCard と同じ形）
+export const EventCard = ({ event }) => (
+  <Link to={`/community/${event.slug}`} className="group block h-full bg-white border border-gold/50 rounded-2xl p-3 transition-colors hover:border-gold hover:bg-cream-50">
+    <PhotoPlaceholder image={event.image} art={event.art} alt={event.title} className="aspect-[4/3] rounded-xl" />
+    <p className="mt-3 flex flex-wrap items-center gap-2">
+      <span className="inline-block bg-cream-200 text-[0.7rem] px-2 py-0.5">{EVENT_CATEGORY_LABEL[event.category]}</span>
+      <span className="inline-flex items-center gap-1 text-[0.7rem] text-[#2A7A73] font-bold">
+        {event.format === 'online' ? <><Wifi size={13} aria-hidden="true" />オンライン</> : <><MapPin size={13} aria-hidden="true" />会場</>}
+      </span>
     </p>
-    <p className="flex items-center gap-1 text-[0.8rem]">
-      <MapPin size={16} className="text-gold-deep shrink-0" aria-hidden="true" />{event.place}
+    <h3 className="font-round font-bold text-[0.95rem] leading-snug mt-2 mb-1 line-clamp-2 group-hover:text-gold-deep">{event.title}</h3>
+    <p className="text-[0.75rem] text-ink-sub mb-2">主催：{event.organizer}</p>
+    <p className="flex items-center gap-1.5 text-[0.8rem] font-bold">
+      <CalendarDays size={15} className="text-gold-deep shrink-0" aria-hidden="true" />{event.dateLabel}
     </p>
-    <p className="flex items-center gap-1 text-[0.8rem] mb-3">
-      <User size={16} className="text-gold-deep shrink-0" aria-hidden="true" />
-      参加人数
-      <span className="text-accent-red-text text-[1.3rem] leading-none mx-1">{event.joined}</span>
-      <span>/{event.capacity}</span>
-    </p>
-    <ul className="grid grid-cols-2 gap-[6px] mt-auto">
-      {event.tags.map((t) => <li key={t}><FeatureTag name={t} /></li>)}
-    </ul>
-  </article>
+    <p className="mt-1 text-[0.8rem]">{event.price}</p>
+  </Link>
 );
