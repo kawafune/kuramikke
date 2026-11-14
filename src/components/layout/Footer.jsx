@@ -41,6 +41,7 @@ const PageTopButton = () => {
 
 export const Footer = () => {
   const { devMode, isAvailable, go } = useSite();
+  const subLinks = SUB_LINKS.filter(({ to }) => devMode || !to || BUSINESS_BY_PATH[to]?.published !== false);
   return (
   <footer className="border-t border-gold-line mt-auto">
     <div className="max-w-content mx-auto px-4 lg:px-8 pt-10 md:pt-12">
@@ -83,17 +84,22 @@ export const Footer = () => {
         <SnsIcons size="lg" />
       </div>
 
-      {/* 「｜ 文字」を1つの固まりにして、折り返すときに区切り線だけが浮かないようにする */}
-      <p className="text-center text-[0.8rem] leading-loose pb-6">
-        {SUB_LINKS.filter(({ to }) => devMode || !to || BUSINESS_BY_PATH[to]?.published !== false).map(({ label, to }, i) => (
-          <span key={label} className="inline-block whitespace-nowrap px-2">
-            {i > 0 && <span className="mr-2 text-line" aria-hidden="true">｜</span>}
-            {to
-              ? <Link to={to} className="hover:text-gold-deep">{label}</Link>
-              : <a href="#" className="hover:text-gold-deep">{label}</a> /* 【未実装】ページができるまでの仮リンク */}
-          </span>
+      {/* 下段のリンク。「運営会社」「お問い合わせ」は、いつも2行目にまとめる（お問い合わせだけが、1つ余って2行目に落ちないように）。
+          「｜ 文字」を1つの固まりにして、折り返すときに区切り線だけが浮かないようにする */}
+      <div className="text-center text-[0.8rem] leading-loose pb-6">
+        {[subLinks.slice(0, -2), subLinks.slice(-2)].map((group, g) => (
+          <p key={g}>
+            {group.map(({ label, to }, i) => (
+              <span key={label} className="inline-block whitespace-nowrap px-2 sm:px-2">
+                {i > 0 && <span className="mr-2 text-line hidden sm:inline" aria-hidden="true">｜</span>}
+                {to
+                  ? <Link to={to} className="hover:text-gold-deep">{label}</Link>
+                  : <a href="#" className="hover:text-gold-deep">{label}</a> /* 【未実装】ページができるまでの仮リンク */}
+              </span>
+            ))}
+          </p>
         ))}
-      </p>
+      </div>
     </div>
     {/* 開発モードへは、/dev（パスワード入力）から入る。フッターのリンクは、2026-11-05 に外した */}
     <p className="bg-gold-deep text-white text-center text-[0.75rem] py-3 tracking-[0.1em]">

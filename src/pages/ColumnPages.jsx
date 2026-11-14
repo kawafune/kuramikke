@@ -83,7 +83,7 @@ export const ColumnListPage = () => {
           ) : (
             <ul>
               {shown.map((it, i) => (
-                <li key={it.key} className={`flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl ${i % 2 === 1 ? 'bg-cream-50' : ''}`}>
+                <li key={it.key} className={`flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl ${i % 2 === 0 ? 'bg-cream-50' : ''}`}>
                   <Link to={it.to} className="sm:w-[220px] shrink-0" aria-hidden="true" tabIndex={-1}><PhotoPlaceholder image={it.image} art={it.art} alt="" className="aspect-[4/3] rounded-xl" /></Link>
                   <div className="min-w-0">
                     {it.date && <p className="inline-block bg-cream-300 text-[0.75rem] px-2 py-0.5 mb-2">公開日時：{dateLabel(it.date)}</p>}
