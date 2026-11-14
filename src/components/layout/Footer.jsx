@@ -83,15 +83,17 @@ export const Footer = () => {
         <SnsIcons size="lg" />
       </div>
 
-      <ul className="flex flex-wrap justify-center gap-y-2 text-[0.8rem] pb-6">
+      {/* 「｜ 文字」を1つの固まりにして、折り返すときに区切り線だけが浮かないようにする */}
+      <p className="text-center text-[0.8rem] leading-loose pb-6">
         {SUB_LINKS.filter(({ to }) => devMode || !to || BUSINESS_BY_PATH[to]?.published !== false).map(({ label, to }, i) => (
-          <li key={label} className={`px-3 leading-none ${i > 0 ? 'border-l border-ink' : ''}`}>
+          <span key={label} className="inline-block whitespace-nowrap px-2">
+            {i > 0 && <span className="mr-2 text-line" aria-hidden="true">｜</span>}
             {to
               ? <Link to={to} className="hover:text-gold-deep">{label}</Link>
               : <a href="#" className="hover:text-gold-deep">{label}</a> /* 【未実装】ページができるまでの仮リンク */}
-          </li>
+          </span>
         ))}
-      </ul>
+      </p>
     </div>
     {/* 開発モードへは、/dev（パスワード入力）から入る。フッターのリンクは、2026-11-05 に外した */}
     <p className="bg-gold-deep text-white text-center text-[0.75rem] py-3 tracking-[0.1em]">

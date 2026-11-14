@@ -1,24 +1,11 @@
-import React, { useRef } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { SectionTitle } from '../ui/SectionTitle';
 import { Button } from '../ui/Button';
 import { CategoryTag } from '../ui/Tags';
 import { PhotoPlaceholder } from '../ui/PhotoPlaceholder';
-import { Link } from 'react-router-dom';
 import { useSite } from '../../context/siteContext';
 import { getColumnItems, CATEGORY_LABEL } from '../../data/column';
-
-// 送り矢印（原案の金色の丸ボタン）
-const Arrow = ({ dir, onClick }) => (
-  <button
-    onClick={onClick}
-    aria-label={dir === 'prev' ? '前のコラム' : '次のコラム'}
-    className="hidden md:flex absolute top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gold-deep text-white items-center justify-center hover:brightness-110"
-    style={{ [dir === 'prev' ? 'left' : 'right']: 0 }}
-  >
-    {dir === 'prev' ? <ArrowLeft size={24} strokeWidth={2.5} /> : <ArrowRight size={24} strokeWidth={2.5} />}
-  </button>
-);
 
 const ColumnCard = ({ col }) => (
   <article className="bg-white rounded-2xl border border-gold/30 p-3 h-full flex flex-col transition-colors hover:border-gold">
@@ -31,35 +18,23 @@ const ColumnCard = ({ col }) => (
   </article>
 );
 
+// TOPの「コラム」。新しい順（data/column.js の並び順）の先頭から、最大8件。
+// スマホは指で横に送る（1枚ずつ）。PCは、絆を見つける のカードと同じ、3〜4列のグリッド
 export const ColumnSection = ({ onNavigate }) => {
-  const trackRef = useRef(null);
   const { devMode } = useSite();
-  const columns = getColumnItems(devMode).slice(-6).reverse(); // 新しい順に、最大6件
+  const columns = getColumnItems(devMode).slice(0, 8);
   if (columns.length === 0) return null;
-  const scroll = (dir) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector('li');
-    el.scrollBy({ left: (card?.offsetWidth ?? 300) * (dir === 'next' ? 1 : -1), behavior: 'smooth' });
-  };
-
   return (
     <section className="bg-cream-50 py-12 md:py-16">
       <SectionTitle>コラム</SectionTitle>
-      <div className="relative max-w-content mx-auto md:px-16">
-        <Arrow dir="prev" onClick={() => scroll('prev')} />
-        {/* スマホは指で横に送る。PCは3枚表示＋矢印 */}
-        <ul
-          ref={trackRef}
-          className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-4 md:gap-12 px-[12%] md:px-0 scroll-px-[12%] md:scroll-px-0"
-        >
+      <div className="max-w-content mx-auto px-4">
+        <ul className="flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory no-scrollbar px-4 md:px-0 scroll-px-4">
           {columns.map((col) => (
-            <li key={col.key} className="snap-start shrink-0 basis-[76%] sm:basis-[45%] md:basis-[calc((100%-6rem)/3)]">
+            <li key={col.key} className="snap-start shrink-0 basis-[72%] sm:basis-[42%] md:basis-auto">
               <ColumnCard col={col} />
             </li>
           ))}
         </ul>
-        <Arrow dir="next" onClick={() => scroll('next')} />
       </div>
       <div className="text-center mt-10">
         <Button onClick={() => onNavigate('COLUMN')}>もっと読む</Button>

@@ -19,26 +19,25 @@ const PAGE_SIZE = 10;
 
 const dateLabel = (d) => d.replaceAll('-', '.');
 
-// 右の欄（カテゴリ・最新記事）。スマホでは、一覧の下に出る
-const Sidebar = ({ items, active }) => (
-  <aside className="space-y-10">
-    <section aria-labelledby="col-cat">
-      <h2 id="col-cat" className="text-[0.95rem] text-gold-deep border-b border-dotted border-gold pb-1 mb-3">カテゴリ</h2>
-      <ul className="grid grid-cols-3 gap-2">
-        {COLUMN_CATEGORIES.map((c) => (
-          <li key={c.key}>
-            <Link to={active === c.key ? '/column' : `/column?cat=${c.key}`} aria-current={active === c.key ? 'true' : undefined}
-              className={`flex items-center justify-center text-center min-h-[64px] px-1 rounded-xl border border-gold/60 font-round font-bold text-[0.8rem] leading-snug ${active === c.key ? 'bg-gold-deep text-white' : 'bg-white text-gold-deep hover:bg-cream-50'}`}>
-              {c.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
+// カテゴリの絞り込み（中央の列の、一覧の上に置く）
+const CategoryChips = ({ active }) => (
+  <nav aria-label="カテゴリで絞り込む" className="grid grid-cols-3 gap-2 mb-8">
+    {COLUMN_CATEGORIES.map((c) => (
+      <Link key={c.key} to={active === c.key ? '/column' : `/column?cat=${c.key}`} aria-current={active === c.key ? 'true' : undefined}
+        className={`flex items-center justify-center text-center min-h-[52px] px-1 rounded-xl border border-gold/60 font-round font-bold text-[0.85rem] leading-snug ${active === c.key ? 'bg-gold-deep text-white' : 'bg-white text-gold-deep hover:bg-cream-50'}`}>
+        {c.label}
+      </Link>
+    ))}
+  </nav>
+);
+
+// 右の欄（最新記事）。スマホでは、一覧の下に出る。順番は、一覧（中央の列）と同じ（data/column.js の並び順の先頭から）
+const Sidebar = ({ items }) => (
+  <aside>
     <section aria-labelledby="col-new">
       <h2 id="col-new" className="text-[0.95rem] text-gold-deep border-b border-dotted border-gold pb-1 mb-3">最新記事</h2>
       <ul className="space-y-3">
-        {items.slice(-5).reverse().map((it) => (
+        {items.slice(0, 5).map((it) => (
           <li key={it.key}>
             <Link to={it.to} className="flex gap-3 hover:text-gold-deep">
               <PhotoPlaceholder image={it.image} art={it.art} alt="" className="w-16 h-16 shrink-0 rounded-lg" />
@@ -78,6 +77,7 @@ export const ColumnListPage = () => {
       <PageHero title={cat ? `コラム｜${CATEGORY_LABEL[cat]}` : 'コラム'} />
       <div className="max-w-content mx-auto px-4 py-10 md:py-14 grid gap-10 lg:grid-cols-[1fr_280px]">
         <div>
+          <CategoryChips active={cat} />
           {shown.length === 0 ? (
             <p className="py-10 text-center">このカテゴリの記事は、ただいま準備中です。</p>
           ) : (
@@ -104,7 +104,7 @@ export const ColumnListPage = () => {
             </nav>
           )}
         </div>
-        <Sidebar items={all} active={cat} />
+        <Sidebar items={all} />
       </div>
       <div className="max-w-content mx-auto px-4 pb-12"><AdBanner placement="guide" className="h-[60px] md:h-[75px]" /></div>
     </>
