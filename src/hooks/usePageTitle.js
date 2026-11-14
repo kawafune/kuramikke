@@ -7,12 +7,21 @@ const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://kura-mikke.com').rep
 const BASE = 'クラミッケ｜豊かな暮らし情報ミッケ！';
 
 // ページごとにブラウザのタブの名前を変える
-export const usePageTitle = (title) => {
+// description を渡すと、そのページの「検索結果に出る説明文（meta description）」になる。なければ、サイト全体の説明文のまま
+export const usePageTitle = (title, description) => {
   const { pathname } = useLocation();
   useEffect(() => {
     document.title = title ? `${title}｜クラミッケ` : BASE;
     return () => { document.title = BASE; };
   }, [title]);
+  useEffect(() => {
+    if (!description) return undefined;
+    const meta = document.querySelector('meta[name="description"]');
+    if (!meta) return undefined;
+    const before = meta.getAttribute('content');
+    meta.setAttribute('content', description);
+    return () => meta.setAttribute('content', before ?? '');
+  }, [description]);
   useEffect(() => {
     let link = document.querySelector('link[rel="canonical"]');
     if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }

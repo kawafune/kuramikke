@@ -57,6 +57,43 @@ const Block = ({ block }) => {
         </ul>
       );
 
+    // 小見出し（H3）。SEO記事で使う。id は、目次（toc）からのリンク先
+    case 'h3':
+      return <h3 id={block.id} className="scroll-mt-4 mt-10 mb-4 text-[1.05rem] md:text-[1.15rem] leading-snug text-ink flex gap-2"><span className="mt-[0.55em] w-2.5 h-2.5 shrink-0 bg-gold" aria-hidden="true" />{block.text}</h3>;
+
+    // 「記事のポイント」などの囲み（見出しタグは使わない）
+    case 'box':
+      return (
+        <div className="mb-8 border border-gold p-1">
+          <div className="border border-gold bg-cream-50 p-5">
+            <strong className="block font-round text-gold-deep mb-2">{block.title}</strong>
+            <ul className="space-y-2">
+              {block.items.map((t) => <li key={t} className="flex gap-3"><span className="mt-[0.8em] w-2 h-2 rounded-full bg-gold shrink-0" aria-hidden="true" /><span><RichText text={t} /></span></li>)}
+            </ul>
+          </div>
+        </div>
+      );
+
+    // 目次。見出し（H2・H3）から自動で作られる。押すと、その見出しへ移動する
+    case 'toc':
+      return (
+        <nav aria-label={block.title} className="mb-8 border border-gold-line rounded-xl p-5">
+          <strong className="block font-round text-gold-deep mb-3">{block.title}</strong>
+          <ol className="space-y-3 text-[0.95rem]">
+            {block.items.map((h) => (
+              <li key={h.id}>
+                <a href={`#${h.id}`} className="font-bold hover:text-gold-deep">{h.text}</a>
+                {h.children.length > 0 && (
+                  <ul className="mt-2 ml-4 space-y-1.5 border-l-2 border-gold-line pl-4">
+                    {h.children.map((c) => <li key={c.id}><a href={`#${c.id}`} className="hover:text-gold-deep">{c.text}</a></li>)}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      );
+
     case 'callout':
       // 原案の二重枠
       return (
