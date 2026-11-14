@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Download, Mail } from 'lucide-react';
+import { ChevronDown, Download, Mail } from 'lucide-react';
 import { RichText } from '../ui/RichText';
 import { Button } from '../ui/Button';
 import { useSite } from '../../context/siteContext';
@@ -74,24 +74,30 @@ const Block = ({ block }) => {
         </div>
       );
 
-    // 目次。見出し（H2・H3）から自動で作られる。押すと、その見出しへ移動する
+    // 目次。見出し（H2・H3）から自動で作られる。押すと、その見出しへ移動する。
+    // アコーディオン（初めは開いている。見出しを押すと閉じる／開く）
     case 'toc':
       return (
-        <nav aria-label={block.title} className="mb-8 border border-gold-line rounded-xl p-5">
-          <strong className="block font-round text-gold-deep mb-3">{block.title}</strong>
-          <ol className="space-y-3 text-[0.95rem]">
-            {block.items.map((h) => (
-              <li key={h.id}>
-                <a href={`#${h.id}`} className="font-bold hover:text-gold-deep">{h.text}</a>
-                {h.children.length > 0 && (
-                  <ul className="mt-2 ml-4 space-y-1.5 border-l-2 border-gold-line pl-4">
-                    {h.children.map((c) => <li key={c.id}><a href={`#${c.id}`} className="hover:text-gold-deep">{c.text}</a></li>)}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ol>
-        </nav>
+        <details open className="group mb-8 border border-gold-line rounded-xl">
+          <summary className="flex items-center justify-between gap-3 cursor-pointer select-none list-none p-5 [&::-webkit-details-marker]:hidden">
+            <strong className="font-round text-gold-deep">{block.title}</strong>
+            <ChevronDown size={20} className="shrink-0 text-gold-deep transition-transform group-open:rotate-180" aria-hidden="true" />
+          </summary>
+          <nav aria-label={block.title} className="px-5 pb-5">
+            <ol className="space-y-3 text-[0.95rem]">
+              {block.items.map((h) => (
+                <li key={h.id}>
+                  <a href={`#${h.id}`} className="font-bold hover:text-gold-deep">{h.text}</a>
+                  {h.children.length > 0 && (
+                    <ul className="mt-2 ml-4 space-y-1.5 border-l-2 border-gold-line pl-4">
+                      {h.children.map((c) => <li key={c.id}><a href={`#${c.id}`} className="hover:text-gold-deep">{c.text}</a></li>)}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </details>
       );
 
     case 'callout':
