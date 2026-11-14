@@ -74,7 +74,7 @@ export const ColumnListPage = () => {
   return (
     <>
       <Breadcrumb items={[{ label: 'コラム' }]} />
-      <PageHero title={cat ? `コラム｜${CATEGORY_LABEL[cat]}` : 'コラム'} />
+      <PageHero title={cat ? `コラム｜${CATEGORY_LABEL[cat]}` : 'コラム'} image={PHOTOS['page:/column']} imagePosition="50% 55%" />
       <div className="max-w-content mx-auto px-4 py-10 md:py-14 grid gap-10 lg:grid-cols-[1fr_280px]">
         <div>
           <CategoryChips active={cat} />

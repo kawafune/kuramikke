@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { CalendarDays, MapPin, Wifi, Users } from 'lucide-react';
+import { PHOTOS } from '../data/photos';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { PageHero } from '../components/ui/PageHero';
 import { SectionTitle } from '../components/ui/SectionTitle';
@@ -32,7 +33,7 @@ export const CommunityTopPage = () => {
   return (
     <>
       <Breadcrumb items={[{ label: '絆を見つける' }]} />
-      <PageHero title={<>絆を<br />見つける</>} />
+      <PageHero title={<>絆を<br />見つける</>} image={PHOTOS['page:/community']} imagePosition="50% 45%" />
 
       <section className="max-w-[760px] mx-auto px-4 py-10 md:py-14 text-center">
         <SectionTitle>同じ趣味や思いの仲間と、気軽につながる</SectionTitle>
