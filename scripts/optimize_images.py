@@ -3,7 +3,7 @@
 
 できること
   1. 取り込み：  python3 scripts/optimize_images.py add <元の画像...> --name col-スラッグ
-       元の画像（jpg / png / webp）を、幅1600px以内・WebP・画質82に変えて、src/assets/photos/<name>.webp に保存する。
+       元の画像（jpg / png / webp）を、幅1600px以内・WebP・画質82（250KBを超えるときは、70まで下げる）に変えて、src/assets/photos/<name>.webp に保存する。
        同じ写真を2つ渡したとき（解像度ちがいなど）は、いちばん大きいものを使う。
        名前の決まり：コラム＝col-<記事のスラッグ>、終活ガイド＝guide-<スラッグ>、ページ＝page-<名前>
   2. 点検：      python3 scripts/optimize_images.py check
@@ -45,14 +45,22 @@ def resized(im, max_width=MAX_WIDTH):
 
 
 def encode(im, fmt):
-    buf = io.BytesIO()
-    if fmt == 'WEBP':
-        im.save(buf, 'WEBP', quality=QUALITY, method=6)
-    elif fmt == 'JPEG':
-        im.convert('RGB').save(buf, 'JPEG', quality=QUALITY, optimize=True, progressive=True)
-    else:  # PNG
+    """WebP / JPEG は、画質82から始めて、基準（MAX_BYTES）を超えるときは、画質を少しずつ下げる（最低70）"""
+    if fmt == 'PNG':
+        buf = io.BytesIO()
         im.save(buf, 'PNG', optimize=True)
-    return buf.getvalue()
+        return buf.getvalue()
+    data = b''
+    for q in (QUALITY, 78, 74, 70):
+        buf = io.BytesIO()
+        if fmt == 'WEBP':
+            im.save(buf, 'WEBP', quality=q, method=6)
+        else:
+            im.convert('RGB').save(buf, 'JPEG', quality=q, optimize=True, progressive=True)
+        data = buf.getvalue()
+        if len(data) <= MAX_BYTES:
+            break
+    return data
 
 
 def kb(n):

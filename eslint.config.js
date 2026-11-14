@@ -31,7 +31,7 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: globals.browser,
+      globals: { ...globals.browser, __BUILD__: 'readonly' }, // __BUILD__：ビルド時に埋め込まれる版の情報（vite.config.ts）
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     rules: {

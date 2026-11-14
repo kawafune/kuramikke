@@ -22,6 +22,7 @@ import { SitemapPage } from './pages/SitemapPage';
 import { ColumnListPage, ColumnArticlePage } from './pages/ColumnPages';
 import { BUSINESS_PAGES, LEGAL_PAGES } from './data/businessPages';
 import { HOME } from './config/site';
+import { DevRefresh } from './components/layout/DevRefresh';
 import { LpPage } from './pages/LpPage';
 import { CommunityTopPage, CommunityEventPage } from './pages/CommunityPages';
 import { MapSearchPage } from './pages/MapSearchPage';
@@ -58,6 +59,7 @@ const DevBanner = () => {
       <span className="font-bold">開発モード：公開前の画面も表示しています</span>
       <Link to="/" className="underline underline-offset-2">TOP（開発用：ポータル型）</Link>
       <Link to="/shukatsu" className="underline underline-offset-2">公開中のTOP（終活ガイド）</Link>
+      <DevRefresh />
       <button onClick={logout} className="underline underline-offset-2">公開表示に戻す</button>
     </div>
   );
