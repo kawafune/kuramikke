@@ -17,6 +17,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'about',
     no: 1,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'self',
     title: '終活とは・はじめ方',
     short: 'いつから、何から始めればいいの？ やさしい5つのステップ。',
@@ -93,6 +94,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'ending-note',
     no: 2,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'self',
     title: 'エンディングノートの書き方',
     short: '書く項目の例と、書くときのコツ。手書き用のPDFも。',
@@ -163,6 +165,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'grave',
     no: 4,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'family',
     title: 'お墓と供養の選び方',
     short: 'お墓や供養のかたちは増えています。自分と家族に合うものを。',
@@ -233,6 +236,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'funeral',
     no: 3,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'family',
     urgent: true, // いま必要になった方向け。広告は控えめに（docs/shukatsu/ad-rules.md）
     title: '葬儀の種類と選び方',
@@ -323,6 +327,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'manners',
     no: 5,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'family',
     title: '法要・冠婚葬祭のマナー',
     short: '四十九日や一周忌、香典や服装など。はじめてでも安心して。',
@@ -412,6 +417,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'organize',
     no: 6,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'family',
     urgent: true,
     title: '生前整理・遺品整理',
@@ -482,6 +488,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'inheritance',
     no: 7,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'family',
     urgent: true,
     title: '相続と遺言の基本',
@@ -556,6 +563,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'money',
     no: 8,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'self',
     title: '老後のお金と資産管理',
     short: 'まずは「いま、何がどこにあるか」を知ることから。',
@@ -648,6 +656,7 @@ export const GUIDE_PAGES = [
   {
     slug: 'invest',
     no: 9,
+    date: '2026-11-05', // 一覧での並び順に使う公開日（新しい順）
     entrance: 'self',
     title: '引退後の資産運用の基本',
     short: '「増やす」より先に、「減らさない」。だまされないために。',

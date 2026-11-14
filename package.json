@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prebuild": "node scripts/build_sitemap.mjs"
+    "prebuild": "node scripts/build_sitemap.mjs",
+    "img:check": "python3 scripts/optimize_images.py check",
+    "img:fix": "python3 scripts/optimize_images.py fix"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

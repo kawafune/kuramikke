@@ -711,19 +711,17 @@ export const isArticlePublic = (a) => a.published && a.expertReview !== 'require
 export const isArticleReadable = (a, devMode) => devMode || isArticlePublic(a);
 
 // 一覧に並べるもの（終活ガイドの記事も含む）。読めるものだけ。
-// 並び順（サイト内のどこで出しても、この順番で統一する）：
-//   1. 終活ガイド（日付が無いので、番号順で先に並べる）
-//   2. コラム記事（日付の新しい順。同じ日付なら、あとに書き足したものを先にする）
+// 並び順（TOP・コラム一覧・最新記事・カテゴリごとの一覧で、すべて同じ）：公開日の新しい順。
+//   同じ公開日のとき：コラム記事（あとに書き足したものを先に）→ 終活ガイド（番号順）
 export const getColumnItems = (devMode) => {
-  const guides = [...GUIDE_PAGES].sort((a, b) => a.no - b.no).filter((g) => isReadable(g, devMode)).map((g) => ({
-    key: `guide-${g.slug}`, to: `/shukatsu/${g.slug}`, category: 'shukatsu', title: g.title, excerpt: g.short, date: '', art: 'note', image: PHOTOS[`guide:${g.slug}`],
+  const guides = GUIDE_PAGES.filter((g) => isReadable(g, devMode)).map((g) => ({
+    key: `guide-${g.slug}`, to: `/shukatsu/${g.slug}`, category: 'shukatsu', title: g.title, excerpt: g.short, date: '', sortDate: g.date ?? '0000-00-00', rank: g.no, art: 'note', image: PHOTOS[`guide:${g.slug}`],
   }));
   const articles = COLUMN_ARTICLES
-    .map((a, i) => ({ ...a, _i: i }))
-    .filter((a) => isArticleReadable(a, devMode))
-    .sort((a, b) => b.date.localeCompare(a.date) || b._i - a._i)
-    .map((a) => ({
-      key: `column-${a.slug}`, to: `/column/${a.slug}`, category: a.category, title: a.title, excerpt: a.excerpt, date: a.date, art: a.art, image: PHOTOS[`column:${a.slug}`],
+    .map((a, i) => ({ a, i }))
+    .filter(({ a }) => isArticleReadable(a, devMode))
+    .map(({ a, i }) => ({
+      key: `column-${a.slug}`, to: `/column/${a.slug}`, category: a.category, title: a.title, excerpt: a.excerpt, date: a.date, sortDate: a.date, rank: -i, art: a.art, image: PHOTOS[`column:${a.slug}`],
     }));
-  return [...guides, ...articles];
+  return [...guides, ...articles].sort((x, y) => y.sortDate.localeCompare(x.sortDate) || x.rank - y.rank);
 };

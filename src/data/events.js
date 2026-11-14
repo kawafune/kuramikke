@@ -2,6 +2,7 @@
 // （クラミッケ自身がイベントを主催するのではない）。申込み・参加費の受け取り・当日の運営は、すべて主催者が行う。
 // 将来、主催者が自分でイベントを登録できる管理画面を考えているが、それはスタッフが増えてから（2026-11 時点の方針）。
 //
+// posted       : クラミッケに掲載した日（YYYY-MM-DD）。一覧の並び順に使う
 // published    : true にすると、パスワード無しの訪問者にも公開される（代表が確認してから true にする）
 // category     : 'seminar'（セミナー・講座）/ 'gathering'（交流会・サークル）/ 'experience'（体験・お出かけ）
 // format       : 'online'（オンライン）/ 'place'（会場）/ 'both'（どちらも）
@@ -21,6 +22,7 @@ export const EVENTS = [
     title: '【見本】はじめてのエンディングノート講座',
     organizer: '〇〇行政書士事務所',
     organizerUrl: '',
+    posted: '2026-11-13', // 掲載した日（一覧は、新しく掲載した順に並べる）
     date: '2026-12-10',
     dateLabel: '2026年12月10日（木）',
     time: '14:00〜15:30',
@@ -54,4 +56,6 @@ export const EVENTS = [
 export const EVENT_BY_SLUG = Object.fromEntries(EVENTS.map((e) => [e.slug, e]));
 export const isEventPublic = (e) => e.published;
 export const isEventReadable = (e, devMode) => devMode || isEventPublic(e);
-export const getEvents = (devMode) => EVENTS.filter((e) => isEventReadable(e, devMode)).sort((a, b) => a.date.localeCompare(b.date));
+// 掲載した日（posted）の新しい順。同じ日なら、あとに書き足したものを先に（開催日は、各カードに表示される）
+export const getEvents = (devMode) => EVENTS.map((e, i) => ({ e, i })).filter(({ e }) => isEventReadable(e, devMode))
+  .sort((x, y) => y.e.posted.localeCompare(x.e.posted) || y.i - x.i).map(({ e }) => e);
