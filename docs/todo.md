@@ -104,3 +104,4 @@
 - 2026-11-14: 絆を見つけるのMVを、ハイキングの写真（85.jpg）に差し替え。画像スクリプトは、250KBを超えるとき、画質を82→70まで自動で下げるように改良。
 - 2026-11-14: 開発モードの帯に「表示中の版」「最新か確認」「キャッシュを消して更新」を追加（src/components/layout/DevRefresh.jsx）。版の情報は、ビルドのたびに作られ（vite.config.ts）、画面に埋め込まれると同時に /version.json（保存しない設定）としても配られる。ブラウザ側の保存だけを消す。サーバー側（Vercel CDN）は、Vercelの Caches 画面の「Purge CDN Cache」で行う（ログインが要る操作を、サイトの画面に置くのは危険なため作らない）。
 - 2026-11-24: Notion【戦略正典】クラミッケ 12章の申し送り1を実行（このファイルの冒頭に、正本はNotion・会話のはじめに12章を読む、と追記）。
+- 2026-11-24: 申し送り3（メール流入の計測）を確認・完了。`/business?utm_source=mail…` は、そのまま問題なく開く（`/business/standards`、末尾スラッシュ、`#` つきも確認）。GA4へは、page_view の page_location に、utm つきの完全なURLが送られる（テストで確認）。canonicalはクエリなし（検索エンジンに重複と見られない）。末尾スラッシュのcanonicalも、外すように修正。メール内のリンクは、`?utm_source=mail&utm_medium=email&utm_campaign=biz-YYYYMM` の形にする（medium=email を入れると、GA4の「Email」チャネルに入る）。

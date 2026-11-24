@@ -25,6 +25,6 @@ export const usePageTitle = (title, description) => {
   useEffect(() => {
     let link = document.querySelector('link[rel="canonical"]');
     if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }
-    link.href = `${SITE_URL}${pathname === '/' ? '/' : pathname}`;
+    link.href = `${SITE_URL}${pathname === '/' ? '/' : pathname.replace(/\/+$/, '')}`; // 末尾のスラッシュは外す（/business/ と /business を、同じページとして扱う）
   }, [pathname]);
 };
