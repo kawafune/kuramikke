@@ -19,9 +19,16 @@ export const sortByKana = (items) => [...items].sort((a, b) => (a.kana ?? a.name
 // 一覧ページのURL（1ページ目は、ページ番号なし）
 export const listPath = (slug, kind, page = 1) => `/area/${slug}/${kind}${page > 1 ? `/${page}` : ''}`;
 
-export const hubMeta = (city, counts) => ({
-  title: `${city}の病院・診療所・老人ホーム・介護施設を探す`,
-  description: `${city}の病院・診療所${counts.hospitals.toLocaleString()}件、老人ホーム・介護施設${counts.nursing.toLocaleString()}件の一覧。住所・診療科・診療時間などを、厚生労働省の公的データにもとづいて掲載しています。`,
+// 件数の多い順に数える（入口ページの「種類別の件数」。手元のデータから自動で出す）
+export const tally = (values) => {
+  const m = new Map();
+  values.filter(Boolean).forEach((v) => m.set(v, (m.get(v) ?? 0) + 1));
+  return [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ja'));
+};
+
+export const hubMeta = (city, counts, topCare) => ({
+  title: `${city}の病院・老人ホーム・介護施設｜種類別の件数と高齢者の相談窓口`,
+  description: `${city}の病院・診療所${counts.hospitals.toLocaleString()}件、老人ホーム・介護施設${counts.nursing.toLocaleString()}件${topCare ? `（${topCare[0]}${topCare[1]}件ほか）` : ''}を、種類別にまとめました。区の高齢者の相談窓口（地域包括支援センター）の案内つきです。`,
 });
 
 export const listMeta = (city, kind, total, page) => {
