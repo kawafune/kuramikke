@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { AREAS } from '../data/areas';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
@@ -105,6 +106,11 @@ export const SearchTopPage = () => {
                 ))}
               </dl>
             )}
+
+            <p className="mt-8 text-center text-[0.9rem]">
+              <span className="font-round font-bold text-gold-deep">区から一覧で探す：</span>
+              {AREAS.map((a, i) => <React.Fragment key={a.slug}>{i > 0 && '　'}<Link to={`/area/${a.slug}`} className="underline underline-offset-4 hover:text-gold-deep">{a.city}</Link></React.Fragment>)}
+            </p>
 
             <form onSubmit={(e) => { e.preventDefault(); go({ pref, city: pref ? city : '', dept }); }} className="mt-8 bg-cream-50 p-4 flex flex-col md:flex-row md:items-end gap-3">
               <p className="font-round font-bold text-gold-deep md:mr-2 md:pb-2.5 whitespace-nowrap">条件を指定して検索</p>

@@ -7,6 +7,8 @@ import { Button } from '../components/ui/Button';
 import { FacilityMap } from '../components/search/FacilityMap';
 import { NotFoundPage } from './NotFoundPage';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { nursingMeta, listPath } from '../lib/areaMeta';
+import { areaOfCity } from '../data/areas';
 import { useKaigoPrefData } from '../hooks/useMedical';
 import { kaigoPrefCodeOfId, KAIGO_TYPE_LABEL, KAIGO_SOURCE_NAME } from '../data/kaigo';
 import { mapsUrl } from '../lib/maps';
@@ -24,14 +26,15 @@ export const NursingDetailPage = () => {
   const { id } = useParams();
   const { items, loading, error } = useKaigoPrefData(kaigoPrefCodeOfId(id));
   const n = items?.find((x) => x.id === id);
-  usePageTitle(n?.name);
+  const meta = n ? nursingMeta(n, KAIGO_TYPE_LABEL[n.service] ?? '介護施設') : {};
+  usePageTitle(meta.title ?? n?.name, meta.description);
   if (loading) return <p className="max-w-content mx-auto px-4 py-20 text-center" role="status">読み込んでいます…</p>;
   if (error) return <p className="max-w-content mx-auto px-4 py-20 text-center">データを読み込めませんでした。通信を確認して、もう一度お試しください。</p>;
   if (!n) return <NotFoundPage />;
 
   return (
     <>
-      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '老人ホームを探す', to: `/search/nursing?pref=${encodeURIComponent(n.pref)}` }, { label: n.name }]} />
+      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, ...(areaOfCity(n.pref, n.city) ? [{ label: `${n.city}の老人ホーム・介護施設`, to: listPath(areaOfCity(n.pref, n.city).slug, 'nursing') }] : []), { label: '老人ホームを探す', to: `/search/nursing?pref=${encodeURIComponent(n.pref)}` }, { label: n.name }]} />
       <div className="max-w-[900px] mx-auto px-4 py-10 md:py-14">
         <article className="relative border border-gold bg-white p-5 md:p-10">
           <span className="absolute -top-px -left-px bg-gold-deep text-white text-[0.75rem] font-bold px-4 py-1">公的データをもとに掲載</span>

@@ -106,3 +106,12 @@
 - 2026-11-24: Notion【戦略正典】クラミッケ 12章の申し送り1を実行（このファイルの冒頭に、正本はNotion・会話のはじめに12章を読む、と追記）。
 - 2026-11-24: 申し送り3（メール流入の計測）を確認・完了。`/business?utm_source=mail…` は、そのまま問題なく開く（`/business/standards`、末尾スラッシュ、`#` つきも確認）。GA4へは、page_view の page_location に、utm つきの完全なURLが送られる（テストで確認）。canonicalはクエリなし（検索エンジンに重複と見られない）。末尾スラッシュのcanonicalも、外すように修正。メール内のリンクは、`?utm_source=mail&utm_medium=email&utm_campaign=biz-YYYYMM` の形にする（medium=email を入れると、GA4の「Email」チャネルに入る）。
 - 2026-11-24（決定）: メール内のリンクは `?utm_source=mail&utm_medium=email&utm_campaign=biz-YYYYMM`（utm_medium=email を必ず入れる）。Notionの戦略正典 7-1-1 に反映済み。
+
+## 2026-11-25 施設ページをGoogleに見つけてもらう：第1段階（戦略正典12章 7-1〜7-5）
+- 対象：東京の世田谷区・杉並区・中野区（`src/data/areas.js`。ここに足せば、一覧・サイトマップが増える）。
+- URL：`/area/<slug>`（入口）、`/area/<slug>/hospitals[/<ページ>]`、`/area/<slug>/nursing[/<ページ>]`（50件ずつ、五十音順、1ページ目はページ番号なし）。各行は、ふつうの `<a>` リンクで、`/hospitals/:id`・`/nursing-homes/:id` へ。
+- サイトマップ：`scripts/build_sitemap.mjs` が、この3区の入口・一覧・施設ページ（約1,900URL）だけを載せる。全国は載せない。
+- 一覧用データ：`scripts/build_area_data.mjs` が `public/data/area/*.json` を作る（ビルド・devの前に自動実行）。
+- 題名・説明文：`src/lib/areaMeta.js`（一覧・施設ページ共通）。
+- 7-5 判断：第1段階では、事前生成（prerender）をしない。GoogleはJavaScriptを実行して読めるため、まず現状で試す。3〜4週間後（2026-12-22〜29ごろ）に、Search Console の「登録済みページ数」が伸びない・「検出－現在未登録」が大半、の場合に、事前生成を検討する。
+- 効果確認：上の日に、登録数・表示回数を見る。伸びていれば23区へ。伸びていなければ、広げない。

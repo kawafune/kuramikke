@@ -1,6 +1,8 @@
 // sitemap.xml を作る（public/sitemap.xml）。公開しているページだけを載せる。ビルドのたびに自動で実行される（package.json の prebuild）。
 // 公開の判定：published: true で、専門家の確認待ち（expertReview: 'required'）でないもの。サイトの設定は src/config/site.js の READY。
 import { readFileSync, writeFileSync } from 'node:fs';
+import { AREAS } from '../src/data/areas.js';
+import { PAGE_SIZE } from '../src/lib/areaMeta.js';
 
 const BASE = (process.env.VITE_SITE_URL || 'https://kura-mikke.com').replace(/\/$/, '');
 const read = (p) => readFileSync(p, 'utf-8');
@@ -17,6 +19,23 @@ const ready = (k) => new RegExp(`${k}:\\s*true`).test(site);
 if (ready('SHUKATSU')) urls.push('/shukatsu');
 chunks(read('src/data/shukatsuGuide.js'), 'slug').filter(isPublic).forEach((c) => urls.push(`/shukatsu/${pick(c, 'slug')}`));
 if (ready('SEARCH')) urls.push('/search', '/search/nursing', '/search/map');
+// 第1段階：src/data/areas.js の区だけ。区の入口・一覧ページ・その区の施設ページ。全国の施設（約11万件）は、まだ載せない
+if (ready('SEARCH')) {
+  const med = {}; const care = {};
+  for (const a of AREAS) {
+    med[a.prefCode] ??= JSON.parse(read(`public/data/medical/${a.prefCode}.json`));
+    care[a.prefCode] ??= JSON.parse(read(`public/data/kaigo/${a.prefCode}.json`));
+    const h = med[a.prefCode].filter((f) => f.city === a.city);
+    const n = care[a.prefCode].filter((f) => f.city === a.city);
+    urls.push(`/area/${a.slug}`);
+    for (const [kind, list] of [['hospitals', h], ['nursing', n]]) {
+      const pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+      for (let p = 1; p <= pages; p++) urls.push(`/area/${a.slug}/${kind}${p > 1 ? `/${p}` : ''}`);
+    }
+    h.forEach((f) => urls.push(`/hospitals/${f.id}`));
+    n.forEach((f) => urls.push(`/nursing-homes/${f.id}`));
+  }
+}
 if (ready('COLUMN')) {
   urls.push('/column');
   chunks(read('src/data/column.js'), 'slug').filter(isPublic).forEach((c) => urls.push(`/column/${pick(c, 'slug')}`));

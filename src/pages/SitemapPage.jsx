@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CircleArrowRight } from 'lucide-react';
 import { Breadcrumb } from '../components/ui/Breadcrumb';
 import { SectionTitle } from '../components/ui/SectionTitle';
+import { AREAS } from '../data/areas';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useSite } from '../context/siteContext';
 import { GUIDE_PAGES, isReadable } from '../data/shukatsuGuide';
@@ -35,6 +36,7 @@ export const SitemapPage = () => {
       { label: '病院・診療所を探す', to: '/search', ready: isAvailable('SEARCH') },
       { label: '老人ホーム・介護施設を探す', to: '/search/nursing', ready: isAvailable('SEARCH') },
       { label: 'マップから探す', to: '/search/map', ready: isAvailable('SEARCH') },
+      ...AREAS.map((a) => ({ label: `${a.city}の病院・老人ホーム一覧`, to: `/area/${a.slug}`, ready: isAvailable('SEARCH') })),
       { label: 'お気に入り', to: '/search/favorites', ready: isAvailable('SEARCH') },
     ] },
     { title: '終活サポート', to: '/shukatsu', ready: isAvailable('SHUKATSU'), children: GUIDE_PAGES.filter((g) => g.status === 'ready').map((g) => ({ label: g.title, to: `/shukatsu/${g.slug}`, ready: isReadable(g, false) })) },

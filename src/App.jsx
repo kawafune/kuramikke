@@ -26,6 +26,7 @@ import { DevRefresh } from './components/layout/DevRefresh';
 import { LpPage } from './pages/LpPage';
 import { CommunityTopPage, CommunityEventPage } from './pages/CommunityPages';
 import { MapSearchPage } from './pages/MapSearchPage';
+import { AreaHubPage, AreaHospitalsPage, AreaNursingPage } from './pages/AreaPages';
 import { initAnalytics, initOutboundTracking, trackPageView } from './lib/analytics';
 
 // ページを移動したら、先頭にスクロールする
@@ -129,6 +130,11 @@ const Shell = () => {
           <Route path="/search/map" element={<Gate target="SEARCH" title="マップから探す"><MapSearchPage /></Gate>} />
           <Route path="/search/favorites" element={<Gate target="SEARCH" title="お気に入りの病院"><FavoritesPage /></Gate>} />
           <Route path="/search/nursing" element={<Gate target="SEARCH" title="老人ホームを探す"><NursingSearchPage /></Gate>} />
+          <Route path="/area/:slug" element={<Gate target="SEARCH" title="病院・介護施設を探す"><AreaHubPage /></Gate>} />
+          <Route path="/area/:slug/hospitals" element={<Gate target="SEARCH" title="病院・介護施設を探す"><AreaHospitalsPage /></Gate>} />
+          <Route path="/area/:slug/hospitals/:page" element={<Gate target="SEARCH" title="病院・介護施設を探す"><AreaHospitalsPage /></Gate>} />
+          <Route path="/area/:slug/nursing" element={<Gate target="SEARCH" title="老人ホームを探す"><AreaNursingPage /></Gate>} />
+          <Route path="/area/:slug/nursing/:page" element={<Gate target="SEARCH" title="老人ホームを探す"><AreaNursingPage /></Gate>} />
           <Route path="/nursing-homes/:id" element={<Gate target="SEARCH" title="老人ホームを探す"><NursingDetailPage /></Gate>} />
           <Route path="/hospitals/:id" element={<Gate target="SEARCH" title="病院・介護施設を探す"><HospitalDetailPage /></Gate>} />
           <Route path="/column" element={<ColumnListPage />} />

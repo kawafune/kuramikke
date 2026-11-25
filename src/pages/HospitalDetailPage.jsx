@@ -13,6 +13,8 @@ import { TodayStatus } from '../components/search/TodayStatus';
 import { CalendarAdd } from '../components/search/CalendarAdd';
 import { NotFoundPage } from './NotFoundPage';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { hospitalMeta, listPath } from '../lib/areaMeta';
+import { areaOfCity } from '../data/areas';
 import { usePrefData } from '../hooks/useMedical';
 import { prefCodeOfId, KIND_LABEL, DATA_SOURCE_NAME, asOfLabel } from '../data/medical';
 import { mapsUrl } from '../lib/maps';
@@ -30,14 +32,15 @@ export const HospitalDetailPage = () => {
   const { id } = useParams();
   const { items, loading, error } = usePrefData(prefCodeOfId(id));
   const h = items?.find((x) => x.id === id);
-  usePageTitle(h?.name);
+  const meta = h ? hospitalMeta(h) : {};
+  usePageTitle(meta.title ?? h?.name, meta.description);
   if (loading) return <p className="max-w-content mx-auto px-4 py-20 text-center" role="status">読み込んでいます…</p>;
   if (error) return <p className="max-w-content mx-auto px-4 py-20 text-center">データを読み込めませんでした。通信を確認して、もう一度お試しください。</p>;
   if (!h) return <NotFoundPage />;
 
   return (
     <>
-      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, { label: '病院を探す', to: '/search' }, { label: '検索結果', to: `/search/results?pref=${encodeURIComponent(h.pref)}` }, { label: h.name }]} />
+      <Breadcrumb items={[{ label: '病院・介護施設を探す', to: '/search' }, ...(areaOfCity(h.pref, h.city) ? [{ label: `${h.city}の病院・診療所`, to: listPath(areaOfCity(h.pref, h.city).slug, 'hospitals') }] : []), { label: '病院を探す', to: '/search' }, { label: '検索結果', to: `/search/results?pref=${encodeURIComponent(h.pref)}` }, { label: h.name }]} />
       <div className="max-w-[900px] mx-auto px-4 py-10 md:py-14">
         <EmergencyNotice compact />
         <article className="relative border border-gold bg-white p-5 md:p-10 mt-6">
